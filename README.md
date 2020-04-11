@@ -24,6 +24,8 @@
   - personInitials.institution.accountType.accountLast4.csv
   - E.g., Amy Watson, SSF Bank, Savings account # 1234
     - aw.ssfbank.savings.x1234.csv
+- In MongoDB
+  - Define accounts in 'accounts' collection. (Future: make UI for this)
 In App
 - Click Import button
 - Rename messy descriptions and add categories
