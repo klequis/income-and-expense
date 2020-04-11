@@ -1,6 +1,14 @@
-> This project is a work in progress and is not ready for use. If you are interested in contributing open an issue and let me know.
+> **This project is a work in progress and is not ready for use. If you are interested in contributing open an issue and let me know.**
 
 # Income & Expense
+
+**Just a bunch of thinking**
+
+## Goals
+- Retrieve data from api (currently using csv files)
+- Categorize transactions based on criteria (done)
+- Report on data (monthly / yearly income & expense)
+- Export to CSV
 
 **A program for categorizing and reporting on banking data.**
 
@@ -9,6 +17,17 @@
 - Shows spending by month (future)
 - UI for categorizing transactions (done)
 - UI to explore data by filtering & sorting (sorting done, filtering pending)
+
+## Current Workflow
+- Download all relevent accounts to csv files and put in /server/data
+- You can name files anything you want but convention I'm using
+  - personInitials.institution.accountType.accountLast4.csv
+  - E.g., Amy Watson, SSF Bank, Savings account # 1234
+    - aw.ssfbank.savings.x1234.csv
+In App
+- Click Import button
+- Rename messy descriptions and add categories
+
 
 ## Necessary Understanding
 
