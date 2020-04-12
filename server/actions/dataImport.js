@@ -175,8 +175,8 @@ const _transformDataNew = (account, data) => {
       // R.tap(log('after evolve')),
       R.evolve(evolver),
       // R.tap(log('after map')),
-      mapToFields
-      // R.tap(log('start'))
+      mapToFields,
+      R.tap(log('start'))
     )
 
     return R.map(transform, data)
@@ -197,25 +197,9 @@ const dataImport = async (loadRaw = false) => {
     }
     const accounts = await find(ACCOUNTS_COLLECTION_NAME, {})
     for (let i = 0; i < accounts.length; i++) {
-      // if (accounts[i].acctId === 'cb.chase.chk.2465') {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
       const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
       const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
-
-      // DEBUG
-      if (accounts[i].acctId === 'costco.citibank.credit-card.2791') {
-        for (let x = 0; x < rawData.length; x++) {
-          
-            // yellow('raw', rawData[i])
-            // yellow('field4 - credit', R.prop('field3')(rawData[x]))
-            console.log('-------------')
-            yellow('field4 - credit', R.prop('field4')(rawData[x]))
-            yellow('field5 - debit', R.prop('field5')(rawData[x]))
-            console.log('-------------')
-          
-        }
-      }
-
       if (loadRaw) {
         await insertMany('raw-data', rawData)
       }
@@ -233,7 +217,6 @@ const dataImport = async (loadRaw = false) => {
       const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
 
       docsInserted += inserted.length
-      // }
     }
     await createIndex(DATA_COLLECTION_NAME, 'description', {
       collation: { caseLevel: true, locale: 'en_US' }
