@@ -1,23 +1,27 @@
 import { find } from 'db'
-import { DATA_COLLECTION_NAME } from 'db/constants'
+import { DATA_COLLECTION_NAME, dataFields } from 'db/constants'
 import fs from 'fs'
+import * as R from 'ramda'
+
+
 // eslint-disable-next-line
-import { yellow } from 'logger'
+import { yellow, redf } from 'logger'
 
 const jsonToCsv = (json) => {
   const replacer = (key, value) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = [
-    'acctId',
-    'date',
-    'description',
-    'debit',
-    'credit',
-    'category1',
-    'category2',
-    'checkNumber',
-    'origDescription',
-    'type',
-    'omit',
+    dataFields.acctId.name,
+    dataFields.date.name,
+    dataFields.description.name,
+    dataFields.debit.name,
+    dataFields.credit.name,
+    dataFields.amount.name,
+    dataFields.category1.name,
+    dataFields.category2.name,
+    dataFields.checkNumber.name,
+    dataFields.origDescription.name,
+    dataFields.type.name,
+    dataFields.omit.name,
     '_id'
   ]
 
@@ -72,10 +76,27 @@ const writeFile = async (csv) => {
   return res
 }
 
+const addDiff = (doc) => {
+  // yellow('doc', doc)
+  const { debit, credit } = doc
+  yellow('debit', debit)
+  yellow('credit', credit)
+  const ret = R.mergeRight(doc, { amount: R.sum([debit, credit]) })
+  // yellow('ret', ret)
+  return ret
+}
+
 const writeCsvFile = async () => {
-  const data = await find(DATA_COLLECTION_NAME, { omit: false })
-  const csvData = jsonToCsv(data)
-  await writeFile(csvData)
+  try {
+    const data = await find(DATA_COLLECTION_NAME, { omit: false })
+    const a = R.map(addDiff, data)
+    yellow('a', a)
+    const csvData = jsonToCsv(a)
+    await writeFile(csvData)
+  } catch (e) {
+    redf('writeCsvFile ERROR', e.message)
+    console.log(e)
+  }
 }
 
 export default writeCsvFile

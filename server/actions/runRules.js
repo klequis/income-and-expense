@@ -1,12 +1,12 @@
 import { find, updateMany, findOneAndUpdate } from 'db'
-import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
+import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME, dataFields, actionTypes } from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
 import { hasProp } from 'lib'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
 
-const printFilter = filter => {
+const printFilter = (filter) => {
   console.log('// filter')
   if (hasProp('$and', filter)) {
     const a = filter.$and
@@ -27,7 +27,7 @@ const createRegex = (findValue, numAdditionalChars = 0) => {
 
 const createCategorizeUpdate = (action, rule) => {
   let update
-  if (hasProp('category2', action)) {
+  if (hasProp(dataFields.category2.name, action)) {
     update = {
       $set: {
         category1: action.category1,
@@ -71,7 +71,7 @@ const createStripUpdate = (action, doc, rule) => {
   return update
 }
 
-const createOmitUpdate = rule => {
+const createOmitUpdate = (rule) => {
   const update = {
     $set: { omit: true },
     $addToSet: { ruleIds: rule._id }
@@ -99,26 +99,27 @@ const runRules = async (passedInRules = []) => {
     const { actions, criteria } = rule
     // const criteriaWithAcctId = append(
     //   {
-    //     field: 'acctId',
+    //     field: dataFields.acctId.name,
     //     operation: 'equals',
     //     value: acct
     //   },
     //   criteria
     // )
     const filter = filterBuilder(criteria)
-    // if (criteria.length > 1) {
-    //   green('filter', filter)
-    // }
+    if (criteria.length > 1) {
+      yellow('filter', filter)
+      filter.$and.map((v) => console.log(v))
+    }
     const f = await find(DATA_COLLECTION_NAME, filter)
     for (let j = 0; j < actions.length; j++) {
       const action = actions[j]
 
       switch (action.action) {
-        case 'omit':
+        case actionTypes.omit:
           const omitUpdate = createOmitUpdate(rule)
           await updateMany(DATA_COLLECTION_NAME, filter, omitUpdate)
           break
-        case 'strip':
+        case actionTypes.strip:
           for (let j = 0; j < f.length; j++) {
             const doc = f[j]
             await findOneAndUpdate(
@@ -128,7 +129,7 @@ const runRules = async (passedInRules = []) => {
             )
           }
           break
-        case 'replaceAll':
+        case actionTypes.replaceAll:
           for (let j = 0; j < f.length; j++) {
             const doc = f[j]
             await findOneAndUpdate(
@@ -138,7 +139,7 @@ const runRules = async (passedInRules = []) => {
             )
           }
           break
-        case 'categorize':
+        case actionTypes.categorize:
           await updateMany(
             DATA_COLLECTION_NAME,
             filter,

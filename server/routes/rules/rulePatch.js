@@ -52,7 +52,7 @@ const rulePatch = wrap(async (req, res) => {
     for (let i = 0; i < f.length; i++) {
       const doc = f[i]
       const { _id, origDescription } = doc
-      const foau = await findOneAndUpdate(
+      await findOneAndUpdate(
         DATA_COLLECTION_NAME,
         { _id: _id },
         {
@@ -61,10 +61,9 @@ const rulePatch = wrap(async (req, res) => {
           $set: { description: origDescription }
         }
       )
-      green('updated', foau)
     }
 
-    const updatedRule = await findOneAndUpdate(
+    await findOneAndUpdate(
       RULES_COLLECTION_NAME,
       { _id: paramsId },
       {

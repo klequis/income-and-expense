@@ -1,9 +1,8 @@
 import { createIndex, dropCollection, find, insertMany } from 'db'
-import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME } from 'db/constants'
+import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME, dataFields } from 'db/constants'
 import csv from 'csvtojson'
 import R, { isNil } from 'ramda'
 import runRules from './runRules'
-import dataFields from 'dataCollection'
 
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'
@@ -75,13 +74,13 @@ const _swapCreditDebitSign = (doc) => {
 }
 
 const getFieldCols = (fieldToCol) => {
-  const acctId = R.path(['acctId', 'col'], fieldToCol) || null
-  const date = R.path(['date', 'col'], fieldToCol) || null
-  const description = R.path(['description', 'col'], fieldToCol) || null
-  const debit = R.path(['debit', 'col'], fieldToCol) || null
-  const credit = R.path(['credit', 'col'], fieldToCol) || null
-  const type = R.path(['type', 'col'], fieldToCol) || null
-  const checkNumber = R.path(['checkNumber', 'col'], fieldToCol) || null
+  const acctId = R.path([dataFields.acctId.name, 'col'], fieldToCol) || null
+  const date = R.path([dataFields.date.name, 'col'], fieldToCol) || null
+  const description = R.path([dataFields.description.name, 'col'], fieldToCol) || null
+  const debit = R.path([dataFields.debit.name, 'col'], fieldToCol) || null
+  const credit = R.path([dataFields.credit.name, 'col'], fieldToCol) || null
+  const type = R.path([dataFields.type.name, 'col'], fieldToCol) || null
+  const checkNumber = R.path([dataFields.checkNumber.name, 'col'], fieldToCol) || null
   const ret = {
     acctId,
     date,
@@ -91,7 +90,7 @@ const getFieldCols = (fieldToCol) => {
     type,
     checkNumber
   }
-  
+
   return ret
 }
 
@@ -127,7 +126,6 @@ const parseFieldValue = (parse, value) => {
     return value * -1
   }
 
-
   // return R.cond([
   //   [R.equals('>1', parse), ]
   // ])
@@ -158,43 +156,42 @@ const getFieldValue = (fieldCol) => (doc) => {
 }
 
 const _transformData = (account, data) => {
-  const { fieldToCol, swapCreditDebitSign, acctId } = account
+  const { fieldToCol, acctId } = account
 
   // yellow('fieldToCol', fieldToCol)
-  // yellow('credit', R.prop(dataFields.credit)(fieldToCol))
+  // yellow(dataFields.credit, R.prop(dataFields.credit.name)(fieldToCol))
 
-  // yellow(`acctId=${acctId}, swapCreditDebitSign=${swapCreditDebitSign}`)
+  // yellow(`acctId=${dataFields.acctId}, swapCreditDebitSign=${swapCreditDebitSign}`)
 
   const fieldCols = getFieldCols(fieldToCol)
-  
 
   // DEBUG type
-  // getFieldValue(R.prop(dataFields.type)(fieldCols))(doc),
-  // yellow('dataFields.type', dataFields.type)
+  // getFieldValue(R.prop(dataFields.type.name)(fieldCols))(doc),
+  // yellow('dataFields.type.name.name', dataFields.type.name)
   // yellow('fieldCols', fieldCols)
-  // yellow('col num', R.prop(dataFields.type)(fieldCols))
+  // yellow('col num', R.prop(dataFields.type.name)(fieldCols))
   //
 
   try {
     const mapToFields = (doc) => {
       const ret = {
         acctId,
-        date: getFieldValue(R.prop(dataFields.date)(fieldToCol))(doc),
-        description: getFieldValue(R.prop(dataFields.description)(fieldToCol))(
+        date: getFieldValue(R.prop(dataFields.date.name)(fieldToCol))(doc),
+        description: getFieldValue(R.prop(dataFields.description.name)(fieldToCol))(
           doc
         ),
         origDescription: getFieldValue(
-          R.prop(dataFields.description)(fieldToCol)
+          R.prop(dataFields.description.name)(fieldToCol)
         )(doc),
-        credit: getFieldValue(R.prop(dataFields.credit)(fieldToCol))(doc),
+        credit: getFieldValue(R.prop(dataFields.credit.name)(fieldToCol))(doc),
         // credit: getFieldValue()
-        debit: R.pipe(getFieldValue(R.prop(dataFields.debit)(fieldToCol)))(doc),
+        debit: R.pipe(getFieldValue(R.prop(dataFields.debit.name)(fieldToCol)))(doc),
         category1: 'none',
         category2: '',
         checkNumber: getFieldValue(R.prop(dataFields.checkNumber)(fieldToCol))(
           doc
         ),
-        type: getFieldValue(R.prop(dataFields.type)(fieldToCol))(doc),
+        type: getFieldValue(R.prop(dataFields.type.name.name)(fieldToCol))(doc),
         omit: false
       }
       return ret
@@ -203,18 +200,20 @@ const _transformData = (account, data) => {
     const _swap = (doc) => {
       const isOneCol = fieldCols.credit === fieldCols.debit
       if (isOneCol) {
-        const fieldName = `field${R.prop(dataFields.credit)(fieldCols)}`
+        const fieldName = `field${R.prop(dataFields.credit.name)(fieldCols)}`
         const fieldValue = doc[fieldName]
         const newFieldValue = fieldValue === 0 ? 0 : fieldValue * -1
         const a = R.mergeRight(doc, { [fieldName]: newFieldValue })
         return a
       } else {
-        const creditFieldName = `field${R.prop(dataFields.credit)(fieldCols)}`
-        const debitFieldName = `field${R.prop(dataFields.debit)(fieldCols)}`
+        const creditFieldName = `field${R.prop(dataFields.credit.name)(fieldCols)}`
+        const debitFieldName = `field${R.prop(dataFields.debit.name)(fieldCols)}`
         const creditFieldValue = doc[creditFieldName]
-        const newCreditFieldValue = creditFieldValue === 0 ? 0 : creditFieldValue * -1
+        const newCreditFieldValue =
+          creditFieldValue === 0 ? 0 : creditFieldValue * -1
         const debitFieldValue = doc[debitFieldName]
-        const newDebitFieldValue = debitFieldValue === 0 ? 0 : debitFieldValue * -1
+        const newDebitFieldValue =
+          debitFieldValue === 0 ? 0 : debitFieldValue * -1
         const b = R.mergeRight(doc, {
           acctId: acctId,
           [creditFieldName]: newCreditFieldValue,
@@ -224,24 +223,21 @@ const _transformData = (account, data) => {
       }
     }
     const transform = R.compose(
-      R.tap(_log('end')),
+      // R.tap(_log('end')),
       // there is a flag in the db called swapCreditDebitCols
       // which is not being used and no routine for it has been written
-      R.tap(_log('after swap')),
-      // R.when(R.always(swapCreditDebitSign), _swapCreditDebitSign),
       // R.tap(_log('after evolve')),
       R.evolve(evolver),
-      R.tap(_log('after map')),
-      mapToFields,
+      // R.tap(_log('after map')),
+      mapToFields
       // R.tap(_log('after swap')),
-      // R.when(R.always(swapCreditDebitSign), _swap),
-      R.tap(_log('initial')),
-      R.tap(_log('start'))
+      // R.tap(_log('initial')),
+      // R.tap(_log('start'))
     )
 
     return R.map(transform, data)
   } catch (e) {
-    red('acctId', acctId)
+    red(dataFields.acctId.name, acctId)
     red('ftc', fieldToCol)
     redf('_transformDataNew ERROR', e.message)
     console.log(e)
@@ -258,10 +254,10 @@ const dataImport = async (loadRaw = false) => {
     const accounts = await find(ACCOUNTS_COLLECTION_NAME, {})
     // const accounts = accountsTmp.filter(
     //   (a) => (a.acctId === 'costco.citibank.credit-card.2791')
-                            
+
     // )
 
-    yellow('accounts', accounts)
+    // yellow('accounts', accounts)
 
     for (let i = 0; i < accounts.length; i++) {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
@@ -285,11 +281,10 @@ const dataImport = async (loadRaw = false) => {
 
       docsInserted += inserted.length
     }
-
-    await createIndex(DATA_COLLECTION_NAME, 'description', {
+    await createIndex(DATA_COLLECTION_NAME, dataFields.description.name, {
       collation: { caseLevel: true, locale: 'en_US' }
     })
-    await createIndex(DATA_COLLECTION_NAME, 'type', {
+    await createIndex(DATA_COLLECTION_NAME, dataFields.type.name, {
       collation: { caseLevel: true, locale: 'en_US' }
     })
     await runRules()

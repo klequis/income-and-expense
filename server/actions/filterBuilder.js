@@ -1,8 +1,12 @@
-import { DATA_COLLECTION_NAME } from 'db/constants'
+import {
+  DATA_COLLECTION_NAME,
+  dataFields,
+  convertFieldData,
+  operators
+} from 'db/constants'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
-import { operators } from '../constants'
 
 const operationBeginsWith = (field, value) => {
   return { [field]: { $regex: `^${value}`, $options: 'im' } }
@@ -13,7 +17,8 @@ const operationContains = (field, value) => {
 }
 
 const operationEquals = (field, value) => {
-  return { [field]: { $eq: value } }
+  return { [field]: { $eq: convertFieldData(field, value) } }
+  // return { [field]: { $eq: value } }
 }
 
 const operationRegex = (field, value) => {
@@ -37,13 +42,16 @@ const operationDoesNotContain = (field, value) => {
   return { [field]: { $not: { $regex: value } } }
 }
 
-export const conditionBuilder = criteria => {
+export const conditionBuilder = (criteria) => {
   // takes a single criteria object
 
   // TODO: hard coding descriptions  => origDescription. Where should this logic be?
 
   const { field: origField, operation, value } = criteria
-  const field = origField === 'description' ? 'origDescription' : origField
+  const field =
+    origField === dataFields.description.name
+      ? dataFields.origDescription.name
+      : origField
 
   switch (operation) {
     case operators.beginsWith:
@@ -67,12 +75,12 @@ export const conditionBuilder = criteria => {
   }
 }
 
-export const filterBuilder = criteria => {
+export const filterBuilder = (criteria) => {
   if (criteria.length === 1) {
     const o = conditionBuilder(criteria[0])
     return o
   } else {
-    const b = criteria.map(c => conditionBuilder(c))
+    const b = criteria.map((c) => conditionBuilder(c))
     const c = { $and: b }
     return c
   }

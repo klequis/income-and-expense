@@ -18,14 +18,21 @@ const rulePost = wrap(async (req, res) => {
     const { body } = req
     // new rule could be sent with tmp ids. Remove them
     const { criteria, actions } = body
+    yellow('rulePost: criteria', criteria)
+    yellow('rulePost: actions', actions)
+
     // Change number types to number
     const convertedCriteria = convertCriteriaTypes(criteria)
+    yellow('rulePost: convertedCriteria', convertedCriteria)
 
     const newRule = {
       criteria: convertedCriteria.map(c => replaceTmpId(c)),
       actions: actions.map(a => replaceTmpId(a))
     }
+    yellow('rulePost: newRule', newRule)
+
     const i = await insertOne(RULES_COLLECTION_NAME, newRule)
+    yellow('rulePost: inserted', i)
     const { _id } = i[0]
     await runRules()
     res.send({ _id: _id })
