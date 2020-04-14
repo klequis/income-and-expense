@@ -1,7 +1,7 @@
 import { createIndex, dropCollection, find, insertMany } from 'db'
 import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME } from 'db/constants'
 import csv from 'csvtojson'
-import R from 'ramda'
+import R, { isNil } from 'ramda'
 import runRules from './runRules'
 import dataFields from 'dataCollection'
 
@@ -32,46 +32,33 @@ const readCsvFile = async (file, hasHeaders) => {
   }
 }
 
-const isDebit = (value) => value < 0
-const isCredit = (value) => value > 0
 const removeDoubleSpace = (value) => value.replace(/\s{2,}/g, ' ').trim()
-const checkO = (o) => {
-  const keys = Object.keys(o)
-  keys.forEach((key) => {
-    if (R.isNil(o[key])) {
-      red(`field${key} `, typeof o[key])
-    }
-  })
-}
-
-const _transformCreditDebit = (swapCreditDebit, value) => {
-  const nv1 = typeof value === 'string' ? 0 : value
-  const nv2 = swapCreditDebit ? _swapCreditDebit(nv1) : nv1
-  return nv2
-}
 
 /*
     data collection field names are: field[n]
 */
 
-// new
-
-const _replaceStringWithZero = (value) =>
-  typeof value === 'string' ? 0 : value
+const _stringToNumber = (value) => {
+  const ret = R.isEmpty(value) ? 0 : Number(value)
+  yellow('_sdebitCreditIsOneCol: value', value)
+  yellow('_sdebitCreditIsOneCol: ret', ret)
+  return ret
+  // typeof value === 'string' ? 0 : value
+}
 
 const evolver = {
   description: R.pipe(removeDoubleSpace, R.trim),
   origDescription: R.pipe(removeDoubleSpace, R.trim),
   date: R.identity,
   credit: R.pipe(
-    _replaceStringWithZero,
+    // _stringToNumber,
     R.cond([
       [R.gt(R.__, 0), (x) => x],
       [R.T, R.always(0)]
     ])
   ),
   debit: R.pipe(
-    _replaceStringWithZero,
+    // _stringToNumber,
     R.cond([
       [R.lt(R.__, 0), (x) => x],
       [R.T, R.always(0)]
@@ -79,30 +66,12 @@ const evolver = {
   )
 }
 
-const _swapCreditDebit = (doc) => {
+const _swapCreditDebitSign = (doc) => {
   const { credit, debit } = doc
-  const newCredit = credit !== 0 ? -credit : credit
-  const newDebit = debit !== 0 ? -debit : debit
-  const newDoc = R.mergeRight(doc, { credit: newCredit, debit: newDebit })
-  return newDoc
-}
-
-// const _swapCreditDebit = (value) => {
-//   if (value === 0) {
-//     return value
-//   }
-
-//   return value * -1
-// }
-
-const emptyString = (x) => 'hi'
-
-const log = (label) => (message) => {
-  // if (message.checkNumber !== '') {
-  return yellow(label, message)
-  // } else {
-  // return console.log()
-  // }
+  return R.mergeRight(doc, {
+    credit: credit === 0 ? 0 : -credit,
+    debit: debit === 0 ? 0 : -debit
+  })
 }
 
 const getFieldCols = (fieldToCol) => {
@@ -122,23 +91,82 @@ const getFieldCols = (fieldToCol) => {
     type,
     checkNumber
   }
+  
   return ret
 }
 
-const getFieldValue = (column) => (doc) => {
-  try {
-    const ret = R.prop(`field${column}`)(doc) || ''
-    return ret
-  } catch (e) {
-    redf('getFieldValue ERROR', e.message)
-    console.log(e)
+const _log = (label) => (message) => {
+  if (label === 'start') {
+    return green('start ----------------------- /n')
   }
+  if (label === 'end') {
+    return green('end -----------------------')
+  }
+  if (label === 'initial') {
+    return yellow(label, message)
+  }
+  // const a = {
+  //   desc: message.origDescription,
+  //   credit: message.credit,
+  //   debit: message.debit
+  // }
+  // return yellow(label, a)
+
+  return yellow(label, message)
 }
 
-const _transformDataNew = (account, data) => {
-  const { fieldToCol, swapCreditDebit, acctId } = account
+const parseFieldValue = (parse, value) => {
+  // yellow('type value', R.type(value))
+  if (parse === '>0') {
+    return value > 0 ? value : 0
+  }
+  if (parse === '<0') {
+    return value < 0 ? value : 0
+  }
+  if (parse === 'reverseSign') {
+    return value * -1
+  }
+
+
+  // return R.cond([
+  //   [R.equals('>1', parse), ]
+  // ])
+}
+
+const getFieldValue = (fieldCol) => (doc) => {
+  // yellow('getFieldValue: fieldToCol', R.type(fieldCol))
+  // yellow('getFieldValue: doc', doc)
+
+  if (R.type(fieldCol) === 'Undefined') {
+    return ''
+  }
+  const { col, parse } = fieldCol
+
+  const value = R.prop(`field${col}`)(doc) || ''
+  if (!isNil(parse)) {
+    return parseFieldValue(parse, value)
+  }
+  return value
+  // try {
+  //   const ret = R.prop(`field${column}`)(doc) || ''
+  //   // yellow('getFieldValue: ret', ret)
+  //   return ret
+  // } catch (e) {
+  //   redf('getFieldValue ERROR', e.message)
+  //   console.log(e)
+  // }
+}
+
+const _transformData = (account, data) => {
+  const { fieldToCol, swapCreditDebitSign, acctId } = account
+
+  // yellow('fieldToCol', fieldToCol)
+  // yellow('credit', R.prop(dataFields.credit)(fieldToCol))
+
+  // yellow(`acctId=${acctId}, swapCreditDebitSign=${swapCreditDebitSign}`)
 
   const fieldCols = getFieldCols(fieldToCol)
+  
 
   // DEBUG type
   // getFieldValue(R.prop(dataFields.type)(fieldCols))(doc),
@@ -151,32 +179,64 @@ const _transformDataNew = (account, data) => {
     const mapToFields = (doc) => {
       const ret = {
         acctId,
-        description: getFieldValue(R.prop(dataFields.description)(fieldCols))(
+        date: getFieldValue(R.prop(dataFields.date)(fieldToCol))(doc),
+        description: getFieldValue(R.prop(dataFields.description)(fieldToCol))(
           doc
         ),
         origDescription: getFieldValue(
-          R.prop(dataFields.description)(fieldCols)
+          R.prop(dataFields.description)(fieldToCol)
         )(doc),
-        date: getFieldValue(R.prop(dataFields.date)(fieldCols))(doc),
-        credit: getFieldValue(R.prop(dataFields.credit)(fieldCols))(doc),
-        debit: R.pipe(getFieldValue(R.prop(dataFields.debit)(fieldCols)))(doc),
+        credit: getFieldValue(R.prop(dataFields.credit)(fieldToCol))(doc),
+        // credit: getFieldValue()
+        debit: R.pipe(getFieldValue(R.prop(dataFields.debit)(fieldToCol)))(doc),
         category1: 'none',
         category2: '',
-        checkNumber: getFieldValue(R.prop(dataFields.checkNumber)(fieldCols))(
+        checkNumber: getFieldValue(R.prop(dataFields.checkNumber)(fieldToCol))(
           doc
         ),
-        type: getFieldValue(R.prop(dataFields.type)(fieldCols))(doc),
+        type: getFieldValue(R.prop(dataFields.type)(fieldToCol))(doc),
         omit: false
       }
       return ret
     }
+
+    const _swap = (doc) => {
+      const isOneCol = fieldCols.credit === fieldCols.debit
+      if (isOneCol) {
+        const fieldName = `field${R.prop(dataFields.credit)(fieldCols)}`
+        const fieldValue = doc[fieldName]
+        const newFieldValue = fieldValue === 0 ? 0 : fieldValue * -1
+        const a = R.mergeRight(doc, { [fieldName]: newFieldValue })
+        return a
+      } else {
+        const creditFieldName = `field${R.prop(dataFields.credit)(fieldCols)}`
+        const debitFieldName = `field${R.prop(dataFields.debit)(fieldCols)}`
+        const creditFieldValue = doc[creditFieldName]
+        const newCreditFieldValue = creditFieldValue === 0 ? 0 : creditFieldValue * -1
+        const debitFieldValue = doc[debitFieldName]
+        const newDebitFieldValue = debitFieldValue === 0 ? 0 : debitFieldValue * -1
+        const b = R.mergeRight(doc, {
+          acctId: acctId,
+          [creditFieldName]: newCreditFieldValue,
+          [debitFieldName]: newDebitFieldValue
+        })
+        return b
+      }
+    }
     const transform = R.compose(
-      R.when(R.always(swapCreditDebit), _swapCreditDebit),
-      // R.tap(log('after evolve')),
+      R.tap(_log('end')),
+      // there is a flag in the db called swapCreditDebitCols
+      // which is not being used and no routine for it has been written
+      R.tap(_log('after swap')),
+      // R.when(R.always(swapCreditDebitSign), _swapCreditDebitSign),
+      // R.tap(_log('after evolve')),
       R.evolve(evolver),
-      // R.tap(log('after map')),
+      R.tap(_log('after map')),
       mapToFields,
-      R.tap(log('start'))
+      // R.tap(_log('after swap')),
+      // R.when(R.always(swapCreditDebitSign), _swap),
+      R.tap(_log('initial')),
+      R.tap(_log('start'))
     )
 
     return R.map(transform, data)
@@ -196,6 +256,13 @@ const dataImport = async (loadRaw = false) => {
       await dropCollection('data-all')
     }
     const accounts = await find(ACCOUNTS_COLLECTION_NAME, {})
+    // const accounts = accountsTmp.filter(
+    //   (a) => (a.acctId === 'costco.citibank.credit-card.2791')
+                            
+    // )
+
+    yellow('accounts', accounts)
+
     for (let i = 0; i < accounts.length; i++) {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
       const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
@@ -204,7 +271,7 @@ const dataImport = async (loadRaw = false) => {
         await insertMany('raw-data', rawData)
       }
 
-      const transformedData = _transformDataNew(accounts[i], rawData)
+      const transformedData = _transformData(accounts[i], rawData)
 
       // DEBUB
       // yellow(
@@ -218,6 +285,7 @@ const dataImport = async (loadRaw = false) => {
 
       docsInserted += inserted.length
     }
+
     await createIndex(DATA_COLLECTION_NAME, 'description', {
       collation: { caseLevel: true, locale: 'en_US' }
     })

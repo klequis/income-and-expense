@@ -39,7 +39,7 @@ describe('test update-rule', function() {
     })
     const { body } = r
     const { criteria } = body[0]
-    yellow('criteria[0].value before', criteria[0].value)
+    // yellow('criteria[0].value before', criteria[0].value)
   })
   it('is rule changed', async function() {
     const r = await sendRequest({
@@ -50,7 +50,7 @@ describe('test update-rule', function() {
     })
     const { body } = r
     const { criteria } = body[0]
-    yellow('criteria[0].value after', criteria[0].value)
+    // yellow('criteria[0].value after', criteria[0].value)
     // expect(criteria[0].value).to.equal('24 Hour Fitness 88')
   })
 })

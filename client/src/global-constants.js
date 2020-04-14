@@ -15,13 +15,6 @@ export const operators = {
   // in: 'in'
 }
 
-export const dataFieldsZZ = {
-  description: 'description',
-  type: 'type',
-  credit: 'credit',
-  debit: 'debit'
-}
-
 export const actionTypes = {
   replaceAll: 'replaceAll',
   categorize: 'categorize',

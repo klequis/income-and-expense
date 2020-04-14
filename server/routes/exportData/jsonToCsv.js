@@ -1,14 +1,13 @@
 import { find } from 'db'
 import { DATA_COLLECTION_NAME } from 'db/constants'
 import fs from 'fs'
-import { format } from 'date-fns'
-import { mergeRight } from 'ramda'
-
+// eslint-disable-next-line
 import { yellow } from 'logger'
 
 const jsonToCsv = (json) => {
   const replacer = (key, value) => (value === null ? '' : value) // specify how you want to handle null values here
   const header = [
+    'acctId',
     'date',
     'description',
     'debit',
@@ -39,17 +38,34 @@ const jsonToCsv = (json) => {
       .map((fieldName) => JSON.stringify(row[fieldName], replacer))
       .join(',')
   )
-  yellow('csv', csv)
   csv.unshift(header.join(','))
   csv = csv.join('\r\n')
   return csv
 }
 
+const makeFileName = () => {
+  // yes this is ugly
+  const d = new Date()
+  const year = d.getFullYear()
+  // yellow('year', year)
+  const month = d.getMonth().toString().padStart(2, '0')
+  // yellow('month', month)
+  const day = d.getDay().toString().padStart(2, '0')
+  // yellow('day', day)
+  const hour = d.getHours().toString().padStart(2, '0')
+  // yellow('hour', hour)
+  const minute = d.getMinutes().toString().padStart(2, '0')
+  // yellow('minutes', minute)
+  const second = d.getSeconds().toString().padStart(2, '0')
+  // yellow('seconds', second)
+  const datePart = `${year}${month}${day}-${hour}${minute}${second}`
+  return `${datePart}.income-expense.csv`
+}
+
 const writeFile = async (csv) => {
   const res = await fs.promises.writeFile(
     // `/home/klequis/Downloads/${format(new Date(), 'ddMMyyyy')}data.csv`,
-    `/home/klequis/Downloads/new-data.csv`,
-    // `new-data.csv`,
+    `/home/klequis/Documents/income-expense.wk/${makeFileName()}`,
     csv,
     'utf8'
   )
@@ -57,7 +73,7 @@ const writeFile = async (csv) => {
 }
 
 const writeCsvFile = async () => {
-  const data = await find(DATA_COLLECTION_NAME, {})
+  const data = await find(DATA_COLLECTION_NAME, { omit: false })
   const csvData = jsonToCsv(data)
   await writeFile(csvData)
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Select from 'ui/elements/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import { makeStyles } from '@material-ui/styles'
-import { operators, dataFieldsZZ } from 'global-constants'
+import { operators, dataFieldNames } from 'global-constants'
 import TextField from 'ui/elements/TextField'
 import { mergeRight } from 'ramda'
 import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
@@ -39,7 +39,7 @@ const CriterionEdit = ({
 
   const [values, setValues] = useState({
     _id,
-    field: field || dataFieldsZZ.description,
+    field: field || dataFieldNames.description,
     operation: operation || operators.beginsWith,
     value
   })
@@ -68,10 +68,10 @@ const CriterionEdit = ({
           value={values.field}
           onChange={_handleChange}
         >
-          <MenuItem value={dataFieldsZZ.description}>Description</MenuItem>
-          <MenuItem value={dataFieldsZZ.type}>Type</MenuItem>
-          <MenuItem value={dataFieldsZZ.credit}>Credit</MenuItem>
-          <MenuItem value={dataFieldsZZ.debit}>Debit</MenuItem>
+          <MenuItem value={dataFieldNames.description}>Description</MenuItem>
+          <MenuItem value={dataFieldNames.type}>Type</MenuItem>
+          <MenuItem value={dataFieldNames.credit}>Credit</MenuItem>
+          <MenuItem value={dataFieldNames.debit}>Debit</MenuItem>
         </Select>
 
         <Select
