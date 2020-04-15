@@ -105,6 +105,7 @@ const runRules = async (passedInRules = []) => {
     //   },
     //   criteria
     // )
+    yellow('runRules.criteria', criteria)
     const filter = filterBuilder(criteria)
     if (criteria.length > 1) {
       yellow('filter', filter)

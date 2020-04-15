@@ -33,18 +33,6 @@ const readCsvFile = async (file, hasHeaders) => {
 
 const removeDoubleSpace = (value) => value.replace(/\s{2,}/g, ' ').trim()
 
-/*
-    data collection field names are: field[n]
-*/
-
-const _stringToNumber = (value) => {
-  const ret = R.isEmpty(value) ? 0 : Number(value)
-  yellow('_sdebitCreditIsOneCol: value', value)
-  yellow('_sdebitCreditIsOneCol: ret', ret)
-  return ret
-  // typeof value === 'string' ? 0 : value
-}
-
 const evolver = {
   description: R.pipe(removeDoubleSpace, R.trim),
   origDescription: R.pipe(removeDoubleSpace, R.trim),
@@ -63,14 +51,6 @@ const evolver = {
       [R.T, R.always(0)]
     ])
   )
-}
-
-const _swapCreditDebitSign = (doc) => {
-  const { credit, debit } = doc
-  return R.mergeRight(doc, {
-    credit: credit === 0 ? 0 : -credit,
-    debit: debit === 0 ? 0 : -debit
-  })
 }
 
 const getFieldCols = (fieldToCol) => {

@@ -1,5 +1,5 @@
 import { mergeRight } from 'ramda'
-import { dataFields } from 'db/constants'
+import { dataFields, actionFields } from 'db/constants'
 
 const convertCriteriaTypes = (criteria) => {
   return criteria.map((c) => {
@@ -9,7 +9,7 @@ const convertCriteriaTypes = (criteria) => {
         [
           dataFields.credit.name,
           dataFields.debit.name,
-          dataFields.numAdditionalChars.name
+          actionFields.numAdditionalChars.name
         ].includes(field)
       ) {
         return mergeRight(c, { value: Number(value) })

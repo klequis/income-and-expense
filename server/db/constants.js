@@ -53,23 +53,10 @@ export const dataFields = {
   omit: {
     name: 'omit',
     type: 'Boolean'
-  }
-}
-
-export const convertFieldData = (field, value) => {
-  yellow('field', field)
-  yellow('value', value)
-  const type = R.path([field, 'type'], dataFields)
-  yellow('type', type)
-  switch (type) {
-    case 'String':
-      return value
-    case 'Number':
-      return Number(value)
-    case 'Boolean':
-      return type(value) === 'Boolean' ? value : value === 'true'
-    default:
-      throw new Error('db.constants.convertFieldData: unknown field type.')
+  },
+  ruleIds: {
+    name: 'ruleIds',
+    type: 'Array'
   }
 }
 
@@ -88,3 +75,84 @@ export const operators = {
   regex: 'regex'
   // in: 'in'
 }
+
+export const actionFields = {
+  field: {
+    name: 'field',
+    type: 'String'
+  },
+  findValue: {
+    name: 'findValue',
+    type: 'Any'
+  },
+  numAdditionalChars: {
+    name: 'numAdditionalChars',
+    type: 'Number'
+  },
+  replaceWithValue: {
+    name: 'replaceWithValue',
+    type: 'Any'
+  },
+  category1: {
+    name: 'category1',
+    type: 'String'
+  },
+  category2: {
+    name: 'category2',
+    type: 'String'
+  }
+}
+
+const allFields = R.mergeAll([dataFields, actionFields])
+
+// export const convertFieldData = (field, value) => {
+//   yellow('field', field)
+//   yellow('value', value)
+//   const type = R.path([field, 'type'], dataFields)
+//   yellow('type', type)
+//   switch (type) {
+//     case 'String':
+//       return value
+//     case 'Number':
+//       return Number(value)
+//     case 'Boolean':
+//       return type(value) === 'Boolean' ? value : value === 'true'
+//     default:
+//       throw new Error('db.constants.convertFieldData: unknown field type.')
+//   }
+// }
+
+const stringToBoolean = (value) => {
+  if (R.type(value) === 'Boolean') {
+    return value
+  }
+
+  if (value.toLowerCase() === 'true') {
+    return true
+  }
+
+  if (value.toLowerCase() === 'false') {
+    return false
+  }
+}
+
+const convertValue = ({ field, value }) => {
+  yellow('field', field)
+  yellow('value', value)
+  const type = R.path([field, 'type'], allFields)
+  yellow('type', type)
+  switch (type) {
+    case 'String':
+      return [field, value]
+    case 'Number':
+      return [field, Number(value)]
+    case 'Boolean':
+      return [field, stringToBoolean(value)]
+    case 'Array':
+      return value
+    default:
+      throw new Error('db.constants.convertFieldData: unknown field type.')
+  }
+}
+
+export const convertValues = R.pipe(R.toPairs, convertValue, R.fromPairs)

@@ -46,7 +46,7 @@ export const conditionBuilder = (criteria) => {
   // takes a single criteria object
 
   // TODO: hard coding descriptions  => origDescription. Where should this logic be?
-
+  
   const { field: origField, operation, value } = criteria
   const field =
     origField === dataFields.description.name
