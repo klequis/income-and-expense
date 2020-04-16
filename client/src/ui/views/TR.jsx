@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
@@ -17,12 +17,16 @@ const useStyles = makeStyles({
     width: '100%'
   },
   origDescriptionShow: props => ({
-    display: props.showOrigDescription ? 'block' : 'none',
+    // display: props.showOrigDescription ? 'block' : 'none',
     color: 'rgb(175, 175, 175)'
   })
 })
 
-const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
+const TR = ({ doc, updateRulesAndView }) => {
+
+  // state
+  const [_showOrigDescription, _setShowOrigDescription] = useState(false)
+
   // actions
 
   const { rowIdShowSet } = useFinanceContext()
@@ -45,7 +49,8 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
   } = doc
 
   const rowIdShow = useSelector(state => state.ui.rowIdShow)
-  const _classes = useStyles({ showOrigDescription: showOrigDescription })
+  // const _classes = useStyles({ showOrigDescription: showOrigDescription })
+  const _classes = useStyles()
 
   // methods
 
@@ -62,7 +67,10 @@ const TR = ({ doc, showOrigDescription, updateRulesAndView }) => {
         <TD align="right">{acctId}</TD>
         <TD align="left">
           <div>{description}</div>
-          <div className={_classes.origDescriptionShow}>{origDescription}</div>
+          {_id === rowIdShow ? (
+            <div className={_classes.origDescriptionShow}>{origDescription}</div>
+          ) : null }
+          
         </TD>
         <TD align="right">{credit}</TD>
         <TD align="right">{debit}</TD>
