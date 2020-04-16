@@ -36,7 +36,7 @@ const AllDataByDescription = () => {
   // State
 
   const [_switchState, _setSwitchState] = useState({
-    showOrigDescription: false,
+    // showOrigDescription: false,
     showOmitted: false
   })
   const [_sort, _setSort] = useState({
@@ -128,7 +128,7 @@ const AllDataByDescription = () => {
 
   return (
     <>
-      <FormControlLabel
+      {/* <FormControlLabel
         control={
           <Switch
             checked={_switchState.showOrigDescription}
@@ -137,7 +137,7 @@ const AllDataByDescription = () => {
           />
         }
         label="Show Original Description"
-      />
+      /> */}
       <FormControlLabel
         control={
           <Switch
@@ -173,7 +173,7 @@ const AllDataByDescription = () => {
               <TR
                 key={_id}
                 doc={doc}
-                showOrigDescription={_switchState.showOrigDescription}
+                // showOrigDescription={_switchState.showOrigDescription}
                 showOmitted={_switchState.showOmitted}
                 updateRulesAndView={_updateRulesAndView}
                 view={views.allDataByDescription}
