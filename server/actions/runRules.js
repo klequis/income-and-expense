@@ -1,14 +1,19 @@
 import { find, updateMany, findOneAndUpdate } from 'db'
-import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME, dataFields, actionTypes } from 'db/constants'
+import {
+  DATA_COLLECTION_NAME,
+  RULES_COLLECTION_NAME,
+  dataFields,
+  actionTypes,
+} from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
-import { hasProp } from 'lib'
+import * as R from 'ramda'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
 
 const printFilter = (filter) => {
   console.log('// filter')
-  if (hasProp('$and', filter)) {
+  if (R.has('$and')(filter)) {
     const a = filter.$and
     // yellow('$and:', a)
   } else {
@@ -27,7 +32,7 @@ const createRegex = (findValue, numAdditionalChars = 0) => {
 
 const createCategorizeUpdate = (action, rule) => {
   let update
-  if (hasProp(dataFields.category2.name, action)) {
+  if (R.has(dataFields.category2.name)(action)) {
     update = {
       $set: {
         category1: action.category1,
@@ -106,6 +111,7 @@ const runRules = async (passedInRules = []) => {
     //   criteria
     // )
     yellow('runRules.criteria', criteria)
+
     const filter = filterBuilder(criteria)
     if (criteria.length > 1) {
       yellow('filter', filter)

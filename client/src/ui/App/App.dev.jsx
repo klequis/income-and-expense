@@ -1,5 +1,5 @@
 import React from 'react'
-// import DevTools from 'ui/DevTools'
+import DevTools from 'ui/DevTools'
 import { Route, Switch } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/styles'
@@ -45,7 +45,7 @@ const App = () => {
         </Switch>
         
       </Container>
-      {/* {process.NODE_ENV !== 'production' ? <DevTools /> : null} */}
+      {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
   )
 }

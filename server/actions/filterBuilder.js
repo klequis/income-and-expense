@@ -1,7 +1,6 @@
 import {
-  DATA_COLLECTION_NAME,
   dataFields,
-  convertFieldData,
+  convertOneFieldValue,
   operators
 } from 'db/constants'
 
@@ -17,7 +16,7 @@ const operationContains = (field, value) => {
 }
 
 const operationEquals = (field, value) => {
-  return { [field]: { $eq: convertFieldData(field, value) } }
+  return { [field]: { $eq: convertOneFieldValue(field, value) } }
   // return { [field]: { $eq: value } }
 }
 
@@ -46,23 +45,23 @@ export const conditionBuilder = (criteria) => {
   // takes a single criteria object
 
   // TODO: hard coding descriptions  => origDescription. Where should this logic be?
-  
+
   const { field: origField, operation, value } = criteria
   const field =
     origField === dataFields.description.name
       ? dataFields.origDescription.name
       : origField
-
+  yellow('operation', operation)
   switch (operation) {
-    case operators.beginsWith:
+    case operators.beginsWith.name:
       return operationBeginsWith(field, value)
-    case operators.contains:
+    case operators.contains.name:
       return operationContains(field, value)
-    case operators.doesNotContain:
+    case operators.doesNotContain.name:
       return operationDoesNotContain(field, value)
-    case operators.equals:
+    case operators.equals.name:
       return operationEquals(field, value)
-    case operators.regex:
+    case operators.regex.name:
       return operationRegex(field, value)
     default:
       redf(

@@ -1,5 +1,9 @@
 import { createIndex, dropCollection, find, insertMany } from 'db'
-import { ACCOUNTS_COLLECTION_NAME, DATA_COLLECTION_NAME, dataFields } from 'db/constants'
+import {
+  ACCOUNTS_COLLECTION_NAME,
+  DATA_COLLECTION_NAME,
+  dataFields
+} from 'db/constants'
 import csv from 'csvtojson'
 import R, { isNil } from 'ramda'
 import runRules from './runRules'
@@ -56,11 +60,13 @@ const evolver = {
 const getFieldCols = (fieldToCol) => {
   const acctId = R.path([dataFields.acctId.name, 'col'], fieldToCol) || null
   const date = R.path([dataFields.date.name, 'col'], fieldToCol) || null
-  const description = R.path([dataFields.description.name, 'col'], fieldToCol) || null
+  const description =
+    R.path([dataFields.description.name, 'col'], fieldToCol) || null
   const debit = R.path([dataFields.debit.name, 'col'], fieldToCol) || null
   const credit = R.path([dataFields.credit.name, 'col'], fieldToCol) || null
   const type = R.path([dataFields.type.name, 'col'], fieldToCol) || null
-  const checkNumber = R.path([dataFields.checkNumber.name, 'col'], fieldToCol) || null
+  const checkNumber =
+    R.path([dataFields.checkNumber.name, 'col'], fieldToCol) || null
   const ret = {
     acctId,
     date,
@@ -95,7 +101,6 @@ const _log = (label) => (message) => {
 }
 
 const parseFieldValue = (parse, value) => {
-  // yellow('type value', R.type(value))
   if (parse === '>0') {
     return value > 0 ? value : 0
   }
@@ -105,67 +110,40 @@ const parseFieldValue = (parse, value) => {
   if (parse === 'reverseSign') {
     return value * -1
   }
-
-  // return R.cond([
-  //   [R.equals('>1', parse), ]
-  // ])
 }
 
 const getFieldValue = (fieldCol) => (doc) => {
-  // yellow('getFieldValue: fieldToCol', R.type(fieldCol))
-  // yellow('getFieldValue: doc', doc)
-
   if (R.type(fieldCol) === 'Undefined') {
     return ''
   }
   const { col, parse } = fieldCol
-
   const value = R.prop(`field${col}`)(doc) || ''
   if (!isNil(parse)) {
     return parseFieldValue(parse, value)
   }
   return value
-  // try {
-  //   const ret = R.prop(`field${column}`)(doc) || ''
-  //   // yellow('getFieldValue: ret', ret)
-  //   return ret
-  // } catch (e) {
-  //   redf('getFieldValue ERROR', e.message)
-  //   console.log(e)
-  // }
 }
 
 const _transformData = (account, data) => {
   const { fieldToCol, acctId } = account
 
-  // yellow('fieldToCol', fieldToCol)
-  // yellow(dataFields.credit, R.prop(dataFields.credit.name)(fieldToCol))
-
-  // yellow(`acctId=${dataFields.acctId}, swapCreditDebitSign=${swapCreditDebitSign}`)
-
   const fieldCols = getFieldCols(fieldToCol)
-
-  // DEBUG type
-  // getFieldValue(R.prop(dataFields.type.name)(fieldCols))(doc),
-  // yellow('dataFields.type.name.name', dataFields.type.name)
-  // yellow('fieldCols', fieldCols)
-  // yellow('col num', R.prop(dataFields.type.name)(fieldCols))
-  //
 
   try {
     const mapToFields = (doc) => {
       const ret = {
         acctId,
         date: getFieldValue(R.prop(dataFields.date.name)(fieldToCol))(doc),
-        description: getFieldValue(R.prop(dataFields.description.name)(fieldToCol))(
-          doc
-        ),
+        description: getFieldValue(
+          R.prop(dataFields.description.name)(fieldToCol)
+        )(doc),
         origDescription: getFieldValue(
           R.prop(dataFields.description.name)(fieldToCol)
         )(doc),
         credit: getFieldValue(R.prop(dataFields.credit.name)(fieldToCol))(doc),
-        // credit: getFieldValue()
-        debit: R.pipe(getFieldValue(R.prop(dataFields.debit.name)(fieldToCol)))(doc),
+        debit: R.pipe(getFieldValue(R.prop(dataFields.debit.name)(fieldToCol)))(
+          doc
+        ),
         category1: 'none',
         category2: '',
         checkNumber: getFieldValue(R.prop(dataFields.checkNumber)(fieldToCol))(
@@ -177,31 +155,6 @@ const _transformData = (account, data) => {
       return ret
     }
 
-    const _swap = (doc) => {
-      const isOneCol = fieldCols.credit === fieldCols.debit
-      if (isOneCol) {
-        const fieldName = `field${R.prop(dataFields.credit.name)(fieldCols)}`
-        const fieldValue = doc[fieldName]
-        const newFieldValue = fieldValue === 0 ? 0 : fieldValue * -1
-        const a = R.mergeRight(doc, { [fieldName]: newFieldValue })
-        return a
-      } else {
-        const creditFieldName = `field${R.prop(dataFields.credit.name)(fieldCols)}`
-        const debitFieldName = `field${R.prop(dataFields.debit.name)(fieldCols)}`
-        const creditFieldValue = doc[creditFieldName]
-        const newCreditFieldValue =
-          creditFieldValue === 0 ? 0 : creditFieldValue * -1
-        const debitFieldValue = doc[debitFieldName]
-        const newDebitFieldValue =
-          debitFieldValue === 0 ? 0 : debitFieldValue * -1
-        const b = R.mergeRight(doc, {
-          acctId: acctId,
-          [creditFieldName]: newCreditFieldValue,
-          [debitFieldName]: newDebitFieldValue
-        })
-        return b
-      }
-    }
     const transform = R.compose(
       // R.tap(_log('end')),
       // there is a flag in the db called swapCreditDebitCols
@@ -232,12 +185,6 @@ const dataImport = async (loadRaw = false) => {
       await dropCollection('data-all')
     }
     const accounts = await find(ACCOUNTS_COLLECTION_NAME, {})
-    // const accounts = accountsTmp.filter(
-    //   (a) => (a.acctId === 'costco.citibank.credit-card.2791')
-
-    // )
-
-    // yellow('accounts', accounts)
 
     for (let i = 0; i < accounts.length; i++) {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
@@ -246,19 +193,8 @@ const dataImport = async (loadRaw = false) => {
       if (loadRaw) {
         await insertMany('raw-data', rawData)
       }
-
       const transformedData = _transformData(accounts[i], rawData)
-
-      // DEBUB
-      // yellow(
-      //   'transformedData',
-      //   transformedData
-      //     .filter((i) => i.acctId === 'costco.citibank.credit-card.2791')
-      //     .map((i) => `credit()`)
-      // )
-
       const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
-
       docsInserted += inserted.length
     }
     await createIndex(DATA_COLLECTION_NAME, dataFields.description.name, {

@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 
 // eslint-disable-next-line
-import { yellow } from 'logger'
+import { yellow, green } from 'logger'
 
 export const DATA_COLLECTION_NAME = 'data'
 export const CATEGORIES_COLLECTION_NAME = 'categories'
@@ -10,6 +10,10 @@ export const ACCOUNTS_COLLECTION_NAME = 'accounts'
 export const RULES_COLLECTION_NAME = 'rules'
 
 export const dataFields = {
+  _id: {
+    name: '_id',
+    type: 'String' // TODO: should this be ObjectID?
+  },
   acctId: {
     name: 'acctId',
     type: 'String'
@@ -68,11 +72,26 @@ export const actionTypes = {
 }
 
 export const operators = {
-  beginsWith: 'beginsWith',
-  contains: 'contains',
-  doesNotContain: 'doesNotContain',
-  equals: 'equals',
-  regex: 'regex'
+  beginsWith: {
+    name: 'beginsWith',
+    type: 'String'
+  },
+  contains: {
+    name: 'contains',
+    type: 'String'
+  },
+  doesNotContain: {
+    name: 'doesNotContain',
+    type: 'String'
+  },
+  equals: {
+    name: 'equals',
+    type: 'String'
+  },
+  regex: {
+    name: 'regex',
+    type: 'String'
+  }
   // in: 'in'
 }
 
@@ -103,7 +122,7 @@ export const actionFields = {
   }
 }
 
-const allFields = R.mergeAll([dataFields, actionFields])
+const allFields = R.mergeAll([dataFields, actionFields, operators])
 
 // export const convertFieldData = (field, value) => {
 //   yellow('field', field)
@@ -137,8 +156,10 @@ const stringToBoolean = (value) => {
 }
 
 const convertValue = ({ field, value }) => {
+  // yellow('allFields', allFields)
   yellow('field', field)
   yellow('value', value)
+  // yellow('type test', allFields._id)
   const type = R.path([field, 'type'], allFields)
   yellow('type', type)
   switch (type) {
@@ -149,10 +170,94 @@ const convertValue = ({ field, value }) => {
     case 'Boolean':
       return [field, stringToBoolean(value)]
     case 'Array':
-      return value
+      return [field, value]
+    case 'Any':
+      return [field, value]
+    case 'Date':
+      return [field, value]
     default:
-      throw new Error('db.constants.convertFieldData: unknown field type.')
+      throw new Error(
+        `db.constants.convertFieldData: unknown field type: ${type}.`
+      )
   }
 }
 
-export const convertValues = R.pipe(R.toPairs, convertValue, R.fromPairs)
+export const convertOneFieldValue = (field, value) => {
+  const a = convertValue({ field, value })
+  return a[1]
+
+}
+
+const _log = (label) => (message) => {
+  // if (label === 'start') {
+  //   return green('start ----------------------- /n')
+  // }
+  // if (label === 'end') {
+  //   return green('end -----------------------')
+  // }
+  // if (label === 'initial') {
+  //   return yellow(label, message)
+  // }
+
+  return yellow(label, message)
+}
+
+const convertValues = R.pipe(
+  R.tap(_log('initial')),
+  R.toPairs,
+  R.tap(_log('pairs')),
+  R.map(convertValue),
+
+  R.fromPairs
+)
+
+export const convertFieldValues = (fields) => {
+  yellow('fields', fields)
+  return R.map(convertValues, fields)
+}
+
+export const convertCriteriaValues = (fields) => {
+  // receive
+  const ex_fields = [
+    {
+      _id: '1234',
+      field: 'description',
+      operation: 'beginsWith',
+      value: 'CHASE CREDIT CRD AUTOPAY'
+    },
+    {
+      _id: '1234',
+      field: 'credit',
+      operation: 'equals',
+      value: '240'
+    }
+  ]
+
+  // extract field & value
+  R.map(
+    convertValue,
+    R.map((c) => {
+      const { field, value } = c
+      return { field: field, value: value }
+    })
+  )
+
+  // send to convertValue
+}
+
+
+
+
+
+
+const to_convert = [
+  {
+    field: 'description',
+    value: 'CHASE CREDIT CRD AUTOPAY'
+  },
+  {
+    field: 'credit',
+    value: '240'
+  }
+]
+
