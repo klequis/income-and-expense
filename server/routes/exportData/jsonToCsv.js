@@ -51,17 +51,17 @@ const makeFileName = () => {
   // yes this is ugly
   const d = new Date()
   const year = d.getFullYear()
-  // yellow('year', year)
+  yellow('year', year)
   const month = d.getMonth().toString().padStart(2, '0')
-  // yellow('month', month)
+  yellow('month', month)
   const day = d.getDay().toString().padStart(2, '0')
-  // yellow('day', day)
+  yellow('day', day)
   const hour = d.getHours().toString().padStart(2, '0')
-  // yellow('hour', hour)
+  yellow('hour', hour)
   const minute = d.getMinutes().toString().padStart(2, '0')
-  // yellow('minutes', minute)
+  yellow('minutes', minute)
   const second = d.getSeconds().toString().padStart(2, '0')
-  // yellow('seconds', second)
+  yellow('seconds', second)
   const datePart = `${year}${month}${day}-${hour}${minute}${second}`
   return `${datePart}.income-expense.csv`
 }
