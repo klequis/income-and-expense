@@ -18,6 +18,10 @@ export const dataFields = {
     name: 'acctId',
     type: 'String'
   },
+  amount: { // field for export only
+    name: 'amount',
+    type: 'Number'
+  },
   date: {
     name: 'date',
     type: 'Date'
