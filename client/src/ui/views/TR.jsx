@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
@@ -23,9 +23,6 @@ const useStyles = makeStyles({
 })
 
 const TR = ({ doc, updateRulesAndView }) => {
-
-  // state
-  const [_showOrigDescription, _setShowOrigDescription] = useState(false)
 
   // actions
 

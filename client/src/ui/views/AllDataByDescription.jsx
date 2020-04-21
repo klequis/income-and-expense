@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
 import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
-import { sortWith, prop, ascend, descend, map, mergeRight } from 'ramda'
+import { sortWith, prop, ascend, descend } from 'ramda'
 import { dataFields, sortDirections, views } from 'global-constants'
 
 // eslint-disable-next-line

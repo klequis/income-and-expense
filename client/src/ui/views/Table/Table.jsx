@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MuiTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -8,23 +8,23 @@ import TableRow from '@material-ui/core/TableRow'
 import ColumnHeading from './ColumnHeading'
 import * as R from 'ramda'
 import {
-  append,
+  // append,
   ascend,
   compose,
   descend,
   evolve,
   filter,
-  flip,
-  has,
+  // flip,
+  // has,
   map as rMap,
   mergeRight,
   prop,
   sortWith,
   // tap,
   toLower,
-  transduce,
+  // transduce,
   type,
-  mapObjIndexed
+  // mapObjIndexed
   // values
 } from 'ramda'
 import { sortDirections } from 'global-constants'
