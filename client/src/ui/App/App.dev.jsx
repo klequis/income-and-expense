@@ -9,6 +9,7 @@ import AmountByCategory from 'ui/views/AmountByCategory'
 import RawData from 'ui/views/RawData'
 import { views } from 'global-constants'
 import DuplicateStatus from 'ui/DuplicateStatus'
+import Duplicates from 'ui/views/Duplicates'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -43,6 +44,9 @@ const App = () => {
           </Route>
           <Route exact path={`/${views.rawData}`}>
             <RawData />
+          </Route>
+          <Route exact paht={`/${views.duplicates}`} >
+            <Duplicates />
           </Route>
         </Switch>
         

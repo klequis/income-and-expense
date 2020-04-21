@@ -61,6 +61,14 @@ export const dataFields = {
     name: 'description',
     description: 'Description'
   },
+  duplicate: {
+    name: 'duplicate',
+    description: 'Duplicate'
+  },
+  duplicateStatus: {
+    name: 'duplicateStatus',
+    description: 'DuplicateStatus'
+  },
   origDescription: {
     name: 'origDescription',
     description: 'OrigDescription'
@@ -120,5 +128,6 @@ export const sortDirections = {
 export const views = {
   amountByCategory: 'amount-by-category',
   allDataByDescription: 'all-data-by-description',
-  rawData: 'raw-data'
+  rawData: 'raw-data',
+  duplicates: 'duplicates'
 }
