@@ -19,9 +19,9 @@
 - UI to explore data by filtering & sorting (sorting done, filtering pending)
 
 ## Current Workflow
-- Download all relevent accounts to csv files and put in /server/data
-- You can name files anything you want but convention I'm using
-  - personInitials.institution.accountType.accountLast4.csv
+- Download all relevant accounts to csv files and put in /server/data
+- You can name files anything you want but the convention I'm using is
+  - accountOwnersInitials.institution.accountType.accountLast4.csv
   - E.g., Amy Watson, SSF Bank, Savings account # 1234
     - aw.ssfbank.savings.x1234.csv
 - In MongoDB
@@ -30,6 +30,10 @@ In App
 - Click Import button
 - Rename messy descriptions and add categories
 
+## Future Goals
+- UI for creating accounts
+- Duplicate reconciliation (work in-progress)
+- Improve styling (almost no effort has gone into this)
 
 ## Necessary Understanding
 
@@ -144,6 +148,211 @@ However, the debits are (+) and the credits are (-). This makes sense since a de
     }
 }
 ```
+
+## Duplicate reconciliation
+
+**Not implemented yet. Thinking out-loud**
+
+Duplicates arise in two ways. First, you may be charged twice for the same transaction. Costco recently did this for my annual membership. A second form of duplicate arises from the fact that csv files downloaded from institutions don't have a transaction ID nor any dependable cross account/institution way of creating one. As a result two transactions will appear as duplicates but may or may not be. For example:
+
+The two transactions in the below table appear to be duplicates and potentially are. It is up to the user to decide. In this case, I know I fed the meter twice that day and so they are not duplicates.
+
+| Date       | Description                           | Debit | Credit |
+| ---------- | ------------------------------------- | ----- | ------ |
+| 07/27/2019 | SAN DIEGO PARK METER IPS SAN DIEGO CA |     4 |        |
+| 07/27/2019 | SAN DIEGO PARK METER IPS SAN DIEGO CA |     4 |        |
+
+<!-- ### How to handle true and potential duplicates?
+
+|  id* | dupId | Date       | description         | debit   | credit | duplicate | resolved | omit  |
+|------|-------|------------|---------------------|---------|--------|-----------|----------|-------|
+| B12  | D55   | 02/10/2020 | Amazon Web Services |  -10.00 |   0.00 |      true |    false | false |
+| B13  | D55   | 02/10/2020 | Amazon Web Services |  -10.00 |   0.00 |      true |    false | false |
+| B14  | D56   | 03/20/2020 | Costco Membership   |  -75.00 |   0.00 |      true |    false | false |
+| B15  | D56   | 03/20/2020 | Costco Membership   |  -75.00 |   0.00 |      true |    false | false |
+| B16  | D57   | 04/30/2020 | Parking Meter       |    4.00 |   0.00 |      true |    false | false |
+| B17  | D57   | 04/30/2020 | Parking Meter       |    4.00 |   0.00 |      true |    false | false |
+| B18  | D56   | 03/22/2020 | Costco Membership   |   00.00 | -75.00 |      true |    false | false |
+
+- * actual ids are MongoDB ObjectIDs.
+
+The table above shows 3 potential duplicates
+
+**Amazon Web Services on 02/10/2020**
+When data was imported ids B12 & B13 appeard identical. Member, when imported, transactions only have date, description, credit and debit. Recognizing they are identical the system identified them with a
+dupId and set duplicate === true.
+
+Resolution
+
+After contacting Amazon it turns out these are separate charges and the records are changed, setting resolved to true and omit to false.
+
+|  id* | dupId | Date       | description         | debit   | credit | duplicate | resolved | omit  |
+|------|-------|------------|---------------------|---------|--------|-----------|----------|-------|
+| B12  | D55   | 02/10/2020 | Amazon Web Services |  -10.00 |   0.00 |     false |     true | false |
+| B13  | D55   | 02/10/2020 | Amazon Web Services |  -10.00 |   0.00 |     false |     true | false |
+
+The changes are
+- duplicate is changed to false
+- resolved is changed to true
+- omit remains false
+
+**Costco Membership on 03/30/2020**
+
+|  id* | dupId | Date       | description         | debit   | credit | duplicate | resolved | omit  |
+|------|-------|------------|---------------------|---------|--------|-----------|----------|-------|
+| B14  | D56   | 03/20/2020 | Costco Membership   | -75.00  |   0.00 |     false |    true  | false |
+| B15  | D56   | 03/20/2020 | Costco Membership   | -75.00  |   0.00 |     false |    true  | false |
+| B18  | D56   | 03/22/2020 | Costco Membership   |   00.00 |  75.00 |     false |    true  | false |
+
+Rows B14 & B15 appear to be duplicates because their date, description, debit and credit are all the same. However, we also have B18 two days later which is a refund for the double charge. The changes are:
+- duplicate is changed to false for all rows
+- resolved is changed to true for all rows
+- omit is left as false.
+
+*That seems odd because B14 & B15 are duplicates. Is there better terminology*
+
+In short, all records are kept in the record. The net effect on the balance of the account will be -75.00 which is correct.
+
+**Parking Meter on 04/30/2020**
+
+|  id* | dupId | Date       | description         | debit   | credit | duplicate | resolved | omit  |
+|------|-------|------------|---------------------|---------|--------|-----------|----------|-------|
+| B16  | D57   | 04/30/2020 | Parking Meter       |    4.00 |   0.00 |      true |    false | false |
+| B17  | D57   | 04/30/2020 | Parking Meter       |    4.00 |   0.00 |      true |    false | false |
+
+In this case, let's assume we have confirmed that these are separate charges, you simply had to feed the meter twice on that day. You have contacted the city which owns the meters and they have promised a refund that has not arrived yet.
+
+*Seems to me that things will either be a duplicate and eventually get refunded || they will not be be duplicates*
+
+| duplicate | refunded | omit |
+|     N     |    n/a   |  N   |
+|     Y
+
+**HUM...** -->
+
+(duplicate = true && resolved = false) -> omit = false for both records
+(duplicate = true && resolved = true)  -> omit = false for one && omit = true for the other
+
+
+
+#### Duplicate that has not been refunded (under investigation / pending)
+- work to get a refund
+- refund pending
+* SET
+  - duplicate true
+
+#### Duplicate that will eventually be refunded
+- same as the above case in terms of field values
+
+
+#### Duplicate that will not be refunded (refund refused)
+- This is not an account where a balance is being maintained.
+- it is a listing of income and expenses
+- there are two ways of looking at it
+  - you keep both because the money was spent and that is accurate
+  - you want to use the final result to predict future expenses. Therefore, you exclude it in order to not inflate future estimates.
+- *it is user's choice* and no rule will be enforced to limit
+
+* SET
+  - duplicate true or false per user's choice
+
+#### Looks like duplicate but isn't
+* SET
+  - duplicate false
+
+
+## What about using status rather than true / false
+
+duplicateStatus
+- new - will be red
+- pending - will be yellow
+- refunded - default color
+- notRefunded - default color
+- notDuplicate - default color
+
+Status implications (applies to both records)
+
+| duplicateId | duplicateStatus      | duplicate |
+|-------------|----------------------|-----------|
+| duplicateId | duplicateNew         |      true |
+| duplicateId | duplicatePending     |      true |
+| duplicateId | duplicateRefunded    |      true |
+| duplicateId | duplicateNotRefunded |      true |
+| duplicateId | duplicateNot         |     false |
+
+**omit does not figure in to this story. Duplicate records are never omitted.**
+
+*This is an interesting approach. Duplicate records are never omitted. Even if it is a duplicate and not refunded you spent the money and it is an expense. Something similar is likely to happen in the future. That's just the way it is. :)*
+
+So fields added will be
+
+| dupId | duplicate | dupStatus |
+
+- duplicateId:     will allow grouping / querying for dups
+- duplicate:       makes query easier (where duplicate === true, group by duplicateId)
+- duplicateStatus: tells the user the status of the duplicate
+
+
+### Duplicate logic
+
+- Records that are not potential or actual duplicates will not have duplicateId, duplicateStatus nor duplicate fields.
+
+- Records that are potential or actual duplicates will have all three Fields
+
+- Find new duplicates
+  - where origDescription, date, debit & credit are equal for more than one record && duplicate notExist
+  - assign duplicateId,
+  - set duplicateStatus to duplicateNew
+  - set duplicate = true
+
+#### Present duplicates to user
+- new: where duplicateStatus === duplicateNew
+- groupBy duplicateId
+- columns for duplicates screen will be
+  - date, acctId, description, credit, debit & type
+
+- UI
+  - New duplicates are red
+  - Pending duplicates are yellow
+  - resolved duplicates have no color
+
+#### Code changes
+
+**Server**
+- add route /api/views/find-duplicates
+  - it isn't really a view ?
+  - this is likely to be used by more than one route so, should it go in /actions ?
+- Add status constants to /db/constants.js
+```js
+export const duplicateStatus = {
+  duplicateNew: 'duplicateNew',
+  duplicatePending: 'duplicatePending',
+  duplicateRefunded: 'duplicateRefunded',
+  duplicateNotRefunded: 'duplicateNotRefunded',
+  duplicateNot: 'duplicateNot'
+}
+```
+
+**Client**
+*Most of the changes are on the client*
+
+Duplicate Summary
+
+- src/api/api.js
+  - add api call for get dups
+- redux
+  - add reducer for duplicateSummary
+- add component DuplicateSummary
+  - render it in App
+- add duplicate status constants to global-constants.js
+  - same as noted for server above
+
+Duplicated view & resolution
+- add new component DuplicateResolutionView
+- list relevant columns
+-
+
+
 
 ## Motivation
 

@@ -5,8 +5,10 @@ import { viewDataReducer } from './views/reducers'
 import { rulesReducer, ruleTmpReducer } from './rules/reducers'
 import { criteriaTestReducer } from './criteriaTest/reducers'
 import { rowIdShowReducer, currentViewNameReducer } from './ui/reducers'
+import { duplicatesReducer } from './duplicates/reducers'
 
 const rootReducer = combineReducers({
+  duplicates: duplicatesReducer,
   criteriaTestResults: criteriaTestReducer,
   requests: requestsReducer,
   rules: rulesReducer,

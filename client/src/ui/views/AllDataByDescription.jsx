@@ -44,8 +44,6 @@ const AllDataByDescription = () => {
     direction: sortDirections.ascending
   })
 
-  green('_sort', _sort)
-
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(views.allDataByDescription)
@@ -69,8 +67,6 @@ const AllDataByDescription = () => {
   if (_viewData.length === 0) {
     return <h1>Loading</h1>
   }
-
-  green('_sort', _sort)
 
   const getViewData = () => {
     const { fieldName, direction  } = _sort

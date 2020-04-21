@@ -27,6 +27,10 @@ import {
   currentViewNameClearAction,
   currentViewNameSetAction
 } from 'store/ui/actions'
+import {
+  duplicatesReadRequestAction
+} from 'store/duplicates/actions'
+
 // import * as Promise from 'bluebird'
 
 import isNilOrEmpty from 'lib/isNilOrEmpty'
@@ -61,6 +65,12 @@ export const FinanceProvider = ({ children }) => {
   const currentViewNameSet = viewName => {
     dispatch(currentViewNameSetAction(viewName))
   }
+
+  const duplicatesReadRequest = useCallback(
+    async () => {
+      dispatch(await duplicatesReadRequestAction)
+    }
+  )
 
   // I
   const importDataRequest = useCallback(
@@ -189,6 +199,7 @@ export const FinanceProvider = ({ children }) => {
         criteriaTestReadRequest,
         currentViewNameClear,
         currentViewNameSet,
+        duplicatesReadRequest,
         importDataRequest,
         requestFailed,
         requestPending,

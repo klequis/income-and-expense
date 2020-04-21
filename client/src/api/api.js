@@ -18,6 +18,20 @@ import { orange, green, redf } from 'logger'
 
 // Errors are handled by fetchJson()
 export default {
+  duplicates: {
+    async read() {
+      try {
+        const url = `/api/duplicates`
+        const data = await fetchJson(url, {
+          method: 'GET',
+        })
+        return data
+      } catch (e) {
+        redf('api.duplicates.read ERROR', e.message)
+        console.log(e)
+      }
+    }
+  },
   criteria: {
     async read(criteria) {
       // orange('criteria.read: criteria', criteria)

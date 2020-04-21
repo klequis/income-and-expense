@@ -127,8 +127,6 @@ const getFieldValue = (fieldCol) => (doc) => {
 const _transformData = (account, data) => {
   const { fieldToCol, acctId } = account
 
-  const fieldCols = getFieldCols(fieldToCol)
-
   try {
     const mapToFields = (doc) => {
       const ret = {

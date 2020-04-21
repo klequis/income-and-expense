@@ -4,28 +4,7 @@ import { DATA_COLLECTION_NAME } from 'db/constants'
 import * as R from 'ramda'
 
 // eslint-disable-next-line
-import { red, green, yellow, logRequest } from 'logger'
-
-const _log = (label) => (message) => {
-  if (label === 'start') {
-    console.log()
-    return green('start ----------------------- /n')
-  }
-  if (label === 'end') {
-    return green('end -----------------------')
-  }
-  if (label === 'initial') {
-    return yellow(label, message)
-  }
-  // const a = {
-  //   desc: message.origDescription,
-  //   credit: message.credit,
-  //   debit: message.debit
-  // }
-  // return yellow(label, a)
-
-  return yellow(label, message)
-}
+import { red, green, yellow, logRequest, _log } from 'logger'
 
 const findDuplicateTransactions = wrap(async (req, res) => {
   // QUERY
@@ -41,7 +20,13 @@ const findDuplicateTransactions = wrap(async (req, res) => {
         debit: '$debit',
         credit: '$credit'
       },
-      iDs: { $addToSet: { _id: '$_id', date: '$date', origDescription: '$origDescription' } },
+      iDs: {
+        $addToSet: {
+          _id: '$_id',
+          date: '$date',
+          origDescription: '$origDescription'
+        }
+      },
       count: { $sum: 1 }
     }
   }

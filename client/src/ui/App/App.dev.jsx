@@ -8,6 +8,7 @@ import AllDataByDescription from 'ui/views/AllDataByDescription'
 import AmountByCategory from 'ui/views/AmountByCategory'
 import RawData from 'ui/views/RawData'
 import { views } from 'global-constants'
+import DuplicateStatus from 'ui/DuplicateStatus'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -32,6 +33,7 @@ const App = () => {
     <div className={classes.devWrapper}>
       <Container maxWidth={false}>
         <Nav />
+        <DuplicateStatus />
         <Switch>
           <Route exact path={`/${views.allDataByDescription}`}>
             <AllDataByDescription />

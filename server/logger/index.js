@@ -82,3 +82,17 @@ export const logRequest = req => {
   //   log(chalk.bgRed('response'), r)
   // }
 }
+
+export const _log = (label) => (message) => {
+  if (label === 'start') {
+    console.log()
+    return green('start ----------------------- /n')
+  }
+  if (label === 'end') {
+    return green('end -----------------------')
+  }
+  if (label === 'initial') {
+    return yellow(label, message)
+  }
+  return yellow(label, message)
+}

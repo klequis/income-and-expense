@@ -11,6 +11,8 @@ import views from 'routes/views'
 import rules from 'routes/rules'
 import criteria from 'routes/criteria'
 import exportData from 'routes/exportData'
+import duplicates from 'routes/duplicates'
+import test from 'routes/test'
 import debug from 'debug'
 
 // eslint-disable-next-line
@@ -49,6 +51,8 @@ app.use('/api/views', views)
 app.use('/api/rules', rules)
 app.use('/api/criteria', criteria)
 app.use('/api/export', exportData)
+app.use('/api/test', test)
+app.use('/api/duplicates', duplicates)
 
 app.get('*', function(req, res) {
   throw new Error(`unknown route: ..${req.url}`)

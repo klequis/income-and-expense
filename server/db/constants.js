@@ -9,6 +9,14 @@ export const DATA_RULE_MAP_COLLECTION_NAME = 'data-rule-map'
 export const ACCOUNTS_COLLECTION_NAME = 'accounts'
 export const RULES_COLLECTION_NAME = 'rules'
 
+export const duplicateStatus = {
+  duplicateNew: 'duplicateNew',
+  duplicatePending: 'duplicatePending',
+  duplicateRefunded: 'duplicateRefunded',
+  duplicateNotRefunded: 'duplicateNotRefunded',
+  duplicateNot: 'duplicateNot'
+}
+
 export const dataFields = {
   _id: {
     name: '_id',
