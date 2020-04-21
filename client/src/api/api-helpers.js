@@ -39,19 +39,6 @@ const logResponse = ({from='not specified', res}) => {
     
 }
 
-// const formatError = (status, statusText, url = '', validationErrors = []) => {
-//   // orange(`status: ${status}, statusText: ${statusText}, url: ${url}, validationErrors: ${validationErrors}`)
-//   orange('formatError: validationErrors ', validationErrors)
-//   const r1 = {
-//     status,
-//     statusText,
-//     url,
-//     validationErrors: validationErrors || []
-//   }
-//   // const r2 = JSON.stringify(r1)
-//   return r1
-// }
-
 const stripLeadingForwardSlash = path => {
   const r = path.startsWith('/') ? path.substring(1) : path
   return r
@@ -119,45 +106,19 @@ export const fetchJson = async (url, options = {}) => {
   const r = await getIt(url, options)
   const { status, statusText, url: resUrl } = r
 
-  // purple(`fetchJson: url ${url}, status ${status}`)
   if (status >= 200 && status < 300) {
-    // orange('status OK')
     return await r.json()
   }
   if (status === 422) {
-    // orange('fetchJson: errors', errors)
     const body = await r.json()
-    // orange('fetchJson 422: body', body)
     const { errors } = body
-    // orange('fetchJson 422: errors', errors)
-    // throw new Error(
-    //   `${status} - ${statusText}`,
-    //   formatError(status, statusText, resUrl, errors)
-    // )
     purple('>> apiHelpers: THROWING')
     const apiErr = new ApiError({ status, statusText, resUrl, errors })
     logApiError('fetchJson 422', apiErr)
     throw apiErr
   } else {
-    // TODO: not sure what to do here
+    // TODO: decide what to do here
   }
-  // } catch (e) {
-  //   // purple('>> apiHelpers: CATCH - caught my own throw')
-  //   let err
-  //   // purple('>> apiHelpers: e.message', e.message)
-  //   // purple('>> apiHelpers: e', e)
-  //   if (e.message === 'Network request failed') {
-  //     // A network error doesn't have the same format as an error from
-  //     // the api. However, the action & reducer is expecting the api
-  //     // error format so format it as such
-  //     // err = formatError(503, 'Network request failed')
-  //     err = e
-  //   } else {
-  //     err = e
-  //   }
-  //   purple('>>fetchJson catch err:', err)
-  //   throw err
-  // }
 }
 
 export default { fetchJson }
