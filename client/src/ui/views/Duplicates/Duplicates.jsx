@@ -41,8 +41,21 @@ const Duplicates = () => {
     R.uniq
   )(_duplicates)
 
-
-  return <DuplicateTable rows={_duplicates} />
+  return (
+    <>
+      {R.map(
+        (acctId) => (
+          <>
+        <h2>{acctId}</h2>
+          <DuplicateTable
+            rows={R.filter((x) => acctId === x.acctId, _duplicates)}
+          />
+          </>
+        ),
+        accounts
+      )}
+    </>
+  )
 }
 
 export default Duplicates

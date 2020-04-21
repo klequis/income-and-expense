@@ -25,6 +25,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET',
         })
+        orange('api.duplicates.read: data', data)
         return data
       } catch (e) {
         redf('api.duplicates.read ERROR', e.message)

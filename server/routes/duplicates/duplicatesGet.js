@@ -1,6 +1,7 @@
 import wrap from 'routes/wrap'
 import { find } from 'db/dbFunctions'
 import { DATA_COLLECTION_NAME } from 'db/constants'
+import { redf } from 'logger'
 
 const duplicatesGet = wrap(async (req, res) => {
   try {

@@ -9,6 +9,9 @@ import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import { dataFields } from 'global-constants'
 
+// eslint-disable-next-line
+import { green } from 'logger'
+
 /*
   acctId,
   date,
@@ -27,7 +30,7 @@ const useStyles = makeStyles({
 })
 
 const DuplicateTable = ({ rows }) => {
-  
+  // green('rows', rows)
   const _classes = useStyles()
 
   return (
