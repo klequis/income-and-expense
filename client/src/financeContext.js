@@ -68,8 +68,9 @@ export const FinanceProvider = ({ children }) => {
 
   const duplicatesReadRequest = useCallback(
     async () => {
-      dispatch(await duplicatesReadRequestAction)
-    }
+      dispatch(await duplicatesReadRequestAction())
+    },
+    [dispatch]
   )
 
   // I

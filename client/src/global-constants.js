@@ -104,38 +104,13 @@ export const dataFields = {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export const duplicateStatus = {
+  duplicateNew: 'duplicateNew',
+  duplicatePending: 'duplicatePending',
+  duplicateRefunded: 'duplicateRefunded',
+  duplicateNotRefunded: 'duplicateNotRefunded',
+  duplicateNot: 'duplicateNot'
+}
 
 export const sortDirections = {
   ascending: 'ascending',
