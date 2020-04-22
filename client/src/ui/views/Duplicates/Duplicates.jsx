@@ -17,10 +17,19 @@ import * as R from 'ramda'
 // eslint-disable-next-line
 import { green } from 'logger'
 
+const byAcctId = R.groupBy((dup) => {
+  return dup.acctId
+})
+
+const byDuplicateStatus = R.groupBy((dup) => {
+  return dup.duplicateStatus
+})
+
 const Duplicates = () => {
   const { duplicatesReadRequest } = useFinanceContext()
 
   const _duplicates = useSelector((state) => state.duplicates)
+
   const _duplicatesNew = _duplicates.filter(
     (dup) => dup.duplicateStatus === duplicateStatus.duplicateNew
   )
@@ -36,12 +45,24 @@ const Duplicates = () => {
     })()
   }, [duplicatesReadRequest])
 
-  const accounts = R.pipe(
-    R.map((x) => x.acctId),
-    R.uniq
-  )(_duplicates)
 
-  return (
+  const _byAcctId = byAcctId(_duplicates)
+
+  return R.map(
+    (key) => (
+      <>
+        <h2>{key}</h2>
+        <DuplicateTable rows={R.prop(key)(_byAcctId)} />
+      </>
+    )
+    
+  )(R.keys(_byAcctId))
+}
+
+export default Duplicates
+
+/*
+return (
     <>
       {R.map(
         (acctId) => (
@@ -56,6 +77,4 @@ const Duplicates = () => {
       )}
     </>
   )
-}
-
-export default Duplicates
+*/
