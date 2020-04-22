@@ -7,10 +7,16 @@ import TR from './TR'
 import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
 import { sortWith, prop, ascend, descend } from 'ramda'
-import { dataFields, sortDirections, views } from 'global-constants'
+import {
+  dataFields,
+  sortDirections,
+  views,
+  duplicateStatus
+} from 'global-constants'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
+import { yellow } from '@material-ui/core/colors'
 
 const useStyles = makeStyles({
   th: {
@@ -44,6 +50,8 @@ const AllDataByDescription = () => {
     direction: sortDirections.ascending
   })
 
+  const [_rowsLoaded, _setRowsLoaded] = useState(0)
+
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(views.allDataByDescription)
@@ -60,40 +68,17 @@ const AllDataByDescription = () => {
 
   // Local vars
   const _viewData = useSelector((state) => state.viewData)
+  const _totalNumRows = _viewData.length
   const _classes = useStyles()
 
   // Methods
 
   if (_viewData.length === 0) {
-    return <h1>Loading</h1>
+    return <h1>Getting data</h1>
   }
 
   const getViewData = () => {
-    const { fieldName, direction  } = _sort
-    // green('getViewData: _sort', _sort)
-    // green('getViewData: fieldName', fieldName)
-    // green('getViewData: direction', direction)
-    
-    //---------------------------------------------------------------------------------
-    // // TODO: This should be fixed elsewhere.
-    // // TODO: Date is a string & therefore not sorting properly
-    // // TODO: The problem likely originates in the server when importing
-
-    // if (fieldName === 'date') {
-    //   let ret
-    //   const dateSortData = map(
-    //     (x) => mergeRight(x, { date: Date.parse(x) })
-    //     )(_viewData)
-    //   green('dateSortData', dateSortData)
-    //   if (direction === sortDirections.ascending) {
-    //     ret = sortWith([ascend(prop(fieldName))])(dateSortData)
-    //   }
-    //   ret = sortWith([descend(prop(fieldName))])(dateSortData)
-    //   green('ret', ret)
-    //   return ret
-    // }
-
-    //---------------------------------------------------------------------------------
+    const { fieldName, direction } = _sort
     if (direction === sortDirections.ascending) {
       return sortWith([ascend(prop(fieldName))])(_viewData)
     }
@@ -122,29 +107,29 @@ const AllDataByDescription = () => {
     )
   }
 
+  // const RowsLoading = () => {
+
+  // }
+
+  const updateCount = () => {
+    _setRowsLoaded(_rowsLoaded + 1)
+  }
+
   return (
     <>
-      {/* <FormControlLabel
-        control={
-          <Switch
-            checked={_switchState.showOrigDescription}
-            onChange={_handleSwitchChange('showOrigDescription')}
-            value="showOrigDesc"
-          />
-        }
-        label="Show Original Description"
-      /> */}
-      <FormControlLabel
-        control={
-          <Switch
-            checked={_switchState.showOmitted}
-            onChange={_handleSwitchChange('showOmitted')}
-            value="showOmitted"
-          />
-        }
-        label="Show Omitted"
-      />
-
+      <div>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={_switchState.showOmitted}
+              onChange={_handleSwitchChange('showOmitted')}
+              value="showOmitted"
+            />
+          }
+          label="Show Omitted"
+        />
+        {/* <span>Loading row {_rowsLoaded} of {_totalNumRows}</span> */}
+      </div>
       <table>
         <thead>
           <tr>
@@ -161,6 +146,7 @@ const AllDataByDescription = () => {
         </thead>
         <tbody>
           {getViewData().map((doc) => {
+            
             const { _id, omit } = doc
             if (_switchState.showOmitted === false && omit) {
               return null
@@ -169,7 +155,6 @@ const AllDataByDescription = () => {
               <TR
                 key={_id}
                 doc={doc}
-                // showOrigDescription={_switchState.showOrigDescription}
                 showOmitted={_switchState.showOmitted}
                 updateRulesAndView={_updateRulesAndView}
                 view={views.allDataByDescription}

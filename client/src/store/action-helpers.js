@@ -25,19 +25,19 @@ export const createRequestThunk = ({
   // pink('request', request)
   // pink('success', success)
   // console.groupEnd()
-  return (...args) => async dispatch => {
+  return (...args) => async (dispatch) => {
     // pink('args', args)
     const requestKey = typeof key === 'function' ? key(...args) : key
     // pink('requestKey', requestKey)
-    start.map(async actionCreator => {
+    start.map(async (actionCreator) => {
       await dispatch(actionCreator())
     })
     await dispatch(requestPendingAction(requestKey))
-    
+
     try {
       const data = await request(...args)
       await dispatch(requestSuccessAction(requestKey))
-      success.map(async actionCreator => {
+      success.map(async (actionCreator) => {
         // pink('success.actionCreator', actionCreator)
         dispatch(requestSuccessAction(requestKey))
         // pink('success: data', data)
@@ -45,7 +45,7 @@ export const createRequestThunk = ({
       })
     } catch (e) {
       await dispatch(requestFailedAction(e, requestKey))
-      return failure.map(async actionCreator => {
+      return failure.map(async (actionCreator) => {
         // pink('failure.actionCreator', actionCreator)
         red('action.helpers.createRequestThunk Error', e.message)
         console.log(e)

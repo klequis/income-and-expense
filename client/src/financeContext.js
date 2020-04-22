@@ -185,11 +185,12 @@ export const FinanceProvider = ({ children }) => {
 
   // V
   const viewReadRequest = useCallback(
+    
     async view => {
       if (isNilOrEmpty(view)) {
         throw new Error(`${MODULE_NAME} ERROR`, 'parameter view has no value')
       }
-      dispatch(await viewReadRequestAction(view.duplicates))
+      dispatch(await viewReadRequestAction(view))
     },
     [dispatch]
   )

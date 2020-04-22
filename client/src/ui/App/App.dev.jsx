@@ -51,7 +51,7 @@ const App = () => {
         </Switch>
         
       </Container>
-      {process.NODE_ENV !== 'production' ? <DevTools /> : null}
+      {/* {process.NODE_ENV !== 'production' ? <DevTools /> : null} */}
     </div>
   )
 }

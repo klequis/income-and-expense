@@ -96,6 +96,5 @@ export default TR
 
 TR.propTypes = {
   doc: PropTypes.object.isRequired,
-  showOrigDescription: PropTypes.bool.isRequired,
   view: PropTypes.string.isRequired
 }

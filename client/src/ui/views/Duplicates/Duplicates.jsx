@@ -1,16 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useFinanceContext } from 'financeContext'
-import { duplicateStatus } from 'global-constants'
-import { makeStyles } from '@material-ui/core/styles'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import { views } from 'global-constants'
 import DuplicateTable from './DuplicateTable'
 import * as R from 'ramda'
 
@@ -21,21 +11,14 @@ const byAcctId = R.groupBy((dup) => {
   return dup.acctId
 })
 
-const byDuplicateStatus = R.groupBy((dup) => {
-  return dup.duplicateStatus
-})
+// const byDuplicateStatus = R.groupBy((dup) => {
+//   return dup.duplicateStatus
+// })
 
 const Duplicates = () => {
   const { duplicatesReadRequest } = useFinanceContext()
 
   const _duplicates = useSelector((state) => state.duplicates)
-
-  const _duplicatesNew = _duplicates.filter(
-    (dup) => dup.duplicateStatus === duplicateStatus.duplicateNew
-  )
-  const _duplicatesPending = _duplicates.filter(
-    (dup) => dup.duplicateStatus === duplicateStatus.duplicatePending
-  )
 
   // Effects
 
@@ -50,10 +33,10 @@ const Duplicates = () => {
 
   return R.map(
     (key) => (
-      <>
+      <div key={key}>
         <h2>{key}</h2>
         <DuplicateTable rows={R.prop(key)(_byAcctId)} />
-      </>
+      </div>
     )
     
   )(R.keys(_byAcctId))
