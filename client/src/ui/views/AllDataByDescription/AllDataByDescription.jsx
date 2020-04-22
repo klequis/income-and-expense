@@ -13,6 +13,9 @@ import {
   views,
   duplicateStatus
 } from 'global-constants'
+import { Table } from 'react-fluid-table'
+
+
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -115,55 +118,22 @@ const AllDataByDescription = () => {
     _setRowsLoaded(_rowsLoaded + 1)
   }
 
+  const columns = [
+    {
+      key: 'date',
+      header: 'Date',
+      // width: 50
+    },
+    {
+      key: 'acctId',
+      header: 'AcctID'
+    }
+  ]
+
   return (
-    <>
-      <div>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={_switchState.showOmitted}
-              onChange={_handleSwitchChange('showOmitted')}
-              value="showOmitted"
-            />
-          }
-          label="Show Omitted"
-        />
-        {/* <span>Loading row {_rowsLoaded} of {_totalNumRows}</span> */}
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <ColumnHeading fieldName={dataFields.date.name} />
-            <ColumnHeading fieldName={dataFields.acctId.name} />
-            <ColumnHeading fieldName={dataFields.description.name} />
-            <ColumnHeading fieldName={dataFields.credit.name} />
-            <ColumnHeading fieldName={dataFields.debit.name} />
-            <ColumnHeading fieldName={dataFields.category1.name} />
-            <ColumnHeading fieldName={dataFields.category2.name} />
-            <ColumnHeading fieldName={dataFields.type.name} />
-            <ColumnHeading fieldName={dataFields.omit.name} />
-          </tr>
-        </thead>
-        <tbody>
-          {getViewData().map((doc) => {
-            
-            const { _id, omit } = doc
-            if (_switchState.showOmitted === false && omit) {
-              return null
-            }
-            return (
-              <TR
-                key={_id}
-                doc={doc}
-                showOmitted={_switchState.showOmitted}
-                updateRulesAndView={_updateRulesAndView}
-                view={views.allDataByDescription}
-              />
-            )
-          })}
-        </tbody>
-      </table>
-    </>
+    <div>
+    <Table data={getViewData()} columns={columns} />
+    </div>
   )
 }
 
