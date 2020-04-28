@@ -37,6 +37,7 @@ const Nav = ({ location }) => {
       <Button variant="outlined" onClick={() => importDataRequest(_currentViewName)}>
         Import Data
       </Button>
+      
     </div>
   )
 }

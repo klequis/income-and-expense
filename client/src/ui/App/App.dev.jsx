@@ -1,7 +1,8 @@
 import React from 'react'
 import DevTools from 'ui/DevTools'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Link } from 'react-router-dom'
 import Container from '@material-ui/core/Container'
+import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/styles'
 import Nav from 'ui/Nav'
 import AllDataByDescription from 'ui/views/AllDataByDescription'
@@ -23,17 +24,26 @@ const useStyles = makeStyles({
   devWrapper: {
     display: 'flex',
     alignItems: 'stretch'
+  },
+  navDiv: {
+    display: 'flex'
   }
 })
 
 const App = () => {
-
-  const classes = useStyles()
+  const _classes = useStyles()
 
   return (
-    <div className={classes.devWrapper}>
+    <div className={_classes.devWrapper}>
       <Container maxWidth={false}>
-        <Nav />
+        <div className={_classes.navDiv}>
+          <Nav />
+          <Link to={`/${views.allDataByDescription}`}><Button variant='contained'>All Data</Button></Link>
+          <Link to={`/${views.amountByCategory}`}><Button variant='contained'>Amount by Category</Button></Link>
+          <Link to={`/${views.rawData}`}><Button variant='contained'>Raw Data</Button></Link>
+          <Link to={`/${views.duplicates}`}><Button variant='contained'>Duplicates</Button></Link>
+        </div>
+
         <DuplicateStatus />
         <Switch>
           <Route exact path={`/${views.allDataByDescription}`}>
@@ -45,16 +55,14 @@ const App = () => {
           <Route exact path={`/${views.rawData}`}>
             <RawData />
           </Route>
-          <Route exact paht={`/${views.duplicates}`} >
+          <Route exact paht={`/${views.duplicates}`}>
             <Duplicates />
           </Route>
         </Switch>
-        
       </Container>
-      {/* {process.NODE_ENV !== 'production' ? <DevTools /> : null} */}
+      {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
   )
 }
 
 export default App
-

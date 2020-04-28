@@ -13,10 +13,11 @@ import {
   views,
   duplicateStatus
 } from 'global-constants'
+import Pager from 'ui/Pager'
+import { usePager } from 'usePager'
 
 // eslint-disable-next-line
-import { green, red } from 'logger'
-import { yellow } from '@material-ui/core/colors'
+import { green, red, yellow } from 'logger'
 
 const useStyles = makeStyles({
   th: {
@@ -50,8 +51,6 @@ const AllDataByDescription = () => {
     direction: sortDirections.ascending
   })
 
-  const [_rowsLoaded, _setRowsLoaded] = useState(0)
-
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(views.allDataByDescription)
@@ -67,8 +66,16 @@ const AllDataByDescription = () => {
   }, [currentViewNameSet, _updateRulesAndView])
 
   // Local vars
-  const _viewData = useSelector((state) => state.viewData)
-  const _totalNumRows = _viewData.length
+  // const _viewData = useSelector((state) => state.viewData)
+  const v1 = useSelector((state) => state.viewData)
+  const _viewData = usePager({
+    numRowsPerPage: 2,
+    next: false,
+    previous: false,
+    sortField: 'description',
+    sortDirection: 'ascending'
+  })
+
   const _classes = useStyles()
 
   // Methods
@@ -77,13 +84,14 @@ const AllDataByDescription = () => {
     return <h1>Getting data</h1>
   }
 
-  const getViewData = () => {
-    const { fieldName, direction } = _sort
-    if (direction === sortDirections.ascending) {
-      return sortWith([ascend(prop(fieldName))])(_viewData)
-    }
-    return sortWith([descend(prop(fieldName))])(_viewData)
-  }
+  // const getViewData = () => {
+  //   const { fieldName, direction } = _sort
+  //   if (direction === sortDirections.ascending) {
+
+  //     return sortWith([ascend(prop(fieldName))])(_viewData)
+  //   }
+  //   return sortWith([descend(prop(fieldName))])(_viewData)
+  // }
 
   const _handleSwitchChange = (name) => (event) => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
@@ -107,14 +115,6 @@ const AllDataByDescription = () => {
     )
   }
 
-  // const RowsLoading = () => {
-
-  // }
-
-  const updateCount = () => {
-    _setRowsLoaded(_rowsLoaded + 1)
-  }
-
   return (
     <>
       <div>
@@ -128,7 +128,7 @@ const AllDataByDescription = () => {
           }
           label="Show Omitted"
         />
-        {/* <span>Loading row {_rowsLoaded} of {_totalNumRows}</span> */}
+        <Pager />
       </div>
       <table>
         <thead>
@@ -145,8 +145,7 @@ const AllDataByDescription = () => {
           </tr>
         </thead>
         <tbody>
-          {getViewData().map((doc) => {
-            
+          {_viewData.map((doc) => {
             const { _id, omit } = doc
             if (_switchState.showOmitted === false && omit) {
               return null
