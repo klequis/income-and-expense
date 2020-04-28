@@ -11,6 +11,7 @@ import RawData from 'ui/views/RawData'
 import { views } from 'global-constants'
 import DuplicateStatus from 'ui/DuplicateStatus'
 import Duplicates from 'ui/views/Duplicates'
+import { PageProvider } from 'pageContext'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -38,27 +39,37 @@ const App = () => {
       <Container maxWidth={false}>
         <div className={_classes.navDiv}>
           <Nav />
-          <Link to={`/${views.allDataByDescription}`}><Button variant='contained'>All Data</Button></Link>
-          <Link to={`/${views.amountByCategory}`}><Button variant='contained'>Amount by Category</Button></Link>
-          <Link to={`/${views.rawData}`}><Button variant='contained'>Raw Data</Button></Link>
-          <Link to={`/${views.duplicates}`}><Button variant='contained'>Duplicates</Button></Link>
+          <Link to={`/${views.allDataByDescription}`}>
+            <Button variant="contained">All Data</Button>
+          </Link>
+          <Link to={`/${views.amountByCategory}`}>
+            <Button variant="contained">Amount by Category</Button>
+          </Link>
+          <Link to={`/${views.rawData}`}>
+            <Button variant="contained">Raw Data</Button>
+          </Link>
+          <Link to={`/${views.duplicates}`}>
+            <Button variant="contained">Duplicates</Button>
+          </Link>
         </div>
 
         <DuplicateStatus />
-        <Switch>
-          <Route exact path={`/${views.allDataByDescription}`}>
-            <AllDataByDescription />
-          </Route>
-          <Route exact path={`/${views.amountByCategory}`}>
-            <AmountByCategory />
-          </Route>
-          <Route exact path={`/${views.rawData}`}>
-            <RawData />
-          </Route>
-          <Route exact paht={`/${views.duplicates}`}>
-            <Duplicates />
-          </Route>
-        </Switch>
+        <PageProvider>
+          <Switch>
+            <Route exact path={`/${views.allDataByDescription}`}>
+              <AllDataByDescription />
+            </Route>
+            <Route exact path={`/${views.amountByCategory}`}>
+              <AmountByCategory />
+            </Route>
+            <Route exact path={`/${views.rawData}`}>
+              <RawData />
+            </Route>
+            <Route exact paht={`/${views.duplicates}`}>
+              <Duplicates />
+            </Route>
+          </Switch>
+        </PageProvider>
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>

@@ -1,5 +1,4 @@
 import React from 'react'
-import usePager from 'usePager'
 
 const Pager = (data) => {
   const _prevClick = () => {}

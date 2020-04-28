@@ -6,15 +6,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
 import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
-import { sortWith, prop, ascend, descend } from 'ramda'
 import {
   dataFields,
   sortDirections,
   views,
   duplicateStatus
 } from 'global-constants'
-import Pager from 'ui/Pager'
-import { usePager } from 'usePager'
+import { usePageContext } from 'pageContext'
 
 // eslint-disable-next-line
 import { green, red, yellow } from 'logger'
@@ -40,6 +38,8 @@ const AllDataByDescription = () => {
     currentViewNameSet
   } = useFinanceContext()
 
+  const { init, next, previous } = usePageContext()
+
   // State
 
   const [_switchState, _setSwitchState] = useState({
@@ -56,6 +56,8 @@ const AllDataByDescription = () => {
     await viewReadRequest(views.allDataByDescription)
   }, [rulesReadRequest, viewReadRequest])
 
+  const [_data, _setData] = useState([])
+
   // Effects
 
   useEffect(() => {
@@ -65,24 +67,35 @@ const AllDataByDescription = () => {
     })()
   }, [currentViewNameSet, _updateRulesAndView])
 
+
+  useEffect(() => {
+    const viewData = init(2, 'description', 'ascending')
+    yellow('viewData', viewData)
+    _setData(viewData)
+  },[])
   // Local vars
   // const _viewData = useSelector((state) => state.viewData)
-  const v1 = useSelector((state) => state.viewData)
-  const _viewData = usePager({
-    numRowsPerPage: 2,
-    next: false,
-    previous: false,
-    sortField: 'description',
-    sortDirection: 'ascending'
-  })
+  // const v1 = useSelector((state) => state.viewData)
+  // const _viewData = usePager({
+  //   numRowsPerPage: 2,
+  //   next: false,
+  //   previous: false,
+  //   sortField: 'description',
+  //   sortDirection: 'ascending'
+  // })
+
+  
 
   const _classes = useStyles()
+  
 
   // Methods
 
-  if (_viewData.length === 0) {
+  if (_data.length === 0) {
     return <h1>Getting data</h1>
   }
+
+  
 
   // const getViewData = () => {
   //   const { fieldName, direction } = _sort
@@ -115,6 +128,16 @@ const AllDataByDescription = () => {
     )
   }
 
+  const _nextClick = () => {
+    const newData = next()
+    _setData(newData)
+  }
+
+  const _previousClick = () => {
+    const newData = previous()
+    _setData(newData)
+  }
+
   return (
     <>
       <div>
@@ -128,7 +151,8 @@ const AllDataByDescription = () => {
           }
           label="Show Omitted"
         />
-        <Pager />
+        <button onClick={_previousClick}>Previous</button>
+        <button onClick={_nextClick}>Next</button>
       </div>
       <table>
         <thead>
@@ -145,7 +169,7 @@ const AllDataByDescription = () => {
           </tr>
         </thead>
         <tbody>
-          {_viewData.map((doc) => {
+          {_data.map((doc) => {
             const { _id, omit } = doc
             if (_switchState.showOmitted === false && omit) {
               return null
