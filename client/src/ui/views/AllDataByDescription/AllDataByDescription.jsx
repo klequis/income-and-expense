@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import Switch from '@material-ui/core/Switch'
@@ -9,8 +9,8 @@ import SortButtons from 'ui/elements/SortButtons'
 import {
   dataFields,
   sortDirections,
-  views,
-  duplicateStatus
+  views
+  // duplicateStatus
 } from 'global-constants'
 import { usePageContext } from 'pageContext'
 
@@ -38,12 +38,11 @@ const AllDataByDescription = () => {
     currentViewNameSet
   } = useFinanceContext()
 
-  const { init, next, previous } = usePageContext()
+  const { init, next, previous, atStart, atEnd } = usePageContext()
 
   // State
 
   const [_switchState, _setSwitchState] = useState({
-    // showOrigDescription: false,
     showOmitted: false
   })
   const [_sort, _setSort] = useState({
@@ -54,6 +53,7 @@ const AllDataByDescription = () => {
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(views.allDataByDescription)
+    
   }, [rulesReadRequest, viewReadRequest])
 
   const [_data, _setData] = useState([])
@@ -62,48 +62,26 @@ const AllDataByDescription = () => {
 
   useEffect(() => {
     ;(async () => {
-      await _updateRulesAndView()
+      await _updateRulesAndView().then(() => console.log('** hi **'))
+      const viewData = init(200, 'description', 'ascending')
+      _setData(viewData)
       currentViewNameSet(views.allDataByDescription)
     })()
   }, [currentViewNameSet, _updateRulesAndView])
 
-
-  useEffect(() => {
-    const viewData = init(2, 'description', 'ascending')
-    yellow('viewData', viewData)
-    _setData(viewData)
-  },[])
-  // Local vars
-  // const _viewData = useSelector((state) => state.viewData)
-  // const v1 = useSelector((state) => state.viewData)
-  // const _viewData = usePager({
-  //   numRowsPerPage: 2,
-  //   next: false,
-  //   previous: false,
-  //   sortField: 'description',
-  //   sortDirection: 'ascending'
-  // })
-
-  
+  // useLayoutEffect(() => {
+  //   green('useLayoutEffect - start')
+  //   const viewData = init(200, 'description', 'ascending')
+  //   _setData(viewData)
+  //   green('useLayoutEffect - end')
+  // }, [])
 
   const _classes = useStyles()
-  
 
   // Methods
 
-  if (_data.length === 0) {
-    return <h1>Getting data</h1>
-  }
-
-  
-
-  // const getViewData = () => {
-  //   const { fieldName, direction } = _sort
-  //   if (direction === sortDirections.ascending) {
-
-  //     return sortWith([ascend(prop(fieldName))])(_viewData)
-  //   }
-  //   return sortWith([descend(prop(fieldName))])(_viewData)
+  // if (_data.length === 0) {
+  //   return <h1>Getting data</h1>
   // }
 
   const _handleSwitchChange = (name) => (event) => {
@@ -141,6 +119,7 @@ const AllDataByDescription = () => {
   return (
     <>
       <div>
+        {green('render')}
         <FormControlLabel
           control={
             <Switch
@@ -151,8 +130,12 @@ const AllDataByDescription = () => {
           }
           label="Show Omitted"
         />
-        <button onClick={_previousClick}>Previous</button>
-        <button onClick={_nextClick}>Next</button>
+        <button disabled={atStart} onClick={_previousClick}>
+          Previous
+        </button>
+        <button disabled={atEnd} onClick={_nextClick}>
+          Next
+        </button>
       </div>
       <table>
         <thead>

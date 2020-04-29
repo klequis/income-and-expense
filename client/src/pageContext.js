@@ -11,13 +11,63 @@ import { green, red, yellow } from 'logger'
 
 const _sortData = (fieldName, direction, data) => {
   if (direction === sortDirections.ascending) {
-    const a = R.sortWith([R.ascend(R.prop(fieldName))])(data)
-    // yellow('a', a)
-    return a
+    return R.sortWith([R.ascend(R.prop(fieldName))])(data)
   }
-  const b = R.sortWith([R.descend(R.prop(fieldName))])(data)
-  // yellow('b', b)
-  return b
+  return R.sortWith([R.descend(R.prop(fieldName))])(data)
+}
+
+const getNewStart = ({
+  currentStart,
+  rowsPerPage,
+  maxRows,
+  next = false,
+  previous = false
+}) => {
+  if (next) {
+    if (currentStart + rowsPerPage >= maxRows) {
+      return maxRows
+    } else {
+      return currentStart + rowsPerPage
+    }
+  }
+
+  if (previous) {
+    if (currentStart - rowsPerPage <= 0) {
+      return 0
+    } else {
+      return currentStart - rowsPerPage
+    }
+  }
+
+  throw new Error(
+    'pageContext.getNewStart: one of next or previous must be true'
+  )
+}
+
+const getNewEnd = ({
+  currentEnd,
+  rowsPerPage,
+  maxRows,
+  next = false,
+  previous = false
+}) => {
+  if (next) {
+    if (currentEnd + rowsPerPage >= maxRows) {
+      return maxRows
+    } else {
+      return currentEnd + rowsPerPage
+    }
+  }
+
+  if (previous) {
+    if (currentEnd - rowsPerPage >= 0) {
+      return 0
+    } else {
+      return currentEnd - rowsPerPage
+    }
+  }
+
+  throw new Error('pageContext.getNewEnd: one of next or previous must be true')
 }
 
 export const PageProvider = ({ children }) => {
@@ -31,21 +81,26 @@ export const PageProvider = ({ children }) => {
     field: 'description',
     direction: 'ascending'
   })
+  const [_atStart, _setAtStart] = useState(true)
+  const [_atEnd, _setAtEnd] = useState(false)
 
   // return R.slice(_newStart, _newEnd, sortData(sortField, sortDirection, data))
 
   // local vars
   const data = useSelector((state) => state.viewData)
 
-  
   const init = (
     numRowsPerPage = 10,
     sortField,
     sortDirection = 'ascending'
   ) => {
+    yellow('init - start')
     _setRowsPerPage(numRowsPerPage)
     _setSort({ field: sortField, direction: sortDirection })
-    _setPages({ start: 0, end: numRowsPerPage})
+    _setPages({ start: 0, end: numRowsPerPage })
+    _setAtStart(true)
+    _setAtEnd(data.length === numRowsPerPage ? true : false)
+    yellow('init - end')
     return R.slice(0, numRowsPerPage, _sortData(sortField, sortDirection, data))
   }
 
@@ -54,17 +109,55 @@ export const PageProvider = ({ children }) => {
   }
 
   const next = () => {
-    const newStart = _pages.start + _rowsPerPage
-    const newEnd = _pages.end + _rowsPerPage
+    const newStart = getNewStart({
+      currentStart: _pages.start,
+      rowsPerPage: _rowsPerPage,
+      maxRows: data.length,
+      next: true
+    })
+    const newEnd = getNewEnd({
+      currentEnd: _pages.end,
+      rowsPerPage: _rowsPerPage,
+      maxRows: data.length,
+      next: true
+    })
+    _setAtStart(false)
+    _setAtEnd(data.length === _rowsPerPage ? true : false)
     _setPages({ start: newStart, end: newEnd })
-    return R.slice(newStart, newEnd, _sortData(_sort.field, _sort.direction, data))
+    console.group('next')
+    yellow('newStart', newStart)
+    yellow('newEnd', newEnd)
+    yellow('data.length', data.length)
+    console.groupEnd()
+    return R.slice(
+      newStart,
+      newEnd,
+      _sortData(_sort.field, _sort.direction, data)
+
+    )
   }
 
   const previous = () => {
-    const newStart = _pages.start - _rowsPerPage
-    const newEnd = _pages.end - _rowsPerPage
+    const newStart = getNewStart({
+      currentStart: _pages.start,
+      rowsPerPage: _rowsPerPage,
+      maxRows: data.length,
+      previous: true
+    })
+    const newEnd = getNewEnd({
+      currentEnd: _pages.end,
+      rowsPerPage: _rowsPerPage,
+      maxRows: data.length,
+      previous: true
+    })
+    _setAtStart(newStart === 0)
+    _setAtEnd(data.length === _rowsPerPage ? true : false)
     _setPages({ start: newStart, end: newEnd })
-    return R.slice(newStart, newEnd, _sortData(_sort.field, _sort.direction, data))
+    return R.slice(
+      newStart,
+      newEnd,
+      _sortData(_sort.field, _sort.direction, data)
+    )
   }
 
   return (
@@ -73,127 +166,12 @@ export const PageProvider = ({ children }) => {
         init,
         next,
         previous,
-        sort
+        sort,
+        atStart: _atStart,
+        atEnd: _atEnd
       }}
     >
       {children}
     </PageContext.Provider>
   )
 }
-
-// const usePager = ({
-//   numRowsPerPage,
-//   sortField,
-//   sortDirection = sortDirections.ascending
-// }) => {
-//   const [_startEndPage, _setStartEndPage] = useState({
-//     start: null,
-//     end: null
-//   })
-
-//   let _newStart
-//   let _newEnd
-//   yellow('_startEndPage.start', _startEndPage.start)
-//   yellow('_startEndPage.end', _startEndPage.end)
-
-//   // first time
-//   if (R.isNil(_startEndPage.start)) {
-//     _newStart = 0
-//   }
-//   if (R.isNil(_startEndPage.end)) {
-//     _newEnd = numRowsPerPage
-//   }
-//   yellow('_newStart', _newStart)
-//   yellow('_newEnd', _newEnd)
-
-//   const init = ({
-//     numRowsPerPage,
-//     initialSortField,
-//     initialSortDirection = sortDirections.ascending
-//   }) => {
-//     return 'a'
-//   }
-
-//   const data = useSelector((state) => state.viewData)
-
-//   // yellow('data', data)
-
-//   export const next = () => {
-//     _newStart = _newStart + numRowsPerPage
-//     _newEnd = _newEnd + numRowsPerPage
-//   }
-
-//   export const previous = () => {
-//     _newStart = _newStart + numRowsPerPage
-//     _newEnd = _newEnd + numRowsPerPage
-//   }
-
-//   return R.slice(_newStart, _newEnd, sortData(sortField, sortDirection, data))
-// }
-
-// export { usePager }
-
-// const usePagerX = (
-//   numRowsPerPage,
-//   forwardOrBack,
-//   sortField,
-//   sortDirection,
-//   data
-// ) => {
-//   // yellow('data', data)
-//   // const [_currentPages, _setCurrentPages] = useState([])
-//   const [_numRowsPerPage, _setNumRowsPerPage] = useState(numRowsPerPage || 10)
-//   const [_startEndPage, _setStartEndPage] = useState({
-//     start: 0,
-//     end: _numRowsPerPage
-//   })
-//   let _currentPages
-//   useEffect(() => {
-//     if (numRowsPerPage !== _numRowsPerPage) {
-//       _setNumRowsPerPage(numRowsPerPage)
-//     }
-//     const _increment =
-//       forwardOrBack === direction.forward ? numRowsPerPage : -numRowsPerPage
-//     const _newStart = _startEndPage.start + _increment
-//     const _newEnd = _startEndPage.end + _increment
-//     _setStartEndPage({
-//       start: _newStart,
-//       end: _newEnd
-//     })
-
-//     // _setCurrentPages(R.slice(_newStart, _newEnd)(sortData(sortField, sortDirection, data)))
-//     const sortedData = sortData(sortField, sortDirection, data)
-//     yellow('sortedData', sortedData)
-//     _currentPages = R.slice(_newStart, _newEnd, sortedData)
-//     yellow('_currentPages', _currentPages)
-//   }, [])
-//   // const getCurrentPages = _currentPages
-
-//   return _currentPages
-// }
-
-// const ex = () => {
-//   const [_startEndPage, _setStartEndPage] = useState({
-//     start: null,
-//     end: null
-//   })
-
-//   let _newStart
-//   let _newEnd
-
-//   useEffect(() => {
-//     // first time
-//     if (R.isNil(_startEndPage.start)) {
-//       _newStart = 0
-//     }
-//     if (R.isNil(_startEndPage.end)) {
-//       _newEnd = numRowsPerPage
-//     }
-//     console.log('in: _newStart', _newStart)
-//     console.log('in: _newEnd', _newEnd)
-//   }, [])
-
-//   console.log('out: _newStart', _newStart)
-//   console.log('out: _newEnd', _newEnd)
-
-// }
