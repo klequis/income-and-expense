@@ -7,7 +7,7 @@ export const PageContext = React.createContext()
 export const usePageContext = () => useContext(PageContext)
 
 // eslint-disable-next-line
-import { green, red, yellow } from 'logger'
+import { green, red, yellow, purple } from 'logger'
 
 const _sortData = (fieldName, direction, data) => {
   if (direction === sortDirections.ascending) {
@@ -84,11 +84,10 @@ export const PageProvider = ({ children }) => {
   const [_atStart, _setAtStart] = useState(true)
   const [_atEnd, _setAtEnd] = useState(false)
 
-  // return R.slice(_newStart, _newEnd, sortData(sortField, sortDirection, data))
 
   // local vars
   const data = useSelector((state) => state.viewData)
-
+  
   const init = (
     numRowsPerPage = 10,
     sortField,
