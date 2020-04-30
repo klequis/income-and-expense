@@ -9,6 +9,7 @@ import { blue } from 'logger'
 export const viewDataReducer = (state = [], { type, payload }) => {
   switch (type) {
     case VIEW_READ_KEY:
+      blue('view.length', payload.length)
       return clone(payload)
     default:
       return state
