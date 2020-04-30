@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { requestsReducer } from './requests/reducers'
+import { requestsReducer, pendingCountReducer } from './requests/reducers'
 import { toastReducer } from './toast/reducers'
 import { viewDataReducer } from './views/reducers'
 import { rulesReducer, ruleTmpReducer } from './rules/reducers'
@@ -10,6 +10,7 @@ import { duplicatesReducer } from './duplicates/reducers'
 const rootReducer = combineReducers({
   duplicates: duplicatesReducer,
   criteriaTestResults: criteriaTestReducer,
+  pendingCount: pendingCountReducer,
   requests: requestsReducer,
   rules: rulesReducer,
   ruleTmp: ruleTmpReducer,
