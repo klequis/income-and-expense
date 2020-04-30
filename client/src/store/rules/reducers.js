@@ -18,6 +18,7 @@ import { blue, red } from 'logger'
 export function rulesReducer(state = [], { type, payload }) {
   switch (type) {
     case RULES_READ_KEY:
+      blue('rules.length', payload.length)
       return payload
     case RULE_CREATE_KEY:
       throw new Error('RULE_CREATE_KEY return is undefined')
