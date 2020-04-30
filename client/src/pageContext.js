@@ -87,6 +87,7 @@ export const PageProvider = ({ children }) => {
   })
   const [_atStart, _setAtStart] = useState(true)
   const [_atEnd, _setAtEnd] = useState(false)
+  const [_totalRows, _setTotalRows] = useState(0)
 
 
   // local vars
@@ -103,6 +104,7 @@ export const PageProvider = ({ children }) => {
     _setRows({ start: 0, end: numRowsPerPage })
     _setAtStart(true)
     _setAtEnd(data.length === numRowsPerPage ? true : false)
+    _setTotalRows(data.length)
     yellow('init - end')
     return R.slice(0, numRowsPerPage, _sortData(sortField, sortDirection, data))
   }
@@ -173,7 +175,8 @@ export const PageProvider = ({ children }) => {
         rows:  {start: _rows.start, end: _rows.end },
         rowsPerPage: _rowsPerPage,
         atStart: _atStart,
-        atEnd: _atEnd
+        atEnd: _atEnd,
+        totalRows: _totalRows
       }}
     >
       {children}

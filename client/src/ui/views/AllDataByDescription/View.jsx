@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 
 const View = () => {
   green('view')
-  const { init, next, previous, atStart, atEnd, rows, rowsPerPage } = usePageContext()
+  const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
 
   const {
     rulesReadRequest,
@@ -121,7 +121,7 @@ const View = () => {
           Next
         </button>
         <div>
-          rows: {rows.start} to {rows.end} | rowsPerPage: {rowsPerPage}
+          rows: {rows.start} to {rows.end} | rowsPerPage: {rowsPerPage} | totalRows: {totalRows}
         </div>
       </div>
       <table>
