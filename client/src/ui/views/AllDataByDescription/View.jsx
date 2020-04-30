@@ -31,7 +31,7 @@ const useStyles = makeStyles({
 
 const View = () => {
   green('view')
-  const { init, next, previous, atStart, atEnd } = usePageContext()
+  const { init, next, previous, atStart, atEnd, rows, rowsPerPage } = usePageContext()
 
   const {
     rulesReadRequest,
@@ -57,7 +57,7 @@ const View = () => {
   useEffect(() => {
     // REST MUST HAPPEN AFTER CALLS COME BACK
     green('init - start')
-    const viewData = init(50, 'description')
+    const viewData = init(200, 'description')
     // green('viewData', viewData)
 
     green('init - end')
@@ -120,6 +120,9 @@ const View = () => {
         <button disabled={atEnd} onClick={_nextClick}>
           Next
         </button>
+        <div>
+          rows: {rows.start} to {rows.end} | rowsPerPage: {rowsPerPage}
+        </div>
       </div>
       <table>
         <thead>
