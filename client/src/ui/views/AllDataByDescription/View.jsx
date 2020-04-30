@@ -1,10 +1,8 @@
-import React, { useCallback, useState, useEffect, useLayoutEffect } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useCallback, useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import TR from './TR'
-import { useFinanceContext } from 'financeContext'
 import SortButtons from 'ui/elements/SortButtons'
 import {
   dataFields,
@@ -13,6 +11,7 @@ import {
   // duplicateStatus
 } from 'global-constants'
 import { usePageContext } from 'pageContext'
+import { useFinanceContext } from 'financeContext'
 
 // eslint-disable-next-line
 import { green, red, yellow } from 'logger'
@@ -30,21 +29,21 @@ const useStyles = makeStyles({
   }
 })
 
-const AllDataByDescription = () => {
-  // Actions
+const View = () => {
+  green('view')
+  const { init, next, previous, atStart, atEnd } = usePageContext()
+
   const {
     rulesReadRequest,
     viewReadRequest,
     currentViewNameSet
   } = useFinanceContext()
 
-  const { init, next, previous, atStart, atEnd } = usePageContext()
-
-  // State
-
+  const [_data, _setData] = useState([])
   const [_switchState, _setSwitchState] = useState({
     showOmitted: false
   })
+  // eslint-disable-next-line
   const [_sort, _setSort] = useState({
     fieldName: dataFields.description.name,
     direction: sortDirections.ascending
@@ -53,36 +52,22 @@ const AllDataByDescription = () => {
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(views.allDataByDescription)
-    
   }, [rulesReadRequest, viewReadRequest])
 
-  const [_data, _setData] = useState([])
-
-  // Effects
-
   useEffect(() => {
-    ;(async () => {
-      await _updateRulesAndView().then(() => console.log('** hi **'))
-      const viewData = init(200, 'description', 'ascending')
-      _setData(viewData)
-      currentViewNameSet(views.allDataByDescription)
-    })()
-  }, [currentViewNameSet, _updateRulesAndView])
+    // REST MUST HAPPEN AFTER CALLS COME BACK
+    green('init - start')
+    const viewData = init()
+    // green('viewData', viewData)
 
-  // useLayoutEffect(() => {
-  //   green('useLayoutEffect - start')
-  //   const viewData = init(200, 'description', 'ascending')
-  //   _setData(viewData)
-  //   green('useLayoutEffect - end')
-  // }, [])
+    green('init - end')
+
+    green('_setData - start')
+    _setData(viewData)
+    green('_setData - end')
+  }, [])
 
   const _classes = useStyles()
-
-  // Methods
-
-  // if (_data.length === 0) {
-  //   return <h1>Getting data</h1>
-  // }
 
   const _handleSwitchChange = (name) => (event) => {
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
@@ -119,7 +104,6 @@ const AllDataByDescription = () => {
   return (
     <>
       <div>
-        {green('render')}
         <FormControlLabel
           control={
             <Switch
@@ -173,4 +157,4 @@ const AllDataByDescription = () => {
   )
 }
 
-export default AllDataByDescription
+export default View
