@@ -19,7 +19,7 @@ import { importDataRequestAction } from 'store/import/actions'
 import {
   requestPendingAction,
   requestFailedAction,
-  requestSuccessAction
+  requestSuccessAction,
 } from 'store/requests/actions'
 import {
   rowIdShowClearAction,
