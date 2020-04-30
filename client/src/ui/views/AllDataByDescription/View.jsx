@@ -57,7 +57,7 @@ const View = () => {
   useEffect(() => {
     // REST MUST HAPPEN AFTER CALLS COME BACK
     green('init - start')
-    const viewData = init()
+    const viewData = init(50, 'description')
     // green('viewData', viewData)
 
     green('init - end')

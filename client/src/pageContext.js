@@ -9,13 +9,6 @@ export const usePageContext = () => useContext(PageContext)
 // eslint-disable-next-line
 import { green, red, yellow, purple } from 'logger'
 
-const _sortData = (fieldName, direction, data) => {
-  if (direction === sortDirections.ascending) {
-    return R.sortWith([R.ascend(R.prop(fieldName))])(data)
-  }
-  return R.sortWith([R.descend(R.prop(fieldName))])(data)
-}
-
 const getNewStart = ({
   currentStart,
   rowsPerPage,
@@ -68,6 +61,17 @@ const getNewEnd = ({
   }
 
   throw new Error('pageContext.getNewEnd: one of next or previous must be true')
+}
+
+const _sortData = (sortField, direction, data) => {
+  console.group('_sortData')
+  purple('fieldName', sortField)
+  purple('direction', direction)
+  console.groupEnd()
+  if (direction === sortDirections.ascending) {
+    return R.sortWith([R.ascend(R.prop(sortField))])(data)
+  }
+  return R.sortWith([R.descend(R.prop(sortField))])(data)
 }
 
 export const PageProvider = ({ children }) => {
