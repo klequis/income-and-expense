@@ -25,7 +25,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET',
         })
-        orange('api.duplicates.read: data', data)
+        // orange('api.duplicates.read: data', data)
         return data
       } catch (e) {
         redf('api.duplicates.read ERROR', e.message)
@@ -56,7 +56,7 @@ export default {
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        orange('api.rules.read: data.length', data.length)
+        // orange('api.rules.read: data.length', data.length)
         return data
       } catch (e) {
         redf('api.rules.read ERROR', e.message)
@@ -100,13 +100,13 @@ export default {
   },
   views: {
     async read(viewUrlPart) {
-      orange('api.views.read: viewUrlPart', viewUrlPart)
+      // orange('api.views.read: viewUrlPart', viewUrlPart)
       try {
         const url = `/api/views/${viewUrlPart}`
         const data = await fetchJson(url, {
           method: 'GET'
         })
-        orange('api.views.read: data.length', data.length)
+        // orange('api.views.read: data.length', data.length)
         return data
       } catch (e) {
         redf('api.data.views ERROR', e.message)
