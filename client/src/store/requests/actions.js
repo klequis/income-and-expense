@@ -2,23 +2,25 @@ import {
   REQUEST_FAILURE,
   REQUEST_PENDING,
   REQUEST_SUCCESS,
-  REQUEST_PENDING_COUNT_INCREMENT,
-  REQUEST_PENDING_COUNT_DECREMENT
+  REQUEST_PENDING_ADD,
+  REQUEST_PENDING_REMOVE
 } from 'global-constants'
+import actionKeys from 'actionKeys'
 
 import { yellow } from 'logger'
 
-export const requestPendingCountIncrementAction = (key) => {
+
+export const actionsPendingAdd = (key) => {
   return {
-    type: REQUEST_PENDING_COUNT_INCREMENT,
-    requestKey: key
+    type: actionKeys.actionsPendingAdd,
+    payload: key
   }
 }
 
-export const requestPendingCountDecrementAction = (key) => {
+export const actionsPendingRemove = (key) => {
   return {
-    type: REQUEST_PENDING_COUNT_DECREMENT,
-    requestKey: key
+    type: actionKeys.actionsPendingRemove,
+    payload: key
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import Button from '@material-ui/core/Button'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import { withRouter } from 'react-router-dom'
 import removeLeadingSlash from 'lib/removeLeadingSlash'
 // eslint-disable-next-line
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 
 const Nav = ({ location }) => {
 
-  const { importDataRequest } = useFinanceContext()
+  const { importDataRequest } = useAppContext()
   const classes = useStyles()
 
   const { pathname } = location

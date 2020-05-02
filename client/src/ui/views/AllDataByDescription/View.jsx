@@ -11,7 +11,7 @@ import {
   // duplicateStatus
 } from 'global-constants'
 import { usePageContext } from 'pageContext'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 
 // eslint-disable-next-line
 import { green, red, yellow } from 'logger'
@@ -37,7 +37,7 @@ const View = () => {
     rulesReadRequest,
     viewReadRequest,
     currentViewNameSet
-  } = useFinanceContext()
+  } = useAppContext()
 
   const [_data, _setData] = useState([])
   const [_switchState, _setSwitchState] = useState({

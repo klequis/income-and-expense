@@ -2,10 +2,10 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import CriteriaTestResults from './CriteriaTestResults'
 
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 
 const Rule = () => {
-  const { criteriaTestReadRequest } = useFinanceContext()
+  const { criteriaTestReadRequest } = useAppContext()
 
   const _ruleTmp = useSelector(state => state.ruleTmp)
   const _criteriaTestResults = useSelector(state => state.criteriaTestResults)

@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react'
 // import { useSelector } from 'react-redux'
-import { useFinanceContext } from 'financeContext'
-import useRequestPendingCount from 'useRequestPendingCount'
+import { useAppContext } from 'appContext'
+import useActionsPending from 'useActionsPending'
 
 import {
   views
@@ -24,7 +24,12 @@ const Container = () => {
     rulesReadRequest,
     viewReadRequest,
     currentViewNameSet,
-  } = useFinanceContext()
+    actionKeys
+  } = useAppContext()
+
+  const {
+    actionIsPending
+  } = useActionsPending()
 
   // State
 
@@ -51,23 +56,8 @@ const Container = () => {
     // eslint-disable-next-line
   }, [currentViewNameSet])
 
-  // Methods
-
-  // const requests = useSelector((state) => state.requests)
-  // red('requests', requests)
-  // const requestsPending = Object.keys(requests).some(
-  //   (key) => requests[key].status === 'REQUEST_PENDING'
-  // )
-
-  // if (_data.length === 0) {
-  //   return <h1>Getting data</h1>
-  // }
-  // red('requestsPending', requestsPending)
-  red('_loading', _loading)
-  red('requestPendingCount', useRequestPendingCount())
-  if (useRequestPendingCount() > 0 || _loading) {
-    return <h1>Getting data</h1>
-  }
+  green('viewReadKey', actionIsPending(actionKeys.viewReadKey))
+  green('rulesReadKey', actionIsPending(actionKeys.rulesReadKey))
 
   return <View />
 }

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import DuplicateTable from './DuplicateTable'
 import * as R from 'ramda'
 
@@ -16,7 +16,7 @@ const byAcctId = R.groupBy((dup) => {
 // })
 
 const Duplicates = () => {
-  const { duplicatesReadRequest } = useFinanceContext()
+  const { duplicatesReadRequest } = useAppContext()
 
   const _duplicates = useSelector((state) => state.duplicates)
 

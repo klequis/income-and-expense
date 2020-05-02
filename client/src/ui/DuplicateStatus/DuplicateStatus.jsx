@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import { duplicateStatus } from 'global-constants'
 
 // eslint-disable-next-line
 import { green } from 'logger'
 
 const DuplicateStatus = () => {
-  const { duplicatesReadRequest } = useFinanceContext()
+  const { duplicatesReadRequest } = useAppContext()
 
   const _duplicates = useSelector((state) => state.duplicates)
   const _duplicatesNew = _duplicates.filter(

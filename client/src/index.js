@@ -9,7 +9,7 @@ import theme from './theme'
 import DateFnsUtils from '@date-io/date-fns'
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import { BrowserRouter as Router } from 'react-router-dom'
-import { FinanceProvider } from 'financeContext'
+import { AppProvider } from 'appContext'
 
 const store = configureStore()
 
@@ -19,11 +19,11 @@ const renderApp = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <FinanceProvider>
+            <AppProvider>
               <Router>
                 <App />
               </Router>
-            </FinanceProvider>
+            </AppProvider>
           </MuiPickersUtilsProvider>
         </ThemeProvider>
       </Provider>,

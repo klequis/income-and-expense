@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import { views } from 'global-constants'
 import { prop, sortBy } from 'ramda'
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 
 const AmountByCategory = () => {
   // Actions
-  const { viewReadRequest, currentViewNameSet } = useFinanceContext()
+  const { viewReadRequest, currentViewNameSet } = useAppContext()
 
   // Effects
   useEffect(() => {

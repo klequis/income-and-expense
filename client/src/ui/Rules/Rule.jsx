@@ -20,7 +20,7 @@ import {
   remove
 } from 'ramda'
 import isTmpRule from 'lib/isTmpRule'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import removeLeadingSlash from 'lib/removeLeadingSlash'
 import { withRouter } from 'react-router-dom'
 import shortid from 'shortid'
@@ -73,7 +73,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpRemove,
     ruleTmpUpdate,
     ruleUpdateRequest
-  } = useFinanceContext()
+  } = useAppContext()
 
   // state
 
@@ -204,7 +204,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     rowIdShowClear()
   }
 
-  const _criteriaTestClick = async () => {
+  const _criteriaTestClick = async (e) => {
     const { criteria } = _rule
     // green('_criteriaTestClick: _ruleTmp', )
     await criteriaTestReadRequest(criteria)

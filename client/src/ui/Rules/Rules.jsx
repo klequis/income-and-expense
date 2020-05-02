@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { append, without } from 'ramda'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import shortid from 'shortid'
 import Rule from './Rule'
 import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
@@ -12,7 +12,7 @@ import { green, yellow, red } from 'logger'
 const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
   // actions
 
-  const { ruleTmpAdd } = useFinanceContext()
+  const { ruleTmpAdd } = useAppContext()
 
   // local vars
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 import { views } from 'global-constants'
 import Table from './Table'
 import { dataFields } from 'global-constants'
@@ -10,7 +10,7 @@ import { green } from 'logger'
 
 const RawData = () => {
   // Actions
-  const { viewReadRequest } = useFinanceContext()
+  const { viewReadRequest } = useAppContext()
 
   // Effects
   useEffect(() => {

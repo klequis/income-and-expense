@@ -31,6 +31,8 @@ import {
   duplicatesReadRequestAction
 } from 'store/duplicates/actions'
 
+import actionKeys from './actionKeys'
+
 // import * as Promise from 'bluebird'
 
 import isNilOrEmpty from 'lib/isNilOrEmpty'
@@ -38,12 +40,12 @@ import isNilOrEmpty from 'lib/isNilOrEmpty'
 // eslint-disable-next-line
 import { red, blue } from 'logger'
 
-const MODULE_NAME = 'financeContext'
+const MODULE_NAME = 'appContext'
 
-export const FinanceContext = React.createContext()
-export const useFinanceContext = () => useContext(FinanceContext)
+export const AppContext = React.createContext()
+export const useAppContext = () => useContext(AppContext)
 
-export const FinanceProvider = ({ children }) => {
+export const AppProvider = ({ children }) => {
   const dispatch = useDispatch()
 
   // C
@@ -196,8 +198,9 @@ export const FinanceProvider = ({ children }) => {
   )
 
   return (
-    <FinanceContext.Provider
+    <AppContext.Provider
       value={{
+        actionKeys,
         criteriaTestClear,
         criteriaTestReadRequest,
         currentViewNameClear,
@@ -220,6 +223,6 @@ export const FinanceProvider = ({ children }) => {
       }}
     >
       {children}
-    </FinanceContext.Provider>
+    </AppContext.Provider>
   )
 }

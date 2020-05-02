@@ -2,13 +2,12 @@ import {
   REQUEST_SUCCESS,
   REQUEST_PENDING,
   REQUEST_FAILURE,
-  REQUEST_PENDING_COUNT_DECREMENT,
-  REQUEST_PENDING_COUNT_INCREMENT
 } from 'global-constants'
 import {
   API_ERROR
 } from './constants'
-import { merge } from 'ramda'
+import { merge, append, without } from 'ramda'
+import actionKeys from 'actionKeys'
 
 import { blue } from 'logger'
 
@@ -34,20 +33,16 @@ export function requestsReducer(state = {}, action) {
   }
 }
 
-export function pendingCountReducer(state = 0, {type, payload}) {
+export function actionsPendingReducer(state = [], {type, payload}) {
   switch (type) {
-    case REQUEST_PENDING_COUNT_INCREMENT:
-      // blue('INCREMENT: state', state)
-      // blue('INCREMENT: payload', payload)
-      // const incNewState = ++state
-      // blue('INCREMENT: incNewState', incNewState)
-      return ++state
-    case REQUEST_PENDING_COUNT_DECREMENT:
-      // blue('DECREMENT: state', state)
-      // blue('DECREMENT: payload', payload)
-      // const decNewState = --state
-      // blue('INCREMENT: decNewState', decNewState)
-      return --state
+    case actionKeys.actionsPendingAdd:
+      blue('INCREMENT: state', state)
+      blue('INCREMENT: payload', payload)
+      return append(payload, state)
+    case actionKeys.actionsPendingRemove:
+      blue('DECREMENT: state', state)
+      blue('DECREMENT: payload', payload)
+      return without(payload, state)
     default:
       return state
   }

@@ -6,7 +6,7 @@ import TD from './TD'
 import { format } from 'date-fns'
 import Rules from 'ui/Rules'
 import isNilOrEmpty from 'lib/isNilOrEmpty'
-import { useFinanceContext } from 'financeContext'
+import { useAppContext } from 'appContext'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -26,7 +26,7 @@ const TR = ({ doc, updateRulesAndView }) => {
 
   // actions
 
-  const { rowIdShowSet } = useFinanceContext()
+  const { rowIdShowSet } = useAppContext()
 
   // local vars
 

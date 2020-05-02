@@ -1,11 +1,12 @@
 // eslint-disable-next-line
 import {
-  requestPendingCountIncrementAction,
-  requestPendingCountDecrementAction,
+  actionsPendingAdd,
+  actionsPendingRemove,
   requestPendingAction,
   requestSuccessAction,
   requestFailedAction,
 } from './requests/actions'
+
 import * as R from 'ramda'
 
 // eslint-disable-next-line
@@ -42,7 +43,7 @@ export const createRequestThunk = ({
     //   await dispatch(actionCreator())
     // })
     await dispatch(requestPendingAction(requestKey))
-    await dispatch(requestPendingCountIncrementAction(requestKey))
+    await dispatch(actionsPendingAdd(requestKey))
 
     try {
       pink('requesting', requestKey)
@@ -53,7 +54,7 @@ export const createRequestThunk = ({
         pink('dispatching', getKeyFromFunction(actionCreator.toString()))
         await dispatch(actionCreator(data))
         pink('done', getKeyFromFunction(actionCreator.toString()))
-        dispatch(requestPendingCountDecrementAction(requestKey))
+        dispatch(actionsPendingRemove(requestKey))
       })
     } catch (e) {
       await dispatch(requestFailedAction(e, requestKey))
