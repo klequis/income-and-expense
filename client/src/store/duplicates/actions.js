@@ -39,15 +39,15 @@ export const duplicatesReadRequestAction = createRequestThunk({
     key: actionKeys.duplicatesReadRequestKey
   },
   success: [duplicatesReadAction],
-  failure: [
-    {
-      fn: (e) =>
-        setToast.fn({
-          error: e,
-          message: 'Could not get data',
-          level: TOAST_WARN
-        }),
-      key: setToast.key
-    }
-  ]
+  // failure: [
+  //   {
+  //     fn: (e) =>
+  //       setToast.fn({
+  //         error: e,
+  //         message: 'Could not get data',
+  //         level: TOAST_WARN
+  //       }),
+  //     key: setToast.key
+  //   }
+  // ]
 })

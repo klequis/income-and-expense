@@ -34,14 +34,24 @@ export const createRequestThunk = ({
     pink('typeof request.fn', request.fn)
     pink('success', success)
     pink('failure', failure)
-    console.groupEnd()
+    
+
+    // if (!R.has('key')(request)) {
+    //   throw new Error(`request missing key`)
+    // }
 
     // add request and success keys here OR
     // add all keys here and put a finally?
     dispatch(actionsPendingAdd.fn(request.key))
-    success.forEach(s => dispatch(actionsPendingAdd.fn(success.key)))
-    failure.forEach(s => dispatch(actionsPendingAdd.fn(success.key)))
-
+    success.forEach(s => {
+      pink('success key', s.key)
+      dispatch(actionsPendingAdd.fn(s.key))
+    })
+    failure.forEach(f => {
+      pink('failure key', f.key)
+      dispatch(actionsPendingAdd.fn(f.key))
+    })
+    console.groupEnd()
     try {
       dispatch(requestPendingAction.fn(request.key))
       // dispatch(actionsPendingAdd.fn(request.key))
@@ -53,17 +63,17 @@ export const createRequestThunk = ({
       })
     } catch (e) {
       dispatch(requestFailedAction.fn(e, request.key))
-      return failure.map(async (actionCreator) => {
-        red('action.helpers.createRequestThunk Error', e.message)
-        console.log(e)
-        dispatch(requestFailedAction.fn(e, request.key))
-        await dispatch(actionCreator(e))
-      })
+      // return failure.map(async (actionCreator) => {
+      //   red('action.helpers.createRequestThunk Error', e.message)
+      //   console.log(e)
+      //   dispatch(requestFailedAction.fn(e, request.key))
+      //   await dispatch(actionCreator(e))
+      // })
     } finally {
       red('FINALLY')
       dispatch(actionsPendingRemove.fn(request.key))
-      success.forEach(s => dispatch(actionsPendingRemove.fn(success.key)))
-      failure.forEach(s => dispatch(actionsPendingRemove.fn(success.key)))
+      success.forEach(s => dispatch(actionsPendingRemove.fn(s.key)))
+      failure.forEach(f => dispatch(actionsPendingRemove.fn(f.key)))
     }
   }
 }

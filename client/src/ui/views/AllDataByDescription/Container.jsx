@@ -56,8 +56,13 @@ const Container = () => {
     // eslint-disable-next-line
   }, [currentViewNameSet])
 
-  green('viewReadKey', actionIsPending(actionKeys.viewReadKey))
-  green('rulesReadKey', actionIsPending(actionKeys.rulesReadKey))
+  // green('_loading', _loading)
+  // green('viewReadKey', actionIsPending(actionKeys.viewReadKey))
+  // green('rulesReadKey', actionIsPending(actionKeys.rulesReadKey))
+
+  if (_loading || actionIsPending(actionKeys.viewReadKey) || actionIsPending(actionKeys.rulesReadKey)) {
+    return <h1>Loading</h1>
+  }
 
   return <View />
 }

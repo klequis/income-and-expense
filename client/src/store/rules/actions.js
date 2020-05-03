@@ -1,15 +1,3 @@
-import {
-  RULE_CREATE_REQUEST_KEY,
-  RULE_DELETE_REQUEST_KEY,
-  RULES_READ_KEY,
-  RULE_READ_BY_ID_REQUEST_KEY,
-  RULES_READ_REQUEST_KEY,
-  RULE_UPDATE_REQUEST_KEY,
-  RULE_UPDATE_KEY,
-  RULETMP_ADD_KEY,
-  RULETMP_REMOVE_KEY,
-  RULETMP_UPDATE_KEY
-} from './constants'
 import { setToast } from 'store/toast/actions'
 import { createRequestThunk } from '../action-helpers'
 import api from 'api'
@@ -41,13 +29,12 @@ import { orange } from 'logger'
 // }
 
 export const ruleTmpAddAction = {
-  fn: data => ({
+  fn: (data) => ({
     type: actionKeys.ruleTmpAddKey,
     payload: data
   }),
   key: actionKeys.ruleTmpAddKey
 }
-
 
 // export const ruleTmpUpdateAction = data => {
 //   return {
@@ -57,7 +44,7 @@ export const ruleTmpAddAction = {
 // }
 
 export const ruleTmpUpdateAction = {
-  fn: data => ({
+  fn: (data) => ({
     type: actionKeys.ruleTmpUpdateKep,
     payload: data
   }),
@@ -72,7 +59,7 @@ export const ruleTmpUpdateAction = {
 // }
 
 export const ruleTmpRemoveAction = {
-  fn: ruleId => ({
+  fn: (ruleId) => ({
     type: actionKeys.ruleTmpRemoveKey,
     payload: { ruleId }
   }),
@@ -87,7 +74,7 @@ export const ruleTmpRemoveAction = {
 // }
 
 const rulesReadAction = {
-  fn: data => ({
+  fn: (data) => ({
     type: actionKeys.rulesReadKey,
     payload: data
   }),
@@ -109,13 +96,12 @@ export const ruleReadByIdRequestAction = createRequestThunk({
     fn: api.rules.readById,
     key: actionKeys.ruleReadByIdRequestKey
   },
-  success: [rulesReadAction],
-  failure: [
-    e =>
-      setToast({ error: e, message: 'Could not get rules', level: TOAST_WARN })
-  ]
+  success: [rulesReadAction]
+  // failure: [
+  //   e =>
+  //     setToast({ error: e, message: 'Could not get rules', level: TOAST_WARN })
+  // ]
 })
-
 
 // const ruleUpdateAction = data => {
 //   return {
@@ -125,7 +111,7 @@ export const ruleReadByIdRequestAction = createRequestThunk({
 // }
 
 const ruleUpdateAction = {
-  fn: data => ({
+  fn: (data) => ({
     type: actionKeys.ruleUpdateKey,
     payload: data
   }),
@@ -147,19 +133,19 @@ export const rulesReadRequestAction = createRequestThunk({
     fn: api.rules.read,
     key: actionKeys.rulesReadRequestKey
   },
-  success: [rulesReadAction],
-  failure: [
-    e =>
-      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
-  ]
+  success: [rulesReadAction]
+  // failure: [
+  //   e =>
+  //     setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  // ]
 })
 
 // export const ruleCreateRequestAction = createRequestThunk({
 //   request: api.rules.create,
 //   key: RULE_CREATE_REQUEST_KEY,
 //   // a successful create will always return [rule]
-//  
- // TODO: rulesReadRequestAction does not take any params?
+//
+// TODO: rulesReadRequestAction does not take any params?
 //   success: [rulesReadRequestAction],
 //   failure: [
 //     e =>
@@ -178,12 +164,15 @@ export const ruleCreateRequestAction = createRequestThunk({
   },
   success: [rulesReadRequestAction],
   failure: [
-    e =>
-      setToast({
-        error: e,
-        message: 'Some fields need attention',
-        level: TOAST_WARN
-      })
+    {
+      fn: (e) =>
+        setToast({
+          error: e,
+          message: 'Some fields need attention',
+          level: TOAST_WARN
+        }),
+      key: actionKeys.toastSetKey
+    }
   ]
 })
 
@@ -203,11 +192,11 @@ export const ruleDeleteRequestAction = createRequestThunk({
     fn: api.rules.delete,
     key: actionKeys.ruleDeleteRequestKey
   },
-  success: [rulesReadRequestAction],
-  failure: [
-    e =>
-      setToast({ error: e, message: 'Could not deleteRule', level: TOAST_WARN })
-  ]
+  success: [rulesReadRequestAction]
+  // failure: [
+  //   e =>
+  //     setToast({ error: e, message: 'Could not deleteRule', level: TOAST_WARN })
+  // ]
 })
 
 // Update
@@ -226,9 +215,9 @@ export const ruleUpdateRequestAction = createRequestThunk({
     fn: api.rules.update,
     key: actionKeys.ruleUpdateRequestKey
   },
-  success: [ruleUpdateAction],
-  failure: [
-    e =>
-      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
-  ]
+  success: [ruleUpdateAction]
+  // failure: [
+  //   e =>
+  //     setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  // ]
 })

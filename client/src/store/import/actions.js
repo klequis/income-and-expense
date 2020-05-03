@@ -1,4 +1,3 @@
-// import { IMPORT_DATA_REQUEST_KEY } from './constants'
 import { createRequestThunk } from '../action-helpers'
 import api from 'api'
 import actionKeys from 'actionKeys'
@@ -21,5 +20,5 @@ export const importDataRequestAction = createRequestThunk({
     key: actionKeys.importDataRequestKey
   },
   success: [],
-  failure: [() => console.log('import fail')]
+  // failure: [() => console.log('import fail')]
 })

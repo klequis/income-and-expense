@@ -30,7 +30,6 @@ const useStyles = makeStyles({
 })
 
 const View = () => {
-  green('view')
   const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
 
   const {

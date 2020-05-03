@@ -17,7 +17,7 @@ import { yellow } from 'logger'
 
 const viewReadAction = {
   fn: (data) => ({ type: actionKeys.viewReadKey, payload: data }),
-  key: actionKeys.viewREadKey
+  key: actionKeys.viewReadKey
 }
 
 // export const viewReadRequestAction = createRequestThunk({
@@ -36,9 +36,9 @@ export const viewReadRequestAction = createRequestThunk({
     key: actionKeys.viewReadRequestKey
   },
   success: [viewReadAction],
-  failure: [
-    (e) =>
-      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
-  ]
+  // failure: [
+  //   (e) =>
+  //     setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  // ]
 })
 

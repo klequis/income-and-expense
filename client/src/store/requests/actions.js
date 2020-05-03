@@ -1,5 +1,6 @@
 import actionKeys from 'actionKeys'
 
+// eslint-disable-next-line
 import { yellow } from 'logger'
 
 // export const actionsPendingAdd = (key) => {
@@ -64,5 +65,6 @@ export const requestFailedAction = {
   fn: (reason, key) => ({
     type: actionKeys.requestFailure,
     payload: {reason, key},
-  })
+  }),
+  key: actionKeys.requestFailure
 }

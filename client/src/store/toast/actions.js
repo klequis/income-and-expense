@@ -2,6 +2,7 @@ import { SET_TOAST, CLEAR_TOAST } from './constants'
 import shortid from 'shortid'
 import actionKeys from 'actionKeys'
 
+// eslint-disable-next-lien
 import { yellow } from 'logger'
 
 /**
@@ -34,10 +35,8 @@ export const setToast = {
     payload: { error, id, level, message }
   }),
 
-  key: actionKeys.setToastKey
+  key: actionKeys.toastSetKey
 }
-
-yellow('setToast', setToast)
 
 // export const clearToast = () => ({
 //   type: CLEAR_TOAST
@@ -45,5 +44,5 @@ yellow('setToast', setToast)
 
 export const clearToast = {
   fn: () => ({ type: actionKeys.clearToast }),
-  key: actionKeys.clearToast
+  key: actionKeys.toastClearKey
 }

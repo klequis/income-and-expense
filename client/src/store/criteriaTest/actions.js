@@ -49,8 +49,8 @@ export const criteriaTestReadRequestAction = createRequestThunk({
     key: actionKeys.criteriaTestReadRequestKey
   },
   success: [criteriaTestReadAction],
-  failure: [
-    e =>
-      setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
-  ]
+  // failure: [
+  //   e =>
+  //     setToast({ error: e, message: 'Could not get data', level: TOAST_WARN })
+  // ]
 })
