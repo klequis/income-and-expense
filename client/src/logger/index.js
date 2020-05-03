@@ -141,4 +141,10 @@ export const bluef = (message, value) => {
   log(chalk.blue(`${message}`), checkValue(value))
 }
 
-export default { log, yellow, blue, green, pink, redf, greenf, yellowf, bluef }
+export const logReducer = (reducerName, state, type, payload) => {
+  console.group(reducerName)
+  blue('state', state)
+  blue('type', type)
+  blue('payload', payload)
+  console.groupEnd()
+}

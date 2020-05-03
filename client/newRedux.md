@@ -1,37 +1,12 @@
-createRequestThunk({
-  request: no change
-  keys: [
-    {
-      VIEW_READ_REQUEST_KEY
-    }
-    
-  ]
-    
-  
-})
+# New Store Proposal
 
+Overall question: Can an action be a function and a key?
 
-{
-  requestActions: {
-    fn: api.views.read,
-    key: VIEW_READ_REQUEST_KEY
-  },
-  successActions: [
-    {
-      fn: viewReadAction,
-      key: VIEW_READ_KEY
-    }
-  ]
-  
-  
-}
+## Actions
 
+There are 2 types of actions
 
-Can an action be a function and a key
-
-# Signatures
-
-## Plain Action
+**Plain Action**
 
 ```js
 const somePlainAction = {
@@ -40,47 +15,54 @@ const somePlainAction = {
 }
 ```
 
-## Thunk Action
+**Async Action**
 
 ```js
 const someThunkAction = {
-  fn: theThunkAction<func>()
+  fn: theThunkAction<func>  // an async function typically api call
   key: theThunkKey<string>
 }
 ```
 
-## A Thunk
+## Thunks
+
+A thunk is a is an object wrapped in dispatch() and has the following properties:
+
+- request: a thunk action as described above
+- success: an array of plain actions
+- failure: an array of plain actions
+
 
 ```js
 const someThunk = createRequestThunk({
-  request: someThunkAction.fn<func>
-  requestKey: someThunkAction.key<string>
+  request: someThunkAction
   success: [ someSuccessFunction<func> ],
   failure: [ someFailureFunction<func> ]
 }
 ```
 
 
-# Example
+## Example
+
+**Plain action**
 
 ```js
 const viewReadAction = {
-  fn: data => { type: actionKeys.viewReadKey, payload: data }
+  fn: data => ({ type: actionKeys.viewReadKey, payload: data })
   key: actionKeys.viewReadKey
 }
+```
 
+**Thunk action**
+
+```js
 const viewReadRequestAction = {
   fn: api.views.read,
   key: actionKeys.viewReadRequestAction
 }
-
-const viewReadRequestAction = createRequestThunk({
-  request: viewReadRequestAction.fn,
-  requestKey: actionKeys.viewReadRequestAction
-  success: [ viewReadAction ],
-  failure: [ someFailureFunction ]
-})
 ```
+
+**Thunk**
 
 ```js
 const viewReadRequestAction = createRequestThunk({
@@ -89,6 +71,8 @@ const viewReadRequestAction = createRequestThunk({
   failure: [ someFailureFunction ]
 })
 ```
+
+## createRequestThunk modifications
 
 ```js
 export const createRequestThunk = ({

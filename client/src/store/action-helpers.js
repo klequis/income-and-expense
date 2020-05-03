@@ -25,45 +25,45 @@ const getKeyFromFunction = (fnStr) => {
 
 export const createRequestThunk = ({
   request,
-  key,
-  start = [],
   success = [],
   failure = []
 }) => {
-  // console.group('createRequestThunk')
-  // pink('key', key)
-  // pink('request', request)
-  // pink('success', success)
-  // console.groupEnd()
   return (...args) => async (dispatch) => {
-    // pink('args', args)
-    const requestKey = typeof key === 'function' ? key(...args) : key
-    // I never use start
-    // start.map(async (actionCreator) => {
-    //   await dispatch(actionCreator())
-    // })
-    await dispatch(requestPendingAction(requestKey))
-    await dispatch(actionsPendingAdd(requestKey))
+    console.group('createRequestThunk')
+    pink('request.key', request.key)
+    pink('typeof request.fn', request.fn)
+    pink('success', success)
+    pink('failure', failure)
+    console.groupEnd()
+
+    // add request and success keys here OR
+    // add all keys here and put a finally?
+    dispatch(actionsPendingAdd.fn(request.key))
+    success.forEach(s => dispatch(actionsPendingAdd.fn(success.key)))
+    failure.forEach(s => dispatch(actionsPendingAdd.fn(success.key)))
 
     try {
-      pink('requesting', requestKey)
-      const data = await request(...args)
-      pink('returned', requestKey)
-      await dispatch(requestSuccessAction(requestKey))
+      dispatch(requestPendingAction.fn(request.key))
+      // dispatch(actionsPendingAdd.fn(request.key))
+      const data = await request.fn(...args)
+      dispatch(requestSuccessAction.fn(request.key))
       success.map(async (actionCreator) => {
-        pink('dispatching', getKeyFromFunction(actionCreator.toString()))
-        await dispatch(actionCreator(data))
-        pink('done', getKeyFromFunction(actionCreator.toString()))
-        dispatch(actionsPendingRemove(requestKey))
+        dispatch(actionCreator.fn(data))
+        // dispatch(actionsPendingRemove.fn(request.key))
       })
     } catch (e) {
-      await dispatch(requestFailedAction(e, requestKey))
+      dispatch(requestFailedAction.fn(e, request.key))
       return failure.map(async (actionCreator) => {
         red('action.helpers.createRequestThunk Error', e.message)
         console.log(e)
-        dispatch(requestFailedAction(e, requestKey))
+        dispatch(requestFailedAction.fn(e, request.key))
         await dispatch(actionCreator(e))
       })
+    } finally {
+      red('FINALLY')
+      dispatch(actionsPendingRemove.fn(request.key))
+      success.forEach(s => dispatch(actionsPendingRemove.fn(success.key)))
+      failure.forEach(s => dispatch(actionsPendingRemove.fn(success.key)))
     }
   }
 }

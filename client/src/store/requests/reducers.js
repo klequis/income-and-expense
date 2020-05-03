@@ -1,31 +1,40 @@
 import {
-  REQUEST_SUCCESS,
-  REQUEST_PENDING,
-  REQUEST_FAILURE,
+  FLOW
 } from 'global-constants'
-import {
-  API_ERROR
-} from './constants'
-import { merge, append, without } from 'ramda'
+import { API_ERROR } from './constants'
+import * as R from 'ramda'
 import actionKeys from 'actionKeys'
 
-import { blue } from 'logger'
+import { logReducer } from 'logger'
 
-export function requestsReducer(state = {}, action) {
-  switch (action.type) {
-    case REQUEST_PENDING:
-      return merge(state, {
-        [action.requestKey]: { status: REQUEST_PENDING, error: null }
+export function requestsReducer(state = {}, { type, payload }) {
+
+
+  if (FLOW &&
+    R.contains(type, [
+      actionKeys.requestPending,
+      actionKeys.requestSuccess,
+      actionKeys.requestFailure,
+      actionKeys.apiError
+    ])
+  ) {
+    logReducer('requestsReducer', state, type, payload)
+  }
+  
+  switch (type) {
+    case actionKeys.requestPending:
+      return R.merge(state, {
+        payload: { status: actionKeys.requestPending, error: null }
       })
-    case REQUEST_SUCCESS:
-      return merge(state, {
-        [action.requestKey]: { status: REQUEST_SUCCESS, error: null }
+    case actionKeys.requestSuccess:
+      return R.merge(state, {
+        [payload]: { status: actionKeys.requestSuccess, error: null }
       })
-    case REQUEST_FAILURE:
-      return merge(state, {
-        [action.requestKey]: { status: REQUEST_FAILURE, error: action.payload }
+    case actionKeys.requestFailure:
+      return R.merge(state, {
+        [payload]: { status: actionKeys.requestFailure, error: payload }
       })
-    case API_ERROR:
+    case actionKeys.apiError:
       console.log('store.requests.reducers: API_ERROR: NOT IMPLEMENTED YET')
       return state
     default:
@@ -33,16 +42,22 @@ export function requestsReducer(state = {}, action) {
   }
 }
 
-export function actionsPendingReducer(state = [], {type, payload}) {
+export function actionsPendingReducer(state = [], { type, payload }) {
+
+  if (FLOW &&
+    R.includes(type, [
+      actionKeys.actionsPendingAdd,
+      actionKeys.actionsPendingRemove,
+    ])
+  ) {
+    logReducer('actionsPendingReducer', state, type, payload)
+  }
+
   switch (type) {
     case actionKeys.actionsPendingAdd:
-      blue('INCREMENT: state', state)
-      blue('INCREMENT: payload', payload)
-      return append(payload, state)
+      return R.append(payload, state)
     case actionKeys.actionsPendingRemove:
-      blue('DECREMENT: state', state)
-      blue('DECREMENT: payload', payload)
-      return without(payload, state)
+      return R.without(payload, state)
     default:
       return state
   }

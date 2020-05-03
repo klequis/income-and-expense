@@ -1,24 +1,49 @@
 import { SET_TOAST, CLEAR_TOAST } from './constants'
 import shortid from 'shortid'
-// import { yellow } from 'logger'
+import actionKeys from 'actionKeys'
+
+import { yellow } from 'logger'
 
 /**
  *
  * @param {toast} toast object {error, id, level, message}
  */
 
-export const setToast = ({
-  error,
-  id = shortid.generate(),
-  level,
-  message
-}) => {
-  return {
-    type: SET_TOAST,
-    payload: { error, id, level, message }
-  }
+// export const setToast = ({
+//   error,
+//   id = shortid.generate(),
+//   level,
+//   message
+// }) => {
+//   return {
+//     type: SET_TOAST,
+//     payload: { error, id, level, message }
+//   }
   
+// }
+
+export const setToast = {
+
+  fn: ({
+    error,
+    id = shortid.generate(),
+    level,
+    message
+  }) => ({
+    type: actionKeys.setToast,
+    payload: { error, id, level, message }
+  }),
+
+  key: actionKeys.setToastKey
 }
-export const clearToast = () => ({
-  type: CLEAR_TOAST
-})
+
+yellow('setToast', setToast)
+
+// export const clearToast = () => ({
+//   type: CLEAR_TOAST
+// })
+
+export const clearToast = {
+  fn: () => ({ type: actionKeys.clearToast }),
+  key: actionKeys.clearToast
+}

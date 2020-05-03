@@ -65,7 +65,7 @@ export const AppProvider = ({ children }) => {
   }
 
   const currentViewNameSet = viewName => {
-    dispatch(currentViewNameSetAction(viewName))
+    dispatch(currentViewNameSetAction.fn(viewName))
   }
 
   // D
