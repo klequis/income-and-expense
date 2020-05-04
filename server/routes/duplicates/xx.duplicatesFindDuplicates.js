@@ -36,7 +36,7 @@ const findDuplicateTransactions = wrap(async (req, res) => {
   const ret = await executeAggregate(DATA_COLLECTION_NAME, q)
   const dups = ret.filter((doc) => doc.count > 1)
 
-  yellow('dups', dups)
+  // yellow('dups', dups)
 
   // MATCH DUPS
 
@@ -91,14 +91,14 @@ const findDuplicateTransactions = wrap(async (req, res) => {
     // yellow('dup', dup)
     // yellow('duplicate', duplicate)
     const { origDescription } = duplicate
-    yellow('origDescription', origDescription)
+    // yellow('origDescription', origDescription)
     const matchesForDup = matches.filter((m) => {
-      yellow('m', m)
+      // yellow('m', m)
       const where = R.whereEq({ origDescription: origDescription })(m)
       // yellow('where', where)
       return where
     })
-    yellow('matchesForDup', matchesForDup)
+    // yellow('matchesForDup', matchesForDup)
 
     // const matched = R.mergeRight(dup, { possibleMatches: m })
     // yellow('matched', matched)

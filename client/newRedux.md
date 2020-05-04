@@ -1,3 +1,38 @@
+There are now 3 types of actions?
+
+1. An async action.
+2. A plain action that is used in the success or failure of an async action.
+3. A plain action that is dispatched directly
+
+```js
+dispatch(action<func>(type, payload))
+```
+
+**Plain - direct**
+
+
+```js
+// action.type
+// action.key
+// action.fn
+const dispatch = action => {
+
+  if (action.type = 'plain-action') {
+    log('dispatching', action.key)
+    _dispatch(action.fn)
+  } else {
+    
+  }
+}
+```
+
+*if it is a function it is intercepted by `redux-thunk`, otherwise it goes straight to the store*
+
+
+
+
+
+
 # New Store Proposal
 
 Overall question: Can an action be a function and a key?

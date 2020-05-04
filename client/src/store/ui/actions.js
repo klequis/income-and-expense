@@ -39,9 +39,9 @@ export const currentViewNameClearAction = {
 
 export const rowIdShowClearAction = {
   fn: () => ({
-    type: actionKeys.rowIdShoreClearKey
+    type: actionKeys.rowIdShowClearKey
   }),
-  key: actionKeys.rowIdShoreClearKey
+  key: actionKeys.rowIdShowClearKey
 }
 
 // export const rowIdShowSetAction = tableRowId => {
@@ -53,7 +53,7 @@ export const rowIdShowClearAction = {
 
 export const rowIdShowSetAction = {
   fn: tableRowId => ({
-    type: actionKeys.tableRowId,
+    type: actionKeys.rowIdShowSetKey,
     payload: tableRowId
   }),
   key: actionKeys.tableRowId

@@ -169,11 +169,11 @@ const stringToBoolean = (value) => {
 
 const convertValue = ({ field, value }) => {
   // yellow('allFields', allFields)
-  yellow('field', field)
-  yellow('value', value)
+  // yellow('field', field)
+  // yellow('value', value)
   // yellow('type test', allFields._id)
   const type = R.path([field, 'type'], allFields)
-  yellow('type', type)
+  // yellow('type', type)
   switch (type) {
     case 'String':
       return [field, value]
@@ -224,26 +224,26 @@ const convertValues = R.pipe(
 )
 
 export const convertFieldValues = (fields) => {
-  yellow('fields', fields)
+  // yellow('fields', fields)
   return R.map(convertValues, fields)
 }
 
 export const convertCriteriaValues = (fields) => {
   // receive
-  const ex_fields = [
-    {
-      _id: '1234',
-      field: 'description',
-      operation: 'beginsWith',
-      value: 'CHASE CREDIT CRD AUTOPAY'
-    },
-    {
-      _id: '1234',
-      field: 'credit',
-      operation: 'equals',
-      value: '240'
-    }
-  ]
+  // const ex_fields = [
+  //   {
+  //     _id: '1234',
+  //     field: 'description',
+  //     operation: 'beginsWith',
+  //     value: 'CHASE CREDIT CRD AUTOPAY'
+  //   },
+  //   {
+  //     _id: '1234',
+  //     field: 'credit',
+  //     operation: 'equals',
+  //     value: '240'
+  //   }
+  // ]
 
   // extract field & value
   R.map(

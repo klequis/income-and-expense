@@ -3,16 +3,23 @@ import {
   convertOneFieldValue,
   operators
 } from 'db/constants'
-
+import escapeStringRegexp from 'escape-string-regexp'
+import { LOG_FILTER } from 'global-constants'
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
 
 const operationBeginsWith = (field, value) => {
-  return { [field]: { $regex: `^${value}`, $options: 'im' } }
+  // return { [field]: { $regex: `^${value}`, $options: 'im' } }
+  // AMZN MKTP US\*MN5TE1R51 AMAMZN.COM\/BILLWA
+  // const regEx = new RegExp(`^${value}`, 'im')
+  const escapedStr = escapeStringRegexp(value)
+  return { [field]: new RegExp(`^${escapedStr}`, 'im') }
 }
 
 const operationContains = (field, value) => {
-  return { [field]: { $regex: `${value}`, $options: 'im' } }
+  // return { [field]: { $regex: `${value}`, $options: 'im' } }
+  const escapedStr = escapeStringRegexp(value)
+  return { [field]: new RegExp(`${escapedStr}`, 'im') }
 }
 
 const operationEquals = (field, value) => {
@@ -21,7 +28,9 @@ const operationEquals = (field, value) => {
 }
 
 const operationRegex = (field, value) => {
-  return { [field]: { $regex: `${value}`, $options: 'im' } }
+  // return { [field]: { $regex: `${value}`, $options: 'im' } }
+  const escapedStr = escapeStringRegexp(value)
+  return { [field]: new RegExp(escapedStr, 'im') }
 }
 
 // const createRegex = (findValue, numAdditionalChars = 0) => {
@@ -38,7 +47,8 @@ const operationRegex = (field, value) => {
 // }
 
 const operationDoesNotContain = (field, value) => {
-  return { [field]: { $not: { $regex: value } } }
+  const escapedStr = escapeStringRegexp(value)
+  return { [field]: { $not: { $regex: escapedStr } } }
 }
 
 export const conditionBuilder = (criteria) => {
@@ -51,7 +61,7 @@ export const conditionBuilder = (criteria) => {
     origField === dataFields.description.name
       ? dataFields.origDescription.name
       : origField
-  yellow('operation', operation)
+  LOG_FILTER && yellow('operation', operation)
   switch (operation) {
     case operators.beginsWith.name:
       return operationBeginsWith(field, value)

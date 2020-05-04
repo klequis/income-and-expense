@@ -64,8 +64,8 @@ const checkNewDuplicates = wrap(async (req, res) => {
   // yellow('asObj', asObj)
 
   const flat = R.flatten(asObj)
-  yellow('flat', flat)
-  yellow('type', typeof flat[0])
+  // yellow('flat', flat)
+  // yellow('type', typeof flat[0])
 
   // const idsToUpdate = R.map(x => new ObjectID(), flat)
 

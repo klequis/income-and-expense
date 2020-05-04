@@ -7,7 +7,7 @@ import { red, green, yellow } from 'logger'
 const exportData = wrap(async (req, res, next) => {
   try {
     const ret = await writeToCsvFile()
-    yellow('ret', ret)
+    // yellow('ret', ret)
     res.send(JSON.stringify({ status: 'success', fileName: ret.fileName, rows: ret.rows }))
   } catch (e) {
     red('exportData ERROR', e.message)

@@ -84,8 +84,8 @@ const CriterionEdit = ({
           <MenuItem value={operators.contains}>Contains</MenuItem>
           <MenuItem value={operators.doesNotContain}>Does not contain</MenuItem>
           <MenuItem value={operators.equals}>Equals</MenuItem>
-          <MenuItem value={operators.regex}>RegEx</MenuItem>
-          <MenuItem value={operators.in}>In</MenuItem>
+          {/* <MenuItem value={operators.regex}>RegEx</MenuItem> */}
+          {/* <MenuItem value={operators.in}>In</MenuItem> */}
         </Select>
         <TextField
           className={_classes.field}

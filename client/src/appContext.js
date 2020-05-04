@@ -50,7 +50,7 @@ export const AppProvider = ({ children }) => {
 
   // C
   const criteriaTestClear = () => {
-    dispatch(criteriaTestClearAction())
+    dispatch(criteriaTestClearAction.fn())
   }
 
   const criteriaTestReadRequest = useCallback(
@@ -61,7 +61,7 @@ export const AppProvider = ({ children }) => {
   )
 
   const currentViewNameClear = () => {
-    dispatch(currentViewNameClearAction())
+    dispatch(currentViewNameClearAction.fn())
   }
 
   const currentViewNameSet = viewName => {
@@ -88,23 +88,23 @@ export const AppProvider = ({ children }) => {
 
   // R
   const requestFailed = (reason, key) => {
-    dispatch(requestFailedAction(reason, key))
+    dispatch(requestFailedAction.fn(reason, key))
   }
 
   const requestPending = key => {
-    dispatch(requestPendingAction(key))
+    dispatch(requestPendingAction.fn(key))
   }
 
   const requestSuccess = key => {
-    dispatch(requestSuccessAction(key))
+    dispatch(requestSuccessAction.fn(key))
   }
 
   const rowIdShowClear = () => {
-    dispatch(rowIdShowClearAction())
+    dispatch(rowIdShowClearAction.fn())
   }
 
   const rowIdShowSet = ruleId => {
-    dispatch(rowIdShowSetAction(ruleId))
+    dispatch(rowIdShowSetAction.fn(ruleId))
   }
 
   const rulesReadRequest = useCallback(async () => {
@@ -112,15 +112,15 @@ export const AppProvider = ({ children }) => {
   }, [dispatch])
 
   const ruleTmpAdd = data => {
-    dispatch(ruleTmpAddAction(data))
+    dispatch(ruleTmpAddAction.fn(data))
   }
 
   const ruleTmpRemove = ruleId => {
-    dispatch(ruleTmpRemoveAction(ruleId))
+    dispatch(ruleTmpRemoveAction.fn(ruleId))
   }
 
   const ruleTmpUpdate = data => {
-    dispatch(ruleTmpUpdateAction(data))
+    dispatch(ruleTmpUpdateAction.fn(data))
   }
 
   // const ruleCreateRequestOrig = useCallback(

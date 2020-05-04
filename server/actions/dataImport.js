@@ -42,14 +42,12 @@ const evolver = {
   origDescription: R.pipe(removeDoubleSpace, R.trim),
   date: R.identity,
   credit: R.pipe(
-    // _stringToNumber,
     R.cond([
       [R.gt(R.__, 0), (x) => x],
       [R.T, R.always(0)]
     ])
   ),
   debit: R.pipe(
-    // _stringToNumber,
     R.cond([
       [R.lt(R.__, 0), (x) => x],
       [R.T, R.always(0)]
@@ -112,12 +110,34 @@ const parseFieldValue = (parse, value) => {
   }
 }
 
+const _stripDollarSign = (value) => {
+  if (R.type(value) === 'String' && value.startsWith('$')) {
+    return Number(value.slice(1))
+  }
+  return value
+}
+
 const getFieldValue = (fieldCol) => (doc) => {
   if (R.type(fieldCol) === 'Undefined') {
     return ''
   }
   const { col, parse } = fieldCol
-  const value = R.prop(`field${col}`)(doc) || ''
+  const value = _stripDollarSign(R.prop(`field${col}`)(doc)) || ''
+  // const strValue = value.toString()
+  if (R.type(value) !== 'String') {
+    console.group('start')
+    // yellow('type value', R.type(value))
+    // yellow('parseFieldValue: value', strValue)
+    // yellow('parseFieldValue: value.startsWith($)', strValue.startsWith('$'))
+    // yellow('getFieldValue: value', value)
+    // yellow('getFieldValue: type', R.type(value))
+    yellow('getFieldValue: value', value)
+    yellow('getFieldValue: type', R.type(value))
+
+    console.groupEnd()
+  }
+  //
+
   if (!isNil(parse)) {
     return parseFieldValue(parse, value)
   }
@@ -139,9 +159,7 @@ const _transformData = (account, data) => {
           R.prop(dataFields.description.name)(fieldToCol)
         )(doc),
         credit: getFieldValue(R.prop(dataFields.credit.name)(fieldToCol))(doc),
-        debit: R.pipe(getFieldValue(R.prop(dataFields.debit.name)(fieldToCol)))(
-          doc
-        ),
+        debit: getFieldValue(R.prop(dataFields.debit.name)(fieldToCol))(doc),
         category1: 'none',
         category2: '',
         checkNumber: getFieldValue(R.prop(dataFields.checkNumber)(fieldToCol))(
@@ -182,9 +200,12 @@ const dataImport = async (loadRaw = false) => {
     if (loadRaw) {
       await dropCollection('data-all')
     }
-    const accounts = await find(ACCOUNTS_COLLECTION_NAME, {})
+    const accounts = await find(ACCOUNTS_COLLECTION_NAME, {
+      active: { $ne: false }
+    })
 
     for (let i = 0; i < accounts.length; i++) {
+      // if (accounts[i].dataFile.name === 'cb.amazon.history.csv') {
       const { name: dataFileName, hasHeaders } = accounts[i].dataFile
       const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
       const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
@@ -194,6 +215,7 @@ const dataImport = async (loadRaw = false) => {
       const transformedData = _transformData(accounts[i], rawData)
       const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
       docsInserted += inserted.length
+      // }
     }
     await createIndex(DATA_COLLECTION_NAME, dataFields.description.name, {
       collation: { caseLevel: true, locale: 'en_US' }

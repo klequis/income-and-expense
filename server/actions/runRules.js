@@ -7,20 +7,21 @@ import {
 } from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
 import * as R from 'ramda'
+import { LOG_CRITERIA, LOG_FILTER } from 'global-constants'
 
 // eslint-disable-next-line
 import { blue, green, greenf, redf, yellow } from 'logger'
 
-const printFilter = (filter) => {
-  console.log('// filter')
-  if (R.has('$and')(filter)) {
-    const a = filter.$and
-    // yellow('$and:', a)
-  } else {
-    // yellow('filter', filter)
-  }
-  console.log('// filter')
-}
+// const printFilter = (filter) => {
+//   console.log('// filter')
+//   if (R.has('$and')(filter)) {
+//     const a = filter.$and
+//     // yellow('$and:', a)
+//   } else {
+//     // yellow('filter', filter)
+//   }
+//   console.log('// filter')
+// }
 
 const createRegex = (findValue, numAdditionalChars = 0) => {
   const regExAsString =
@@ -110,12 +111,13 @@ const runRules = async (passedInRules = []) => {
     //   },
     //   criteria
     // )
-    yellow('runRules.criteria', criteria)
+    LOG_CRITERIA && yellow('runRules.criteria', criteria)
+    
 
     const filter = filterBuilder(criteria)
     if (criteria.length > 1) {
-      yellow('filter', filter)
-      filter.$and.map((v) => console.log(v))
+      LOG_FILTER && yellow('filter', filter)
+      LOG_FILTER && filter.$and.map((v) => console.log(v))
     }
     const f = await find(DATA_COLLECTION_NAME, filter)
     for (let j = 0; j < actions.length; j++) {
@@ -155,6 +157,7 @@ const runRules = async (passedInRules = []) => {
           break
         default:
           redf('unknown action type:', action.action)
+          redf('actions', actions)
       }
     }
   }
