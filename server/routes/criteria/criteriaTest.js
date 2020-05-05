@@ -25,10 +25,14 @@ const criteriaTest = wrap(async (req, res) => {
 
     const convertedCriteria = body.map(c => {
       const { field, value } = c
+      green('value', value)
       if (field === 'credit') {
         if (['credit', 'debit', 'numAdditionalChars'].includes(field)) {
           return mergeRight(c, { value: Number(value) })
         }
+      }
+      if (field === 'date') {
+        return mergeRight(c, { value: new Date(value).toISOString() })
       }
       return c
     })

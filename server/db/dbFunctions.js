@@ -81,6 +81,10 @@ export const insertMany = async (collection, data) => {
     const r = await db.collection(collection).insertMany(data)
     return r.ops
   } catch (e) {
+    redf('dbFunctions.inserMany ERROR', e.message)
+    redf('writeErrors', e.result.result.writeErrors)
+    redf('op', e.result.result.writeErrors[0])
+    console.log(e)
     throw new Error(e.message)
   }
 }
@@ -281,6 +285,11 @@ export const updateMany = async (collection, filter = {}, update) => {
 export const createIndex = async (collection, field, options = {}) => {
   const { db } = await connectDB()
   const r = await db.collection(collection).createIndex(field, options)
+}
+
+export const createCollection = async (name, options) => {
+  const { db } = await connectDB()
+  const r = await db.createCollection(name, options)
 }
 
 export const executeAggregate = async (collection, query) => {

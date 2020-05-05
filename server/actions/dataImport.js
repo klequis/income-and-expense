@@ -1,4 +1,10 @@
-import { createIndex, dropCollection, find, insertMany } from 'db'
+import {
+  createCollection,
+  createIndex,
+  dropCollection,
+  find,
+  insertMany
+} from 'db'
 import {
   ACCOUNTS_COLLECTION_NAME,
   DATA_COLLECTION_NAME,
@@ -10,6 +16,7 @@ import runRules from './runRules'
 
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'
+import { create } from 'domain'
 
 const readCsvFile = async (file, hasHeaders) => {
   try {
@@ -36,11 +43,19 @@ const readCsvFile = async (file, hasHeaders) => {
 }
 
 const removeDoubleSpace = (value) => value.replace(/\s{2,}/g, ' ').trim()
+const toIsoString = (value) => {
+  // yellow('value', value)
+  const newValue = new Date(value).toISOString()
+  // yellow('newValue', newValue)
+  return newValue
+  // value.toISOString()
+}
 
 const evolver = {
   description: R.pipe(removeDoubleSpace, R.trim),
   origDescription: R.pipe(removeDoubleSpace, R.trim),
-  date: R.identity,
+  // date: R.identity,
+  date: toIsoString,
   credit: R.pipe(
     R.cond([
       [R.gt(R.__, 0), (x) => x],
@@ -78,26 +93,6 @@ const getFieldCols = (fieldToCol) => {
   return ret
 }
 
-const _log = (label) => (message) => {
-  if (label === 'start') {
-    return green('start ----------------------- /n')
-  }
-  if (label === 'end') {
-    return green('end -----------------------')
-  }
-  if (label === 'initial') {
-    return yellow(label, message)
-  }
-  // const a = {
-  //   desc: message.origDescription,
-  //   credit: message.credit,
-  //   debit: message.debit
-  // }
-  // return yellow(label, a)
-
-  return yellow(label, message)
-}
-
 const parseFieldValue = (parse, value) => {
   if (parse === '>0') {
     return value > 0 ? value : 0
@@ -123,21 +118,6 @@ const getFieldValue = (fieldCol) => (doc) => {
   }
   const { col, parse } = fieldCol
   const value = _stripDollarSign(R.prop(`field${col}`)(doc)) || ''
-  // const strValue = value.toString()
-  if (R.type(value) !== 'String') {
-    console.group('start')
-    // yellow('type value', R.type(value))
-    // yellow('parseFieldValue: value', strValue)
-    // yellow('parseFieldValue: value.startsWith($)', strValue.startsWith('$'))
-    // yellow('getFieldValue: value', value)
-    // yellow('getFieldValue: type', R.type(value))
-    yellow('getFieldValue: value', value)
-    yellow('getFieldValue: type', R.type(value))
-
-    console.groupEnd()
-  }
-  //
-
   if (!isNil(parse)) {
     return parseFieldValue(parse, value)
   }
@@ -183,7 +163,6 @@ const _transformData = (account, data) => {
       // R.tap(_log('initial')),
       // R.tap(_log('start'))
     )
-
     return R.map(transform, data)
   } catch (e) {
     red(dataFields.acctId.name, acctId)
@@ -193,10 +172,63 @@ const _transformData = (account, data) => {
   }
 }
 
+const validator = {
+  bsonType: 'object',
+  $jsonSchema: {
+    required: [
+      dataFields.acctId.name,
+      // dataFields.date.name,
+      // dataFields.description.name,
+      // dataFields.origDescription.name,
+      // dataFields.credit.name,
+      // dataFields.debit.name,
+      // dataFields.category1.name,
+      // dataFields.category2.name,
+      // dataFields.checkNumber.name,
+      // dataFields.type.name,
+      dataFields.omit.name
+    ],
+
+    properties: {
+      [dataFields.acctId.name]: {
+        bsonType: 'string'
+      }
+      // [dataFields.date.name]: {
+      //   bsonType: 'date'
+      // },
+      // [dataFields.description.name]: {
+      //   bsonType: 'string'
+      // },
+      // [dataFields.origDescription.name]: {
+      //   bsonType: 'string'
+      // },
+      // [dataFields.credit.name]: {
+      //   bsonType: 'double'
+      // }
+      // [dataFields.debit.name]: {
+      //   bsonType: 'double'
+      // },
+      // [dataFields.checkNumber.name]: {
+      //   bsonType: 'string'
+      // },
+      // [dataFields.type.name]: {
+      //   bsonType: 'string'
+      // },
+      // [dataFields.omit.name]: {
+      //   bsonType: 'bool'
+      // },
+      // [dataFields.ruleIds.name]: {
+      //   bsonType: 'array'
+      // }
+    }
+  }
+}
+
 const dataImport = async (loadRaw = false) => {
   try {
     let docsInserted = 0
     await dropCollection(DATA_COLLECTION_NAME)
+    // await createCollection(DATA_COLLECTION_NAME, { validator: validator })
     if (loadRaw) {
       await dropCollection('data-all')
     }

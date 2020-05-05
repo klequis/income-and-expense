@@ -34,6 +34,7 @@ export const viewModes = {
 
 export const dataFieldNames = {
   _id: '_id',
+  acctId: 'acctId',
   date: 'date',
   description: 'description',
   origDescription: 'origDescription',

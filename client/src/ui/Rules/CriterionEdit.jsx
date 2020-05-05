@@ -72,6 +72,8 @@ const CriterionEdit = ({
           <MenuItem value={dataFieldNames.type}>Type</MenuItem>
           <MenuItem value={dataFieldNames.credit}>Credit</MenuItem>
           <MenuItem value={dataFieldNames.debit}>Debit</MenuItem>
+          <MenuItem value={dataFieldNames.acctId}>AcctId</MenuItem>
+          <MenuItem value={dataFieldNames.date}>Date</MenuItem>
         </Select>
 
         <Select
