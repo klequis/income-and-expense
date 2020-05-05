@@ -3,7 +3,7 @@ import {
   DATA_COLLECTION_NAME,
   RULES_COLLECTION_NAME,
   dataFields,
-  actionTypes,
+  actionTypes
 } from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
 import * as R from 'ramda'
@@ -91,28 +91,18 @@ const runRules = async (passedInRules = []) => {
   let rules
   if (passedInRules.length !== 0) {
     rules = passedInRules
-    // green('rules', rules)
-    // const ruleIds = rules.map(rule => rule._id)
-    // green('running rules', ruleIds)
   } else {
-    // const rules = allRules.filter(rule => rule._id.toString() === '5e45ca2f6d8f4438b8ee5926')
     const allRules = await find(RULES_COLLECTION_NAME, {})
     rules = allRules
   }
-  // green('rules', rules)
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
     const { actions, criteria } = rule
-    // const criteriaWithAcctId = append(
-    //   {
-    //     field: dataFields.acctId.name,
-    //     operation: 'equals',
-    //     value: acct
-    //   },
-    //   criteria
-    // )
+
+    const { _id } = rule
+    yellow('rule._id', _id)
+
     LOG_CRITERIA && yellow('runRules.criteria', criteria)
-    
 
     const filter = filterBuilder(criteria)
     if (criteria.length > 1) {

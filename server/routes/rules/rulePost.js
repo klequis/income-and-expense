@@ -1,5 +1,5 @@
 import wrap from 'routes/wrap'
-import { RULES_COLLECTION_NAME } from 'db/constants'
+import { RULES_COLLECTION_NAME, convertFieldValues } from 'db/constants'
 import { insertOne } from 'db/dbFunctions'
 import { mergeRight } from 'ramda'
 import { ObjectID } from 'mongodb'
@@ -7,7 +7,6 @@ import runRules from 'actions/runRules'
 
 // eslint-disable-next-line
 import { yellow, redf } from 'logger'
-import convertCriteriaTypes from '../../lib/convertCriteriaTypes'
 
 const replaceTmpId = obj => {
   return mergeRight(obj, { _id: ObjectID() })
@@ -22,7 +21,7 @@ const rulePost = wrap(async (req, res) => {
     // yellow('rulePost: actions', actions)
 
     // Change number types to number
-    const convertedCriteria = convertCriteriaTypes(criteria)
+    const convertedCriteria = convertFieldValues(criteria)
     // yellow('rulePost: convertedCriteria', convertedCriteria)
 
     const newRule = {

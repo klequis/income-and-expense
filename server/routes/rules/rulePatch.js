@@ -1,11 +1,11 @@
 import wrap from 'routes/wrap'
-import { DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
+import { convertFieldValues, DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
 
 import { findOneAndUpdate, find } from 'db'
 import runRules from 'actions/runRules'
 import { toString } from 'lib'
 import { ObjectId } from 'mongodb'
-import convertCriteriaTypes from 'lib/convertCriteriaTypes'
+
 
 /*
   rulePatch can receive a rule with
@@ -41,7 +41,7 @@ const rulePatch = wrap(async (req, res) => {
       )
     }
 
-    const convertedCriteria = convertCriteriaTypes(criteria)
+    const convertedCriteria = convertFieldValues(criteria)
 
     const id = ObjectId.createFromHexString(_id)
 

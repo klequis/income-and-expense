@@ -1,2 +1,2 @@
-export const LOG_CRITERIA = false
-export const LOG_FILTER = false
+export const LOG_CRITERIA = true
+export const LOG_FILTER = true

@@ -16,7 +16,6 @@ import runRules from './runRules'
 
 // eslint-disable-next-line
 import { green, red, redf, yellow } from 'logger'
-import { create } from 'domain'
 
 const readCsvFile = async (file, hasHeaders) => {
   try {
@@ -68,29 +67,6 @@ const evolver = {
       [R.T, R.always(0)]
     ])
   )
-}
-
-const getFieldCols = (fieldToCol) => {
-  const acctId = R.path([dataFields.acctId.name, 'col'], fieldToCol) || null
-  const date = R.path([dataFields.date.name, 'col'], fieldToCol) || null
-  const description =
-    R.path([dataFields.description.name, 'col'], fieldToCol) || null
-  const debit = R.path([dataFields.debit.name, 'col'], fieldToCol) || null
-  const credit = R.path([dataFields.credit.name, 'col'], fieldToCol) || null
-  const type = R.path([dataFields.type.name, 'col'], fieldToCol) || null
-  const checkNumber =
-    R.path([dataFields.checkNumber.name, 'col'], fieldToCol) || null
-  const ret = {
-    acctId,
-    date,
-    description,
-    debit,
-    credit,
-    type,
-    checkNumber
-  }
-
-  return ret
 }
 
 const parseFieldValue = (parse, value) => {
@@ -172,6 +148,57 @@ const _transformData = (account, data) => {
   }
 }
 
+const dataImport = async (loadRaw = false) => {
+  try {
+    let docsInserted = 0
+    await dropCollection(DATA_COLLECTION_NAME)
+    // await createCollection(DATA_COLLECTION_NAME, { validator: validator })
+    if (loadRaw) {
+      await dropCollection('data-all')
+    }
+    const accounts = await find(ACCOUNTS_COLLECTION_NAME, {
+      active: { $ne: false }
+    })
+
+    for (let i = 0; i < accounts.length; i++) {
+      // if (accounts[i].dataFile.name === 'cb.amazon.history.csv') {
+      const { name: dataFileName, hasHeaders } = accounts[i].dataFile
+      const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
+      const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
+      if (loadRaw) {
+        await insertMany('raw-data', rawData)
+      }
+      const transformedData = _transformData(accounts[i], rawData)
+      const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
+      docsInserted += inserted.length
+      // }
+    }
+    await createIndex(DATA_COLLECTION_NAME, dataFields.description.name, {
+      collation: { caseLevel: true, locale: 'en_US' }
+    })
+    await createIndex(DATA_COLLECTION_NAME, dataFields.type.name, {
+      collation: { caseLevel: true, locale: 'en_US' }
+    })
+    await runRules()
+    green('Number of docs imported', docsInserted)
+    return JSON.stringify([
+      {
+        operation: 'load data',
+        status: 'success',
+        numDocsLoaded: docsInserted
+      }
+    ])
+  } catch (e) {
+    redf('dataImport ERROR:', e.message)
+    console.log(e)
+    return JSON.stringify([{}])
+  }
+}
+
+export default dataImport
+
+
+/*
 const validator = {
   bsonType: 'object',
   $jsonSchema: {
@@ -224,51 +251,4 @@ const validator = {
   }
 }
 
-const dataImport = async (loadRaw = false) => {
-  try {
-    let docsInserted = 0
-    await dropCollection(DATA_COLLECTION_NAME)
-    // await createCollection(DATA_COLLECTION_NAME, { validator: validator })
-    if (loadRaw) {
-      await dropCollection('data-all')
-    }
-    const accounts = await find(ACCOUNTS_COLLECTION_NAME, {
-      active: { $ne: false }
-    })
-
-    for (let i = 0; i < accounts.length; i++) {
-      // if (accounts[i].dataFile.name === 'cb.amazon.history.csv') {
-      const { name: dataFileName, hasHeaders } = accounts[i].dataFile
-      const dataFileHasHeaders = hasHeaders === false ? hasHeaders : true
-      const rawData = await readCsvFile(dataFileName, dataFileHasHeaders)
-      if (loadRaw) {
-        await insertMany('raw-data', rawData)
-      }
-      const transformedData = _transformData(accounts[i], rawData)
-      const inserted = await insertMany(DATA_COLLECTION_NAME, transformedData)
-      docsInserted += inserted.length
-      // }
-    }
-    await createIndex(DATA_COLLECTION_NAME, dataFields.description.name, {
-      collation: { caseLevel: true, locale: 'en_US' }
-    })
-    await createIndex(DATA_COLLECTION_NAME, dataFields.type.name, {
-      collation: { caseLevel: true, locale: 'en_US' }
-    })
-    await runRules()
-    green('Number of docs imported', docsInserted)
-    return JSON.stringify([
-      {
-        operation: 'load data',
-        status: 'success',
-        numDocsLoaded: docsInserted
-      }
-    ])
-  } catch (e) {
-    redf('dataImport ERROR:', e.message)
-    console.log(e)
-    return JSON.stringify([{}])
-  }
-}
-
-export default dataImport
+*/

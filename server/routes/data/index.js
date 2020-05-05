@@ -4,6 +4,9 @@ import dataGetByCriteria from './dataGetByCriteria'
 
 const router = express.Router()
 
+// TODO: not sure which routes are in use
+// TODO: some have been replaced by routes in /views
+
 router.get('/', dataGet)
 router.get('/:description', dataGet)
 router.get('/showOmitted/:showOmitted', dataGet)

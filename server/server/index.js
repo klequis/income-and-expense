@@ -44,7 +44,7 @@ app.use((req, res, next) => {
   next()
 })
 
-app.use('/api/data', data)
+// app.use('/api/data', data)
 app.use('/api/import', importData)
 app.use('/api/categories', categories)
 app.use('/api/views', views)

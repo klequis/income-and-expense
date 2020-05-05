@@ -1,8 +1,8 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
-import { DATA_COLLECTION_NAME } from 'db/constants'
+import { convertFieldValues, DATA_COLLECTION_NAME } from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
-import { mergeRight } from 'ramda'
+// import { mergeRight } from 'ramda'
 
 // eslint-disable-next-line
 import { redf, green, logRequest } from 'logger'
@@ -18,24 +18,7 @@ const criteriaTest = wrap(async (req, res) => {
       redf('criteriaTest', 'body.length is 0')
     }
 
-    // All values come in as stings and most field values
-    // for a criteria are strings with the exception of
-    // credit, debit & numAdditionalChars which need to
-    // be converted to Number
-
-    const convertedCriteria = body.map(c => {
-      const { field, value } = c
-      green('value', value)
-      if (field === 'credit') {
-        if (['credit', 'debit', 'numAdditionalChars'].includes(field)) {
-          return mergeRight(c, { value: Number(value) })
-        }
-      }
-      if (field === 'date') {
-        return mergeRight(c, { value: new Date(value).toISOString() })
-      }
-      return c
-    })
+    const convertedCriteria = convertFieldValues(body)
 
     green('convertedCriteria', convertedCriteria)
 
@@ -43,7 +26,6 @@ const criteriaTest = wrap(async (req, res) => {
     green('criteriaTest: filter', filter)
     const data = await find(DATA_COLLECTION_NAME, filter)
     const descriptionsOnly = data.map(doc => doc.origDescription)
-    // green('descriptionsOnly', descriptionsOnly)
     res.send(descriptionsOnly)
   } catch (e) {
     redf('criteriaTest ERROR', e.message)
