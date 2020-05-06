@@ -23,7 +23,7 @@ const operationContains = (field, value) => {
 }
 
 const operationEquals = (field, value) => {
-  return { [field]: { $eq: convertOneFieldValue(field, value) } }
+  return { [field]: { $eq: value } }
   // return { [field]: { $eq: value } }
 }
 

@@ -78,6 +78,7 @@ const checkNewDuplicates = wrap(async (req, res) => {
   )
 
   const f = await find(DATA_COLLECTION_NAME, { _id: { $in: flat } })
+  yellow('WARN', 'should convert values ToUi?')
   res.send(f)
 })
 

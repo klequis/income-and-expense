@@ -1,6 +1,6 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
-import { DATA_COLLECTION_NAME } from 'db/constants'
+import { DATA_COLLECTION_NAME, convertFieldValuesToUi } from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
 
 // eslint-disable-next-line
@@ -13,7 +13,7 @@ const dataGetByCriteria = wrap(async (req, res, next) => {
   const { field, operation, value } = body
   const filter = filterBuilder([{ field, operation, value }])
   const data = await find(DATA_COLLECTION_NAME, filter)
-  res.send(data)
+  res.send(convertFieldValuesToUi(data))
 })
 
 export default dataGetByCriteria

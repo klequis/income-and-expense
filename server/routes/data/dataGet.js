@@ -1,6 +1,6 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
-import { DATA_COLLECTION_NAME } from 'db/constants'
+import { DATA_COLLECTION_NAME, convertFieldValuesToUi } from 'db/constants'
 import { toBoolean, isEmpty } from 'validator'
 import { isNil, mergeRight } from 'ramda'
 
@@ -24,7 +24,7 @@ const dataGet = wrap(async (req, res, next) => {
   const omitted = toBoolean(showOmitted) ? {} : { omit: false }
   const filter = mergeRight(desc, omitted)
   const data = await find(DATA_COLLECTION_NAME, filter)
-  res.send(data)
+  res.send(convertFieldValuesToUi(data))
 })
 
 export default dataGet

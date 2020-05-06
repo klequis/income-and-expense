@@ -54,7 +54,7 @@ const amountByCategory = wrap(async (req, res) => {
   const q = [match1, addFields, project1, group1]
 
   const ret = await executeAggregate(DATA_COLLECTION_NAME, q)
-
+  yellow('WARN', 'should convert values ToUi?')
   res.send(ret)
 })
 

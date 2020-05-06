@@ -1,6 +1,6 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
-import { convertFieldValues, DATA_COLLECTION_NAME } from 'db/constants'
+import { convertCriteriaValues, DATA_COLLECTION_NAME } from 'db/constants'
 import { filterBuilder } from 'actions/filterBuilder'
 // import { mergeRight } from 'ramda'
 
@@ -18,9 +18,9 @@ const criteriaTest = wrap(async (req, res) => {
       redf('criteriaTest', 'body.length is 0')
     }
 
-    const convertedCriteria = convertFieldValues(body)
+    const convertedCriteria = convertCriteriaValues(body)
 
-    green('convertedCriteria', convertedCriteria)
+    // green('convertedCriteria', convertedCriteria)
 
     const filter = filterBuilder(convertedCriteria)
     green('criteriaTest: filter', filter)

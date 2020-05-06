@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
-import { format } from 'date-fns'
 import Rules from 'ui/Rules'
 import isNilOrEmpty from 'lib/isNilOrEmpty'
 import { useAppContext } from 'appContext'
@@ -60,7 +59,8 @@ const TR = ({ doc, updateRulesAndView }) => {
   return (
     <>
       <tr className={_classes.tr} onClick={_handleRowClick}>
-        <TD align="left">{format(new Date(date), 'MM/dd/yyyy')}</TD>
+        {/* <TD align="left">{format(new Date(date), 'MM/dd/yyyy')}</TD> */}
+        <TD align="left">{date}</TD>
         <TD align="right">{acctId}</TD>
         <TD align="left">
           <div>{description}</div>

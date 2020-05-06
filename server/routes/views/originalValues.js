@@ -4,7 +4,7 @@ import { DATA_COLLECTION_NAME /*, RULES_COLLECTION_NAME */ } from 'db/constants'
 import { sortBy, compose, toLower, prop } from 'ramda'
 
 // eslint-disable-next-line
-import { red, green, logRequest } from 'logger'
+import { red, green, logRequest, yellow } from 'logger'
 
 // const sortByNameCaseInsensitive = sortBy(compose(toLower, prop('name')))
 
@@ -38,6 +38,7 @@ const originalValues = wrap(async (req, res, next) => {
     return x
   })
   const b = sortByOrig(a)
+  yellow('WARN', 'should convert values ToUi?')
   res.send(b)
 })
 

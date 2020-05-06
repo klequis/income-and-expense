@@ -7,6 +7,7 @@ import { operators, dataFieldNames } from 'global-constants'
 import TextField from 'ui/elements/TextField'
 import { mergeRight } from 'ramda'
 import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
+// import { format } from 'date-fns'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -93,6 +94,7 @@ const CriterionEdit = ({
           className={_classes.field}
           name="value"
           label="value"
+          type="date"
           value={values.value}
           onChange={_handleChange}
           fullWidth

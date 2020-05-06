@@ -99,9 +99,6 @@ const runRules = async (passedInRules = []) => {
     const rule = rules[i]
     const { actions, criteria } = rule
 
-    const { _id } = rule
-    yellow('rule._id', _id)
-
     LOG_CRITERIA && yellow('runRules.criteria', criteria)
 
     const filter = filterBuilder(criteria)

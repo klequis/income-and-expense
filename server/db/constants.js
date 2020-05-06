@@ -1,8 +1,8 @@
 import * as R from 'ramda'
 import dataTypes from './dataTypes'
-
+import { format } from 'date-fns'
 // eslint-disable-next-line
-import { yellow, green } from 'logger'
+import { yellow, green, redf } from 'logger'
 
 const _log = (label) => (message) => {
   // if (label === 'start') {
@@ -41,21 +41,10 @@ export const dataFields = {
     name: 'acctId',
     type: dataTypes.String
   },
-  amount: { // field for export only
+  amount: {
+    // field for export only
     name: 'amount',
     type: dataTypes.Number
-  },
-  date: {
-    name: 'date',
-    type: dataTypes.Date
-  },
-  description: {
-    name: 'description',
-    type: dataTypes.String
-  },
-  origDescription: {
-    name: 'origDescription',
-    type: dataTypes.String
   },
   credit: {
     name: 'credit',
@@ -77,24 +66,36 @@ export const dataFields = {
     name: 'checkNumber',
     type: dataTypes.String
   },
-  type: {
-    name: 'type',
+  date: {
+    name: 'date',
+    type: dataTypes.Date
+  },
+  description: {
+    name: 'description',
     type: dataTypes.String
   },
   omit: {
     name: 'omit',
     type: dataTypes.Boolean
   },
+  origDescription: {
+    name: 'origDescription',
+    type: dataTypes.String
+  },
   ruleIds: {
     name: 'ruleIds',
     type: dataTypes.Array
+  },
+  type: {
+    name: 'type',
+    type: dataTypes.String
   }
 }
 
 export const actionTypes = {
-  replaceAll: 'replaceAll',
   categorize: 'categorize',
   omit: 'omit',
+  replaceAll: 'replaceAll',
   strip: 'strip'
 }
 
@@ -114,15 +115,23 @@ export const operators = {
   equals: {
     name: 'equals',
     type: dataTypes.String
-  },
-  regex: {
-    name: 'regex',
-    type: dataTypes.String
   }
+  // regex: {
+  //   name: 'regex',
+  //   type: dataTypes.String
+  // }
   // in: 'in'
 }
 
 export const actionFields = {
+  category1: {
+    name: 'category1',
+    type: dataTypes.String
+  },
+  category2: {
+    name: 'category2',
+    type: dataTypes.String
+  },
   field: {
     name: 'field',
     type: dataTypes.String
@@ -138,14 +147,6 @@ export const actionFields = {
   replaceWithValue: {
     name: 'replaceWithValue',
     type: dataTypes.Any
-  },
-  category1: {
-    name: 'category1',
-    type: dataTypes.String
-  },
-  category2: {
-    name: 'category2',
-    type: dataTypes.String
   }
 }
 
@@ -154,46 +155,57 @@ const criteriaFields = {
     name: '_id',
     type: dataTypes.String
   },
-  field: {
-    name: 'field',
-    type: dataTypes.String
-  },
-  value: {
-    name: 'value',
-    type: dataTypes.Any
-  },
   action: {
     name: 'action',
+    type: dataTypes.String
+  },
+  field: {
+    name: 'field',
     type: dataTypes.String
   },
   findValue: {
     name: 'findValue',
     type: dataTypes.String
+  },
+  operation: {
+    name: 'operation',
+    type: dataTypes.String
+  },
+  value: {
+    name: 'value',
+    type: dataTypes.Any
   }
 }
 
-const allFields = R.mergeAll([dataFields, actionFields, operators])
+const allFields = () => {
+  const merged = R.mergeAll([
+    dataFields,
+    actionFields,
+    operators,
+    criteriaFields
+  ])
+  return merged
+}
 
 const stringToBoolean = (value) => {
   if (R.type(value) === dataTypes.Boolean) {
     return value
   }
-
   if (value.toLowerCase() === 'true') {
     return true
   }
-
   if (value.toLowerCase() === 'false') {
     return false
   }
 }
 
-const convertValue = ({ field, value }) => {
-  // yellow('allFields', allFields)
+// toDb
+
+const convertValueToDb = (fieldValuePair) => {
+  const [field, value] = fieldValuePair
   // yellow('field', field)
   // yellow('value', value)
-  // yellow('type test', allFields._id)
-  const type = R.path([field, dataFields.type.name], allFields)
+  const type = R.path([field, dataFields.type.name], allFields())
   // yellow('type', type)
   switch (type) {
     case dataTypes.String:
@@ -207,58 +219,98 @@ const convertValue = ({ field, value }) => {
     case dataTypes.Any:
       return [field, value]
     case dataTypes.Date:
-      return [field, new Date(value).toISOString]
+      return [field, new Date(value).toISOString()]
     default:
-      throw new Error(
-        `db.constants.convertFieldData: unknown field type: ${type}.`
-      )
+      redf('field', field)
+      redf('value', value)
+      throw new Error(`db.constants.convertValue: unknown field type: ${type}.`)
   }
 }
 
-export const convertOneFieldValue = (field, value) => {
-  const a = convertValue({ field, value })
-  return a[1]
-}
-
-const convertValues = R.pipe(
-  R.tap(_log('initial')),
+const convertValuesToDb = R.pipe(
+  // R.tap(_log('convertValues - initial')),
   R.toPairs,
-  R.tap(_log('pairs')),
-  R.map(convertValue),
-
+  // R.tap(_log('convertValues - pairs')),
+  R.map(convertValueToDb),
   R.fromPairs
 )
 
-export const convertFieldValues = (fields) => {
+export const convertFieldValuesToDb = (fields) => {
   // yellow('fields', fields)
-  return R.map(convertValues, fields)
+  const ret = R.map(convertValuesToDb, fields)
+  // yellow('convertFieldValuesToDb: ret', ret)
+  return ret
 }
 
-// export const convertCriteriaValues = (fields) => {
-//   // receive
-//   // const ex_fields = [
-//   //   {
-//   //     _id: '1234',
-//   //     field: 'description',
-//   //     operation: 'beginsWith',
-//   //     value: 'CHASE CREDIT CRD AUTOPAY'
-//   //   },
-//   //   {
-//   //     _id: '1234',
-//   //     field: 'credit',
-//   //     operation: 'equals',
-//   //     value: '240'
-//   //   }
-//   // ]
+const convertCriterionToDb = (criterion) => {
+  // yellow('convertCriterion: criterion', criterion)
+  const { field, value } = criterion
+  const valueConverted = convertValueToDb([field, value])
+  return R.mergeRight(criterion, { value: valueConverted[1] })
+}
 
-//   // extract field & value
-//   R.map(
-//     convertValue,
-//     R.map((c) => {
-//       const { field, value } = c
-//       return { field: field, value: value }
-//     })
-//   )
+export const convertCriteriaValuesToDb = (criteria) => {
+  const ret = R.map(convertCriterionToDb, criteria)
+  // yellow('convertCriteriaValues: ret', ret)
+  return ret
+}
 
-//   // send to convertValue
-// }
+// toUi
+
+const convertValueToUi = (fieldValuePair) => {
+  const [field, value] = fieldValuePair
+  // yellow('field', field)
+  // yellow('value', value)
+  const type = R.path([field, dataFields.type.name], allFields())
+  // yellow('type', type)
+  switch (type) {
+    case dataTypes.String:
+      return [field, value]
+    case dataTypes.Number:
+      return [field, Number(value)]
+    case dataTypes.Boolean:
+      return [field, stringToBoolean(value)]
+    case dataTypes.Array:
+      return [field, value]
+    case dataTypes.Any:
+      return [field, value]
+    case dataTypes.Date:
+      yellow('convertValueToUi: value', value)
+      // yellow('convertValueToUi: value', format(new Date(value), 'MM/dd/yyyy'))
+      yellow('convertValueToUi: value', format(new Date(value), 'MM/DD/YYYY'))
+
+      return [field, format(new Date(value), 'MM/DD/YYYY')]
+    default:
+      redf('field', field)
+      redf('value', value)
+      throw new Error(`db.constants.convertValue: unknown field type: ${type}.`)
+  }
+}
+
+const convertValuesToUi = R.pipe(
+  // R.tap(_log('convertValues - initial')),
+  R.toPairs,
+  // R.tap(_log('convertValues - pairs')),
+  R.map(convertValueToUi),
+  R.fromPairs
+)
+
+export const convertFieldValuesToUi = (fields) => {
+  // yellow('fields', fields)
+  const ret = R.map(convertValuesToUi, fields)
+  // yellow('convertFieldValuesToUi: ret', ret)
+  return ret
+}
+
+const convertCriterionToUi = (criterion) => {
+  // yellow('convertCriterion: criterion', criterion)
+  const { field, value } = criterion
+  const valueConverted = convertValueToUi([field, value])
+  return R.mergeRight(criterion, { value: valueConverted[1] })
+}
+
+export const convertCriteriaValuesToUi = (criteria) => {
+  const ret = R.map(convertCriterionToUi, criteria)
+  // yellow('convertCriteriaValues: ret', ret)
+  return ret
+}
