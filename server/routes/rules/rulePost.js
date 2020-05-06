@@ -1,5 +1,5 @@
 import wrap from 'routes/wrap'
-import { RULES_COLLECTION_NAME, convertCriteriaValues } from 'db/constants'
+import { RULES_COLLECTION_NAME, convertCriteriaValuesToDb } from 'db/constants'
 import { insertOne } from 'db/dbFunctions'
 import { mergeRight } from 'ramda'
 import { ObjectID } from 'mongodb'
@@ -21,7 +21,7 @@ const rulePost = wrap(async (req, res) => {
     // yellow('rulePost: actions', actions)
 
     // Change number types to number
-    const convertedCriteria = convertCriteriaValues(criteria)
+    const convertedCriteria = convertCriteriaValuesToDb(criteria)
     // yellow('rulePost: convertedCriteria', convertedCriteria)
 
     const newRule = {

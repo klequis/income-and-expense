@@ -1,5 +1,5 @@
 import wrap from 'routes/wrap'
-import { convertCriteriaValues, DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
+import { convertCriteriaValuesToDb, DATA_COLLECTION_NAME, RULES_COLLECTION_NAME } from 'db/constants'
 
 import { findOneAndUpdate, find } from 'db'
 import runRules from 'actions/runRules'
@@ -41,7 +41,7 @@ const rulePatch = wrap(async (req, res) => {
       )
     }
 
-    const convertedCriteria = convertCriteriaValues(criteria)
+    const convertedCriteria = convertCriteriaValuesToDb(criteria)
 
     const id = ObjectId.createFromHexString(_id)
 

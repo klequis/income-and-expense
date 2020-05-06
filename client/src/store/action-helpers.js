@@ -42,65 +42,36 @@ export const createRequestThunk = ({
   pink('SUCCESS', success)
   console.groupEnd()
   const returnFn = (...args) => async (dispatch) => {
+
     // console.group('createRequestThunk')
     // pink('request.key', request.key)
     // pink('typeof request.fn', request.fn)
     // pink('success', success)
     // pink('failure', failure)
 
-    const _dispatch = action => {
-
-    }
-
     dispatch(actionsPendingAdd.fn(request.key))
     success.forEach(s => {
-      // if (R.type(s) === 'Object') {
-      //   dispatch(actionsPendingAdd.fn(s.key))
-      // } else {
-      //   dispatch(actionsPendingAdd.fn(s.request.key))
-      // }
+      pink('pending - success', s)
       dispatch(actionsPendingAdd.fn(getActionKey(s)))
     })
     failure.forEach(f => {
-      // if (R.type(f) === 'Object') {
-      //   dispatch(actionsPendingAdd.fn(f.key))
-      // } else {
-      //   dispatch(actionsPendingAdd.fn(f.request.key))
-      // }
+      pink('pending - fail', f)
       dispatch(actionsPendingAdd.fn(getActionKey(f)))
     })
     // console.groupEnd()
     try {
       dispatch(requestPendingAction.fn(request.key))
-      // dispatch(actionsPendingAdd.fn(request.key))
       const data = await request.fn(...args)
       dispatch(requestSuccessAction.fn(request.key))
       success.map(async (s) => {
-        // if (R.type(actionCreator) === 'Object') {
-        //   dispatch(actionCreator.fn(data))
-        // } else {
-        //   dispatch(actionCreator.request.fn(data))
-        // }
+        pink('dispatching - success', s)
         dispatch(getActionFn(s)(data))
-        // red('typeof actionCreator', R.type(actionCreator))
-        
-        // dispatch(actionsPendingRemove.fn(request.key))
       })
     } catch (e) {
-      
       dispatch(requestFailedAction.fn(e, request.key))
-      red('action.helpers.createRequestThunk Error', e.message)
       console.log(e)
       return failure.map(async (f) => {
-        // if (R.type(actionCreator === 'Object')) {
-        //   dispatch(actionCreator.fn(e, actionCreator.key))
-        // } else {
-        //   dispatch(actionCreator.request.fn(e, actionCreator.request.key))
-
-        //   // don't know what this last line was for before 
-        //   // most recent revision. 
-        //   // await dispatch(actionCreator(e))
-        // }
+        pink('dispatching - fail', f)
         dispatch(getActionFn(f)(e, getActionKey(f)))
       })
     } finally {
