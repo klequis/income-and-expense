@@ -10,7 +10,7 @@ import {
   views
   // duplicateStatus
 } from 'global-constants'
-import { usePageContext } from 'pageContext'
+// import { usePageContext } from 'pageContext'
 import { useAppContext } from 'appContext'
 
 // eslint-disable-next-line
@@ -30,7 +30,7 @@ const useStyles = makeStyles({
 })
 
 const View = () => {
-  const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
+  // const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
 
   const {
     rulesReadRequest,

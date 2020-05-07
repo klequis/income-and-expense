@@ -11,7 +11,7 @@ import RawData from 'ui/views/RawData'
 import { views } from 'global-constants'
 import DuplicateStatus from 'ui/DuplicateStatus'
 import Duplicates from 'ui/views/Duplicates'
-import { PageProvider } from 'pageContext'
+// import { PageProvider } from 'pageContext'
 
 // eslint-disable-next-line
 import { green, red, orange } from 'logger'
@@ -55,7 +55,7 @@ const App = () => {
         </div>
 
         <DuplicateStatus />
-        <PageProvider>
+        {/* <PageProvider> */}
           <Switch>
             <Route exact path={`/${views.allDataByDescription}`}>
               <AllDataByDescription />
@@ -70,7 +70,7 @@ const App = () => {
               <Duplicates />
             </Route>
           </Switch>
-        </PageProvider>
+        {/* </PageProvider> */}
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
