@@ -10,7 +10,7 @@ import * as R from 'ramda'
 import { LOG_CRITERIA, LOG_FILTER } from 'global-constants'
 
 // eslint-disable-next-line
-import { blue, green, greenf, redf, yellow } from 'logger'
+import { logCriteria, logActions, logFilter, blue, green, greenf, redf, yellow } from 'logger'
 
 // const printFilter = (filter) => {
 //   console.log('// filter')
@@ -97,11 +97,14 @@ const runRules = async (passedInRules = []) => {
   }
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
+
     const { actions, criteria } = rule
 
     LOG_CRITERIA && yellow('runRules.criteria', criteria)
 
     const filter = filterBuilder(criteria)
+
+
     if (criteria.length > 1) {
       LOG_FILTER && yellow('filter', filter)
       LOG_FILTER && filter.$and.map((v) => console.log(v))
@@ -144,7 +147,8 @@ const runRules = async (passedInRules = []) => {
           break
         default:
           redf('unknown action type:', action.action)
-          redf('actions', actions)
+          redf('rule', rule)
+          redf('action', action)
       }
     }
   }

@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 
 export const FLOW = false
+export const LOG_RENDER = false
 
 export const REQUEST_PENDING = 'REQUEST_PENDING'
 export const REQUEST_SUCCESS = 'REQUEST_SUCCESS'

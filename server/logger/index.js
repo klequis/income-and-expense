@@ -1,10 +1,11 @@
 /* istanbul ignore file */
 import chalk from 'chalk'
-const log = console.log
-import { isEmpty, isNil } from 'ramda'
+import * as R from 'ramda'
 
-const checkValue = value => {
-  if (isEmpty(value) || isNil(value)) {
+const log = console.log
+
+const checkValue = (value) => {
+  if (R.isEmpty(value) || R.isNil(value)) {
     return ''
   } else {
     return value
@@ -37,7 +38,7 @@ export const bluef = (message, value) => {
   log(chalk.blue(`${message}`), checkValue(value))
 }
 
-export const logResponse = res => {
+export const logResponse = (res) => {
   console.log('******************')
   const r = {
     text: res.text,
@@ -58,7 +59,7 @@ export const logResponse = res => {
   }
 }
 
-export const logRequest = req => {
+export const logRequest = (req) => {
   // console.Group('** logRequest **')
   const r = {
     // method: req.method,
@@ -73,8 +74,8 @@ export const logRequest = req => {
     // type: req.type,
     // charset: res.charset
   }
-  console.log('***************************************');
-  
+  console.log('***************************************')
+
   log(chalk.bgGreen('request'), r)
   // if (res.ok) {
   //   log(chalk.bgGreen('response'), r)
@@ -95,4 +96,19 @@ export const _log = (label) => (message) => {
     return yellow(label, message)
   }
   return yellow(label, message)
+}
+
+export const logCriteria = (callerName, criteria) =>
+  yellow(`${callerName}.criteria`, criteria)
+
+export const logActions = (callerName, actions) =>
+  yellow(`${callerName}.actions`, actions)
+
+export const logFilter = (callerName, filter) => {
+  if (R.has('$and')(filter)) {
+    yellow('filter', filter)
+    filter.$and.map((v) => console.log(v))
+  } else {
+    yellow(`${callerName}.filter`, filter)
+  }
 }

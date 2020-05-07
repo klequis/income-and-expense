@@ -12,7 +12,7 @@ const criteriaTest = wrap(async (req, res) => {
   try {
     const { body } = req
     // body is an array
-    green('criteriaTest: body', body)
+    // green('criteriaTest: body', body)
 
     if (body.length < 1) {
       redf('criteriaTest', 'body.length is 0')
@@ -20,7 +20,7 @@ const criteriaTest = wrap(async (req, res) => {
 
     const convertedCriteria = convertCriteriaValuesToDb(body)
 
-    // green('convertedCriteria', convertedCriteria)
+    green('convertedCriteria', convertedCriteria)
 
     const filter = filterBuilder(convertedCriteria)
     green('criteriaTest: filter', filter)

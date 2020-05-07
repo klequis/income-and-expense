@@ -77,7 +77,7 @@ export default {
         method: 'POST',
         body: JSON.stringify(rule)
       })
-      // orange('rules.create: data', data)
+      orange('rules.create: data', data)
       return data
     },
     async delete(ruleId) {

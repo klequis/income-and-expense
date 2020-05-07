@@ -4,7 +4,6 @@ import helmet from 'helmet'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import config from '../config'
-import data from 'routes/data'
 import importData from 'routes/importData'
 import categories from 'routes/categories'
 import views from 'routes/views'
@@ -44,7 +43,6 @@ app.use((req, res, next) => {
   next()
 })
 
-// app.use('/api/data', data)
 app.use('/api/import', importData)
 app.use('/api/categories', categories)
 app.use('/api/views', views)

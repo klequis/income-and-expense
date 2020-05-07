@@ -51,12 +51,11 @@ const operationDoesNotContain = (field, value) => {
   return { [field]: { $not: { $regex: escapedStr } } }
 }
 
-export const conditionBuilder = (criteria) => {
-  // takes a single criteria object
-
+export const conditionBuilder = (criterion) => {
+  // takes a single criterion object
   // TODO: hard coding descriptions  => origDescription. Where should this logic be?
+  const { field: origField, operation, value } = criterion
 
-  const { field: origField, operation, value } = criteria
   const field =
     origField === dataFields.description.name
       ? dataFields.origDescription.name
@@ -89,7 +88,7 @@ export const filterBuilder = (criteria) => {
     const o = conditionBuilder(criteria[0])
     return o
   } else {
-    const b = criteria.map((c) => conditionBuilder(c))
+    const b = criteria.map((criterion) => conditionBuilder(criterion))
     const c = { $and: b }
     return c
   }

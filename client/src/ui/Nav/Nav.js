@@ -5,7 +5,7 @@ import { useAppContext } from 'appContext'
 import { withRouter } from 'react-router-dom'
 import removeLeadingSlash from 'lib/removeLeadingSlash'
 // eslint-disable-next-line
-import { green, orange } from 'logger'
+import { green, orange, logRender } from 'logger'
 
 
 const useStyles = makeStyles({
@@ -34,7 +34,7 @@ const Nav = ({ location }) => {
 
   return (
     <div className={classes.nav}>
-      {orange('*Nav render')}
+      {logRender('Nav')}
       <Button variant="outlined" onClick={() => importDataRequest(_currentViewName)}>
         Import Data
       </Button>

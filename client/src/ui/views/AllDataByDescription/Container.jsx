@@ -1,5 +1,34 @@
+// 1. I took out paging and view receives data via prop now
+//    - Nope, no page refresh :)
+// 1. Test if still have the refresh problem
+// 3. Investigate expanding upon use of Bluebird in other cases similar to refreshRulesAndView
+// 4. Read-up on pure component
+
+
+
+// - Container useEffect -> refreshRulesAndView
+// - Container ifLoading
+// - Container renderView
+// - View useEffect -> init -> _setData
+// - View renderTR
+// - TR renderRules
+// - Rules renderRule
+// - Rule _deleteClick -> updateRulesAndView
+
+
+
+// updateRulesAndView
+// - Rule._deleteClick
+
+
+// refreshRulesAndView
+
+
+
+
+
 import React, { useState, useEffect } from 'react'
-// import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useAppContext } from 'appContext'
 import useActionsPending from 'useActionsPending'
 
@@ -11,7 +40,7 @@ import {
 import View from './View'
 
 // eslint-disable-next-line
-import { green, red, yellow, orange } from 'logger'
+import { green, red, yellow, orange, logRender } from 'logger'
 
 // const useAreRequestsPending = () => {
 //   const requests = useSelector((state) => state.requests)
@@ -44,7 +73,7 @@ const Container = () => {
     
     // eslint-disable-next-line
   }, [])
-
+  const _viewData = useSelector(state => state.viewData)
   // green('_loading', _loading)
   // green('viewReadKey', actionIsPending(actionKeys.viewReadKey))
   // green('rulesReadKey', actionIsPending(actionKeys.rulesReadKey))
@@ -57,8 +86,8 @@ const Container = () => {
   // return <View />
   return (
     <div>
-      {orange('*Container render')}
-      <View />
+      {logRender('Container')}
+      <View data={_viewData} />
     </div>
   )
 }

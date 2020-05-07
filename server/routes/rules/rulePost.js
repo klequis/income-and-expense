@@ -31,7 +31,7 @@ const rulePost = wrap(async (req, res) => {
     // yellow('rulePost: newRule', newRule)
 
     const i = await insertOne(RULES_COLLECTION_NAME, newRule)
-    // yellow('rulePost: inserted', i)
+    yellow('rulePost: inserted', i)
     const { _id } = i[0]
     await runRules()
     res.send({ _id: _id })

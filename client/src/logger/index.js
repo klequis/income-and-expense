@@ -1,38 +1,20 @@
 import chalk from 'chalk'
+import { LOG_RENDER } from 'global-constants'
 
-const styleRed = [
-  'color: #ff0000',
-  'font-weight: bold',
-].join(';')
+const styleRed = ['color: #ff0000', 'font-weight: bold'].join(';')
 
-const styleGreen = [
-  'color: #00ff00',
-  'font-weight: bold',
-].join(';')
+const styleGreen = ['color: #00ff00', 'font-weight: bold'].join(';')
 
-const styleBlue = [
-  'color: #00ced1',
-  'font-weight: bold',
-].join(';')
+const styleBlue = ['color: #00ced1', 'font-weight: bold'].join(';')
 
-const styleOrange = [
-  'color: #ffa500',
-  'font-weight: bold',
-].join(';')
+const styleOrange = ['color: #ffa500', 'font-weight: bold'].join(';')
 
-const stylePink = [
-  'color: #ff69b4',
-  'font-weight: bold',
-].join(';')
-const styleYellow = [
-  'color: #ffd700',
-  'font-weight: bold',
-].join(';')
+const stylePink = ['color: #ff69b4', 'font-weight: bold'].join(';')
+const styleYellow = ['color: #ffd700', 'font-weight: bold'].join(';')
 const stylePurple = [
   'color: #885ead', // 551a8b
-  'font-weight: bold',
+  'font-weight: bold'
 ].join(';')
-
 
 const checkValue = (value) => {
   if (value === undefined) {
@@ -98,7 +80,6 @@ export const green = (message = '', value = undefined) => {
 }
 
 export const orange = (message = '', value = undefined, indent = 0) => {
-
   makeMessage(message, value, 'orange', indent)
 }
 
@@ -110,10 +91,19 @@ export const purple = (message = '', value = undefined) => {
   makeMessage(message, value, 'purple')
 }
 
-export const log = (message = '', value = undefined, color = '', indent = false) => {
+export const log = (
+  message = '',
+  value = undefined,
+  color = '',
+  indent = false
+) => {
   let count = 3
-  if (color === '') { count-- }
-  if (value === undefined) { count-- }
+  if (color === '') {
+    count--
+  }
+  if (value === undefined) {
+    count--
+  }
 
   let nMessage
   if (count === 1) {
@@ -148,3 +138,6 @@ export const logReducer = (reducerName, state, type, payload) => {
   blue('payload', payload)
   console.groupEnd()
 }
+
+export const logRender = (componentName) =>
+  LOG_RENDER && orange(`*${componentName} - render`)

@@ -14,7 +14,7 @@ import {
 import { useAppContext } from 'appContext'
 
 // eslint-disable-next-line
-import { green, red, yellow, orange } from 'logger'
+import { green, red, yellow, orange, logRender } from 'logger'
 
 const useStyles = makeStyles({
   th: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles({
   }
 })
 
-const View = () => {
+const View = ({ data }) => {
   // const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
 
   const {
@@ -38,7 +38,7 @@ const View = () => {
     // currentViewNameSet
   } = useAppContext()
 
-  const [_data, _setData] = useState([])
+
   const [_switchState, _setSwitchState] = useState({
     showOmitted: false
   })
@@ -53,19 +53,7 @@ const View = () => {
     await viewReadRequest(views.allDataByDescription)
   }, [rulesReadRequest, viewReadRequest])
 
-  useEffect(() => {
-    // REST MUST HAPPEN AFTER CALLS COME BACK
-    green('view init - start')
-    const viewData = init(200, 'description')
-    // green('viewData', viewData)
-
-    green('view init - end')
-
-    green('view _setData - start')
-    _setData(viewData)
-    green('view _setData - end')
-    // eslint-disable-next-line
-  }, [])
+  
 
   const _classes = useStyles()
 
@@ -91,19 +79,9 @@ const View = () => {
     )
   }
 
-  const _nextClick = () => {
-    const newData = next()
-    _setData(newData)
-  }
-
-  const _previousClick = () => {
-    const newData = previous()
-    _setData(newData)
-  }
-
   return (
     <>
-      {orange('*View render')}
+      {logRender('View')}
       <div>
         <FormControlLabel
           control={
@@ -115,15 +93,6 @@ const View = () => {
           }
           label="Show Omitted"
         />
-        <button disabled={atStart} onClick={_previousClick}>
-          Previous
-        </button>
-        <button disabled={atEnd} onClick={_nextClick}>
-          Next
-        </button>
-        <div>
-          rows: {rows.start} to {rows.end} | rowsPerPage: {rowsPerPage} | totalRows: {totalRows}
-        </div>
       </div>
       <table>
         <thead>
@@ -140,7 +109,7 @@ const View = () => {
           </tr>
         </thead>
         <tbody>
-          {_data.map((doc) => {
+          {data.map((doc) => {
             const { _id, omit } = doc
             if (_switchState.showOmitted === false && omit) {
               return null
