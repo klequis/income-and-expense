@@ -98,14 +98,14 @@ export const PageProvider = ({ children }) => {
     sortField,
     sortDirection = 'ascending'
   ) => {
-    yellow('init - start')
+    yellow('pageContext init - start')
     _setRowsPerPage(numRowsPerPage)
     _setSort({ field: sortField, direction: sortDirection })
     _setRows({ start: 0, end: numRowsPerPage })
     _setAtStart(true)
     _setAtEnd(data.length === numRowsPerPage ? true : false)
     _setTotalRows(data.length)
-    yellow('init - end')
+    yellow('pageContext init - end')
     return R.slice(0, numRowsPerPage, _sortData(sortField, sortDirection, data))
   }
 

@@ -14,7 +14,7 @@ import Duplicates from 'ui/views/Duplicates'
 import { PageProvider } from 'pageContext'
 
 // eslint-disable-next-line
-import { green, red } from 'logger'
+import { green, red, orange } from 'logger'
 
 const useStyles = makeStyles({
   appTitle: {
@@ -36,6 +36,7 @@ const App = () => {
 
   return (
     <div className={_classes.devWrapper}>
+      {orange('*App render')}
       <Container maxWidth={false}>
         <div className={_classes.navDiv}>
           <Nav />
@@ -71,7 +72,7 @@ const App = () => {
           </Switch>
         </PageProvider>
       </Container>
-      {/* {process.NODE_ENV !== 'production' ? <DevTools /> : null} */}
+      {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
   )
 }

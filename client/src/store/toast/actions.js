@@ -1,8 +1,7 @@
-import { SET_TOAST, CLEAR_TOAST } from './constants'
 import shortid from 'shortid'
 import actionKeys from 'actionKeys'
 
-// eslint-disable-next-lien
+// eslint-disable-next-line
 import { yellow } from 'logger'
 
 /**

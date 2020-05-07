@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+// // eslint-disable-next-line
 import {
   actionsPendingAdd,
   actionsPendingRemove,
@@ -12,15 +12,17 @@ import * as R from 'ramda'
 // eslint-disable-next-line
 import { pink, red } from 'logger'
 
+const LOG = false
+
 export const logError = (err, key) => {
   red(`actions.logError(key:${key})`, err)
 }
 
-const getKeyFromFunction = (fnStr) => {
-  const l = fnStr.split(/\s+/)[6]
-  const m = R.match(/\[(.*?)\]/, l)
-  return m[1]
-}
+// const getKeyFromFunction = (fnStr) => {
+//   const l = fnStr.split(/\s+/)[6]
+//   const m = R.match(/\[(.*?)\]/, l)
+//   return m[1]
+// }
 
 const getActionKey = action => R.type(action) === 'Object'
   ? action.key
@@ -36,11 +38,11 @@ export const createRequestThunk = ({
   success = [],
   failure = []
 }) => {
-  console.group('request types')
-  pink('REQUEST', request)
-  pink('typeof REQUEST', R.type(request))
-  pink('SUCCESS', success)
-  console.groupEnd()
+  LOG && console.group('request types')
+  LOG && pink('REQUEST', request)
+  LOG && pink('typeof REQUEST', R.type(request))
+  LOG && pink('SUCCESS', success)
+  LOG && console.groupEnd()
   const returnFn = (...args) => async (dispatch) => {
 
     // console.group('createRequestThunk')
@@ -51,11 +53,11 @@ export const createRequestThunk = ({
 
     dispatch(actionsPendingAdd.fn(request.key))
     success.forEach(s => {
-      pink('pending - success', s)
+      LOG && pink('success-pending-add', getActionKey(s))
       dispatch(actionsPendingAdd.fn(getActionKey(s)))
     })
     failure.forEach(f => {
-      pink('pending - fail', f)
+      LOG && pink('fail-pending-add', getActionKey(f))
       dispatch(actionsPendingAdd.fn(getActionKey(f)))
     })
     // console.groupEnd()
@@ -64,18 +66,17 @@ export const createRequestThunk = ({
       const data = await request.fn(...args)
       dispatch(requestSuccessAction.fn(request.key))
       success.map(async (s) => {
-        pink('dispatching - success', s)
+        LOG && pink('dispatching - success', getActionKey(s))
         dispatch(getActionFn(s)(data))
       })
     } catch (e) {
       dispatch(requestFailedAction.fn(e, request.key))
       console.log(e)
       return failure.map(async (f) => {
-        pink('dispatching - fail', f)
+        LOG && pink('dispatching - fail', getActionKey(f))
         dispatch(getActionFn(f)(e, getActionKey(f)))
       })
     } finally {
-      red('FINALLY')
       dispatch(actionsPendingRemove.fn(request.key))
       success.forEach(s => dispatch(actionsPendingRemove.fn(getActionKey(s))))
       failure.forEach(f => dispatch(actionsPendingRemove.fn(getActionKey(f))))

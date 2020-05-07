@@ -33,7 +33,7 @@ import {
 
 import actionKeys from './actionKeys'
 
-// import * as Promise from 'bluebird'
+import * as Promise from 'bluebird'
 
 import isNilOrEmpty from 'lib/isNilOrEmpty'
 
@@ -87,6 +87,17 @@ export const AppProvider = ({ children }) => {
   )
 
   // R
+
+  const refreshRulesAndView = useCallback(
+    async viewName => {
+      // dispatch(await rulesReadRequestAction()).then(async () =>
+      //   dispatch(await viewReadRequestAction(viewName))
+      // )
+      Promise.all([dispatch(await rulesReadRequestAction()), dispatch(await viewReadRequestAction(viewName))])
+    },
+    [dispatch]
+  )
+
   const requestFailed = (reason, key) => {
     dispatch(requestFailedAction.fn(reason, key))
   }
@@ -207,6 +218,7 @@ export const AppProvider = ({ children }) => {
         currentViewNameSet,
         duplicatesReadRequest,
         importDataRequest,
+        refreshRulesAndView,
         requestFailed,
         requestPending,
         requestSuccess,

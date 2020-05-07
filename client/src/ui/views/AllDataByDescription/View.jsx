@@ -14,7 +14,7 @@ import { usePageContext } from 'pageContext'
 import { useAppContext } from 'appContext'
 
 // eslint-disable-next-line
-import { green, red, yellow } from 'logger'
+import { green, red, yellow, orange } from 'logger'
 
 const useStyles = makeStyles({
   th: {
@@ -35,7 +35,7 @@ const View = () => {
   const {
     rulesReadRequest,
     viewReadRequest,
-    currentViewNameSet
+    // currentViewNameSet
   } = useAppContext()
 
   const [_data, _setData] = useState([])
@@ -55,15 +55,16 @@ const View = () => {
 
   useEffect(() => {
     // REST MUST HAPPEN AFTER CALLS COME BACK
-    green('init - start')
+    green('view init - start')
     const viewData = init(200, 'description')
     // green('viewData', viewData)
 
-    green('init - end')
+    green('view init - end')
 
-    green('_setData - start')
+    green('view _setData - start')
     _setData(viewData)
-    green('_setData - end')
+    green('view _setData - end')
+    // eslint-disable-next-line
   }, [])
 
   const _classes = useStyles()
@@ -102,6 +103,7 @@ const View = () => {
 
   return (
     <>
+      {orange('*View render')}
       <div>
         <FormControlLabel
           control={

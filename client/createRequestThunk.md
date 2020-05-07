@@ -1,3 +1,8 @@
+- Make a dummy createRequestThunk
+- Call and analyze what comes back
+
+// The below doesn work :(
+
 There a two types of actions
 
 Object

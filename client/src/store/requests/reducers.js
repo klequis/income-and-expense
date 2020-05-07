@@ -1,7 +1,7 @@
 import {
   FLOW
 } from 'global-constants'
-import { API_ERROR } from './constants'
+// import { API_ERROR } from './constants'
 import * as R from 'ramda'
 import actionKeys from 'actionKeys'
 

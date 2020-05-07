@@ -96,7 +96,7 @@ export const ruleCreateRequestAction = createRequestThunk({
     fn: api.rules.create,
     key: actionKeys.ruleCreateRequestKey
   },
-  success: [rulesReadRequestAction],
+  success: [rulesReadAction],
   failure: [
     {
       fn: (e) =>
@@ -117,7 +117,7 @@ export const ruleDeleteRequestAction = createRequestThunk({
     fn: api.rules.delete,
     key: actionKeys.ruleDeleteRequestKey
   },
-  success: [rulesReadRequestAction]
+  success: [rulesReadAction]
   // failure: [
   //   e =>
   //     setToast({ error: e, message: 'Could not deleteRule', level: TOAST_WARN })

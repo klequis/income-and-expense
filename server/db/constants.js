@@ -275,10 +275,6 @@ const convertValueToUi = (fieldValuePair) => {
     case dataTypes.Any:
       return [field, value]
     case dataTypes.Date:
-      yellow('convertValueToUi: value', value)
-      // yellow('convertValueToUi: value', format(new Date(value), 'MM/dd/yyyy'))
-      yellow('convertValueToUi: value', format(new Date(value), 'MM/DD/YYYY'))
-
       return [field, format(new Date(value), 'MM/DD/YYYY')]
     default:
       redf('field', field)
