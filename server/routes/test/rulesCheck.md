@@ -220,6 +220,33 @@ My try so far
 
 
 
+I have an array of objects
+
+```js
+const res = [
+  { result: true, message: 'good 1' },
+  { result: true, message: 'good 2' },
+  { result: false, message: '!good 3' },
+  { result: false, message: '!good 4' }
+]
+```
+
+I want to collect all the message prop values where `result` is false. Think there is a way to do with reduce but I don't know how to append to the accumulator.
+
+Desired result
+
+```js
+['!good 3', '!good 4']
+```
+
+I tried this. Not sure you can pass a function as the accumulator
+
+```js
+R.reduce(include, x => R.append(x, []), res)
+
+// -> false
+```
+
 
 
 
