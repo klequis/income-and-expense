@@ -2,7 +2,7 @@ import React from 'react'
 import TextField from 'ui/elements/TextField'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from 'ui/elements/Select'
-import { dataFieldNames, actionTypes } from 'global-constants'
+import { dataFieldNames, actionTypes, dataFields } from 'global-constants'
 
 // eslint-disable-next-line
 import { green, redf } from 'logger'
@@ -26,7 +26,6 @@ const ActionControls = ({ values, handleChange }) => {
       <>
         <Select name="field" value={field} onChange={handleChange}>
           <MenuItem value={dataFieldNames.description}>Description</MenuItem>
-          <MenuItem value={dataFieldNames.type}>Type</MenuItem>
         </Select>
         <TextField name="findValue" label="findValue" value={findValue} />
         <TextField
@@ -42,7 +41,6 @@ const ActionControls = ({ values, handleChange }) => {
       <>
         <Select name="field" value={field} onChange={handleChange}>
           <MenuItem value={dataFieldNames.description}>Description</MenuItem>
-          <MenuItem value={dataFieldNames.type}>Type</MenuItem>
         </Select>
         <TextField
           name="replaceWithValue"
