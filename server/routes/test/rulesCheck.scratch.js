@@ -74,28 +74,6 @@ const criteriaFieldValues = [
   dataFields.date.name
 ]
 
-// const checkRule = (rule) => {
-//   const { _id, criteria, actions } = rule
-
-//   let errors = {
-//     _id
-//   }
-//   // check criteria
-//   const { field, operation, value } = criteria
-//   // criteria.field
-//   if (!R.contains(field, criteriaFieldValues)) {
-//     errors = R.mergeRight(errors, {
-//       criteria: { field: field, error: `${field} is not valid.` }
-//     })
-//   }
-//   // criteria.operation
-//   if (!R.contains(operation, operationValues)) {
-//     errors = R.mergeRight(errors, {
-//       criteria: { field: field, error: `${field} is not valid.` }
-//     })
-//   }
-// }
-
 const person = {
   name: 'joe',
   age: 'hi'
@@ -113,7 +91,10 @@ const personSpec = {
 
 const personCheck = (value, key, obj) => {
   const r = personSpec[key](value, key)
-  return r.result ? obj : R.mergeRight(obj, { errorMsg: r.message })
+  yellow('r', r)
+  const { result, message } = r
+  return result ? obj : R.mergeRight(obj, { errorMsg: message })
+  
 }
 
 const rulesCheckFull = wrap(async (req, res) => {
@@ -126,6 +107,16 @@ const rulesCheckFull = wrap(async (req, res) => {
 })
 
 export default rulesCheckFull
+
+const res = [
+  { result: true, message: 'good' },
+  { result: true, message: 'good' },
+  { result: false, message: '!good' },
+  { result: false, message: '!good' }
+]
+
+const t = R.pipe(R.reject(R.prop('result')), R.map(R.prop('message')))(res)
+// yellow('t', t)
 
 // thoughts
 // - toPairs
@@ -153,58 +144,48 @@ export default rulesCheckFull
 // const b = groupResults(a)
 // yellow('b', b)
 
-const byGrade = R.groupBy((student) => {
-  // console.log('student', student)
-  // const score = student.score
-  const result = student.result
-  return result === true ? 'OK' : 'Bad'
-})
+// const byGrade = R.groupBy((student) => {
+//   // console.log('student', student)
+//   // const score = student.score
+//   const result = student.result
+//   return result === true ? 'OK' : 'Bad'
+// })
 // const students = [
 //   { name: 'Abby', score: 84 },
 //   { name: 'Eddy', score: 58 },
 //   { name: 'Jack', score: 69 }
 // ]
 
-const res = [
-  { result: true, message: 'good' },
-  { result: true, message: 'good' },
-  { result: false, message: '!good' },
-  { result: false, message: '!good' }
-]
+// const bg = byGrade(res)
+// yellow('bg', bg) // OK and Bad groups
 
-const bg = byGrade(res)
-// yellow('bg', bg)
+// const n = R.all((x) => x, [false, false])
+// yellow('n', n) // returns false
 
-const n = R.all((x) => x, [false, false])
-// yellow('n', n)
+// const hasErrors = R.all(
+//   (x) => x,
+//   R.map((s) => s.result, res)
+// )
+// yellow('hasErrors', hasErrors) // not working
 
-const hasErrors = R.all(
-  (x) => x,
-  R.map((s) => s.result, res)
-)
-// yellow('hasErrors', hasErrors)
+// const p = res.filter(r => !r.result)
+// yellow('p', p)  // works
 
-const p = res.filter(r => !r.result)
-// yellow('p', p)
-const q = p.map(x => x.message)
-// yellow('q', q)
+// const q = p.map(x => x.message)
+// yellow('q', q) // works. depends on p
 
-const getErrors = R.pipe(
-  R.filter(x => !x.result),
-  R.map(x => x.message)
-)
+// const getErrors = R.pipe(
+//   R.filter(x => !x.result),
+//   R.map(x => x.message)
+// )
 
-// yellow('getErrors', getErrors(res))
+// yellow('getErrors', getErrors(res)) // works. gets errors only
 
 // const s = R.map(getErrors, res)
 // yellow('s', s)
 
-const t = R.pipe(R.reject(R.prop('result')), R.map(R.prop('message')))(res)
-yellow('t', t)
+// const v = R.reduce((a, b) => b.result ? a : [a, b.message], [], res)
+// yellow('v', v) // works
 
-
-const v = R.reduce((a, b) => b.result ? a : [a, b.message], [], res)
-yellow('v', v)
-
-const u = R.reduce((a, b) => b.result ? a : a.concat(b.message), [], res);
-yellow('u', u)
+// const u = R.reduce((a, b) => b.result ? a : a.concat(b.message), [], res);
+// yellow('u', u) // works

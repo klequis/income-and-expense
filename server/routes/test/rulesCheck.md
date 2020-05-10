@@ -216,10 +216,6 @@ My try so far
 ```
 
 
-
-
-
-
 I have an array of objects
 
 ```js
