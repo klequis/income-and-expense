@@ -60,30 +60,39 @@ const isObject = (value, key) => ({
   message: makeMessage(value, key, 'number')
 })
 
-const isNumber = (value, key) => ({
-  pass: R.type(value) === 'Number',
-  message: makeMessage(value, key, 'number')
-})
+const isNumber = (value, key) => {
+  const pass = R.type(value) === 'Number'
+  return {
+    pass,
+    message: pass ? '' : makeMessage(value, key, 'number')
+  }
+}
 
 const isBoolean = (value, key) => ({
   pass: R.type(value) === rTypes.boolean,
   message: makeMessage(value, key, 'boolean')
 })
 
-const isString = (value, key) => ({
-  pass: R.type(value) === 'String',
-  message: makeMessage(value, key, 'string')
-})
+const isString = (value, key) => {
+  const pass = R.type(value) === 'String'
+  return {
+    pass,
+    message: pass ? '' : makeMessage(value, key, 'string')
+  }
+}
 
 const isNull = (value, key) => ({
   pass: R.type(value) === rTypes.null,
   message: makeMessage(value, key, 'null')
 })
 
-const isArray = (value, key) => ({
-  pass: R.type(value) === rTypes.array,
-  message: makeMessage(value, key, 'array')
-})
+const isArray = (value, key) => {
+  const pass = R.type(value) === rTypes.array
+  return {
+    pass,
+    message: pass ? '' : makeMessage(value, key, 'array')
+  }
+}
 
 const isRegExp = (value, key) => ({
   pass: R.type(value) === rTypes.regExp,
@@ -101,9 +110,10 @@ const isUndefined = (value, key) => ({
 
 const isAction = (value, key) => {
   green('value', value)
+  const pass = R.includes(value, actionTypes)
   return {
-    pass: R.includes(value, actionTypes),
-    message: `Value '${value}' is not a valid action.`
+    pass,
+    message: pass ? '' : `Value '${value}' is not a valid action.`
   }
 }
 
@@ -156,11 +166,12 @@ const actionsCheck = (value, key, obj) => {
 const pipeIt = R.pipe(
   R.tap(_log('initial')),
   R.mapObjIndexed(actionsCheck),
-  // R.tap(_log('after map')),
+  R.tap(_log('after map')),
 
   // R.filter(R.has('errorMsg'))
   R.cond([
     [R.length(R.prop('errors')) > 0, R.identity]
+
   ])
 
   // R.tap(_log('after filter'))
