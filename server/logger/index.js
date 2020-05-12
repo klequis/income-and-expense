@@ -87,7 +87,7 @@ export const logRequest = (req) => {
 export const _log = (label) => (message) => {
   if (label === 'start') {
     console.log()
-    return green('start ----------------------- /n')
+    return green('start -----------------------')
   }
   if (label === 'end') {
     return green('end -----------------------')

@@ -99,29 +99,7 @@ export const actionTypes = {
   strip: 'strip'
 }
 
-export const operators = {
-  beginsWith: {
-    name: 'beginsWith',
-    type: dataTypes.String
-  },
-  contains: {
-    name: 'contains',
-    type: dataTypes.String
-  },
-  doesNotContain: {
-    name: 'doesNotContain',
-    type: dataTypes.String
-  },
-  equals: {
-    name: 'equals',
-    type: dataTypes.String
-  }
-  // regex: {
-  //   name: 'regex',
-  //   type: dataTypes.String
-  // }
-  // in: 'in'
-}
+
 
 export const actionFields = {
   category1: {

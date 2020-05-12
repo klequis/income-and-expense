@@ -346,7 +346,7 @@ The prop check could go off of a propSpec object
 SO
 
 ```js
-ruleCheck = rule  =>
+ruleCheck =bb rule  =>
 
   - check-Rule-Shape
     - hasProp('_id')
@@ -368,6 +368,7 @@ ruleCheck = rule  =>
     - operator(oneOf(['beginsWith', 'contains', 'doesNotContain', 'equals' ]))
     - if prop('field') === 'description'
       - prop('value'): isString, isNotEmpty
+      - prop('operation': isOneOf)
     - if prop('field') === 'type'  // future: limit to known types
       - prop('value'): isString, isNotEmpty
     - if prop('field') === 'credit'

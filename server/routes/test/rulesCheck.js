@@ -4,9 +4,9 @@ import { find } from 'db/dbFunctions'
 import * as R from 'ramda'
 
 // eslint-disable-next-line
-import { red, green, yellow, logRequest, _log, _type } from 'logger'
+import { red, green, yellow, logRequest, _log, _type, purple } from 'logger'
 
-const rule = {
+export const rule = {
   _id: '5e769d5a0f17180a48b12524',
   criteria: [
     {
@@ -40,7 +40,7 @@ const rule = {
   ]
 }
 
-const rTypes = {
+export const rTypes = {
   object: 'Object',
   number: 'Number',
   boolean: 'Boolean',
@@ -52,64 +52,66 @@ const rTypes = {
   undefined: 'Unfefined'
 }
 
-const makeIncorrectTypeMessage = (value, key, expectedType, fnName) =>
+export const makeIncorrectTypeMessage = (value, key, expectedType, fnName) =>
   `${fnName}: Value '${value}' is not valid for property '${key}'. Expected ${expectedType}`
 
-const isObject = R.curry((value, key) =>
+export const isObject = R.curry((value, key) =>
   R.type(value) === rTypes.object
     ? ''
     : makeIncorrectTypeMessage(value, key, 'number')
 )
 
-const isNumber = R.curry((value, key) =>
+export const isNumber = R.curry((value, key) =>
   R.type(value) === rTypes.number
     ? ''
     : makeIncorrectTypeMessage(value, key, 'number')
 )
 
-const isBoolean = R.curry((value, key) =>
+export const isBoolean = R.curry((value, key) =>
   R.type(value) === rTypes.boolean
     ? ''
     : makeIncorrectTypeMessage(value, key, 'boolean')
 )
 
-const isString = R.curry((value, key) =>
-  R.type(value) === rTypes.string
+export const isString = R.curry((value, key) => {
+  purple('isString: value', value)
+  purple('isString: key', key)
+  return R.type(value) === rTypes.string
     ? ''
     : makeIncorrectTypeMessage(value, key, 'string', 'isString')
-)
+})
 
-const isNull = R.curry((value, key) =>
+export const isNull = R.curry((value, key) =>
   R.type(value) === rTypes.null
     ? ''
     : makeIncorrectTypeMessage(value, key, 'null')
 )
 
-const isArray = R.curry((value, key) =>
+export const isArray = R.curry((value, key) =>
   R.type(value) === rTypes.array
     ? ''
     : makeIncorrectTypeMessage(value, key, 'array')
 )
 
-const isRegExp = R.curry((value, key) =>
+export const isRegExp = R.curry((value, key) =>
   R.type(value) === rTypes.regExp
     ? ''
     : makeIncorrectTypeMessage(value, key, 'RegExp')
 )
 
-const isFunction = R.curry((value, key) =>
+export const isFunction = R.curry((value, key) =>
   R.type(value) === rTypes.function
     ? ''
     : makeIncorrectTypeMessage(value, key, 'function')
 )
 
-const isUndefined = R.curry((value, key) =>
+export const isUndefined = R.curry((value, key) =>
   R.type(value) === rTypes.undefined
     ? ''
     : makeIncorrectTypeMessage(value, key, 'undefined')
 )
 
-const isEqualTo = R.curry((value1, value2) => {
+export const isEqualTo = R.curry((value1, value2) => {
   yellow('value1', value1)
   yellow('value2', value2)
   return R.equals(value1, value2)
@@ -117,19 +119,24 @@ const isEqualTo = R.curry((value1, value2) => {
     : `isEqualTo: Value '${value2}' must equal '${value1}'`
 })
 
-const isAction = R.curry((value) => {
+export const isAction = R.curry((value) => {
   return R.includes(value, R.values(actionTypes))
     ? ''
     : `Value '${value}' is not a valid action.`
 })
 
-const isNotEmpty = value => R.curry(value => {
-  return R.isEmpty(value)
-    ? `isNotEmpty: Value ${value} cannot be empty`
-    : ''
-})
+export const isNotEmpty = (value) =>
+  R.curry((value) => {
+    return R.isEmpty(value) ? `isNotEmpty: Value ${value} cannot be empty` : ''
+  })
 
-const criteriaFieldValues = [
+export const isOneOf = (value, list) => {
+  const compareList = R.type(list) === 'Object' ? R.values(list) : list
+
+  return R.includes(value, R.values(compareList))
+}
+
+export const criteriaFieldValues = [
   dataFields.description.name,
   dataFields.type.name,
   dataFields.credit.name,
@@ -146,12 +153,12 @@ const criteriaFieldValues = [
   ]
 ]
 */
-const or = R.curry((fns, value) => {
+export const or = R.curry((fns, value) => {
   const orRet = fns.map((fn) => fn(value))
   return R.any(R.isEmpty, orRet) ? '' : orRet
 })
 
-const actionSpec = {
+export const actionSpec = {
   action: [isString, isAction],
   field: [isString, or([isEqualTo('description'), isEqualTo('')])],
   findValue: [isString],
@@ -161,7 +168,7 @@ const actionSpec = {
   category2: [isString]
 }
 
-const actionsCheck = (value, key, obj) => {
+export const actionsCheck = (value, key, obj) => {
   const r = actionSpec[key].map((fn) => fn(value, key))
   return {
     field: key,
@@ -192,11 +199,11 @@ const ruleFormSpec = {
 
 const checkRuleForm = (rule) => {
   const { _id, actions, criteria } = rule
-  const idRes = ruleFormSpec._id.map(fn => fn(_id))
+  const idRes = ruleFormSpec._id.map((fn) => fn(_id))
   red('idRes', idRes)
-  const actionsRes = ruleFormSpec.actions.map(fn => fn(actions))
+  const actionsRes = ruleFormSpec.actions.map((fn) => fn(actions))
   red('actionsRes', actionsRes)
-  const criteriaRes = ruleFormSpec.criteria.map(fn => fn(criteria))
+  const criteriaRes = ruleFormSpec.criteria.map((fn) => fn(criteria))
   red('criteriaRes', criteriaRes)
 }
 

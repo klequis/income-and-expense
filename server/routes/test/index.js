@@ -4,6 +4,7 @@ import convertDebitValueToNumber from './convertDebitValueToNumber'
 import rulesCheck from './rulesCheck'
 // import rulesCheckFull from './rulesCheck.full'
 import composeItWith from './composeItWith'
+import simple from './simple'
 
 const router = express.Router()
 
@@ -12,5 +13,6 @@ router.get('/convert-debit-value-to-number', convertDebitValueToNumber)
 router.get('/rules-check', rulesCheck)
 // router.get('/rules-check-full', rulesCheckFull)
 router.get('/compose-it-with', composeItWith)
+router.get('/simple', simple)
 
 export default router
