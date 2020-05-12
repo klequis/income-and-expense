@@ -98,6 +98,10 @@ export const _log = (label) => (message) => {
   return yellow(label, message)
 }
 
+export const _type = (label) => value => {
+  return yellow(`type: ${label}`, R.type(value))
+}
+
 export const logCriteria = (callerName, criteria) =>
   yellow(`${callerName}.criteria`, criteria)
 

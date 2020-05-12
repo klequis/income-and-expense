@@ -4,7 +4,7 @@ import { find } from 'db/dbFunctions'
 import * as R from 'ramda'
 
 // eslint-disable-next-line
-import { red, green, yellow, logRequest, _log } from 'logger'
+import { red, green, yellow, logRequest, _log, _type } from 'logger'
 
 const rule = {
   _id: '5e769d5a0f17180a48b12524',
@@ -19,10 +19,10 @@ const rule = {
   actions: [
     {
       // _id: '5e769d5a0f17180a48b12522',
-      action: 'zz.replaceAll',
+      action: 'replaceAll',
       field: 'description',
-      findValue: '',
-      numAdditionalChars: '',
+      findValue: 0,
+      numAdditionalChars: 0,
       replaceWithValue: 'CHEVRON',
       category1: '',
       category2: ''
@@ -32,7 +32,7 @@ const rule = {
       action: 'categorize',
       field: '',
       findValue: '',
-      numAdditionalChars: '',
+      numAdditionalChars: 0,
       replaceWithValue: '',
       category1: 'auto',
       category2: 'gasoline'
@@ -52,70 +52,82 @@ const rTypes = {
   undefined: 'Unfefined'
 }
 
-const makeMessage = (value, key, expectedType) =>
-  `Value '${value}' is not valid for property '${key}'. Expected ${expectedType}`
+const makeIncorrectTypeMessage = (value, key, expectedType, fnName) =>
+  `${fnName}: Value '${value}' is not valid for property '${key}'. Expected ${expectedType}`
 
-const isObject = (value, key) => ({
-  pass: R.type(value) === rTypes.object,
-  message: makeMessage(value, key, 'number')
+const isObject = R.curry((value, key) =>
+  R.type(value) === rTypes.object
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'number')
+)
+
+const isNumber = R.curry((value, key) =>
+  R.type(value) === rTypes.number
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'number')
+)
+
+const isBoolean = R.curry((value, key) =>
+  R.type(value) === rTypes.boolean
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'boolean')
+)
+
+const isString = R.curry((value, key) =>
+  R.type(value) === rTypes.string
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'string', 'isString')
+)
+
+const isNull = R.curry((value, key) =>
+  R.type(value) === rTypes.null
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'null')
+)
+
+const isArray = R.curry((value, key) =>
+  R.type(value) === rTypes.array
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'array')
+)
+
+const isRegExp = R.curry((value, key) =>
+  R.type(value) === rTypes.regExp
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'RegExp')
+)
+
+const isFunction = R.curry((value, key) =>
+  R.type(value) === rTypes.function
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'function')
+)
+
+const isUndefined = R.curry((value, key) =>
+  R.type(value) === rTypes.undefined
+    ? ''
+    : makeIncorrectTypeMessage(value, key, 'undefined')
+)
+
+const isEqualTo = R.curry((value1, value2) => {
+  yellow('value1', value1)
+  yellow('value2', value2)
+  return R.equals(value1, value2)
+    ? ''
+    : `isEqualTo: Value '${value2}' must equal '${value1}'`
 })
 
-const isNumber = (value, key) => {
-  const pass = R.type(value) === 'Number'
-  return {
-    pass,
-    message: pass ? '' : makeMessage(value, key, 'number')
-  }
-}
-
-const isBoolean = (value, key) => ({
-  pass: R.type(value) === rTypes.boolean,
-  message: makeMessage(value, key, 'boolean')
+const isAction = R.curry((value) => {
+  return R.includes(value, R.values(actionTypes))
+    ? ''
+    : `Value '${value}' is not a valid action.`
 })
 
-const isString = (value, key) => {
-  const pass = R.type(value) === 'String'
-  return {
-    pass,
-    message: pass ? '' : makeMessage(value, key, 'string')
-  }
-}
-
-const isNull = (value, key) => ({
-  pass: R.type(value) === rTypes.null,
-  message: makeMessage(value, key, 'null')
+const isNotEmpty = value => R.curry(value => {
+  return R.isEmpty(value)
+    ? `isNotEmpty: Value ${value} cannot be empty`
+    : ''
 })
-
-const isArray = (value, key) => {
-  const pass = R.type(value) === rTypes.array
-  return {
-    pass,
-    message: pass ? '' : makeMessage(value, key, 'array')
-  }
-}
-
-const isRegExp = (value, key) => ({
-  pass: R.type(value) === rTypes.regExp,
-  message: makeMessage(value, key, 'RegExp')
-})
-
-const isFunction = (value, key) => ({
-  pass: R.type(value) === rTypes.function,
-  message: makeMessage(value, key, 'function')
-})
-const isUndefined = (value, key) => ({
-  pass: R.type(value) === rTypes.undefined,
-  message: makeMessage(value, key, 'undefined')
-})
-
-const isAction = (value, key) => {
-  green('value', value)
-  const pass = R.includes(value, actionTypes)
-  return {
-    pass,
-    message: pass ? '' : `Value '${value}' is not a valid action.`
-  }
-}
 
 const criteriaFieldValues = [
   dataFields.description.name,
@@ -126,91 +138,73 @@ const criteriaFieldValues = [
   dataFields.date.name
 ]
 
+/*
+"errors": [
+  [
+    "isEqualTo: Value 'description' must equal 'description-x'",
+    "isEqualTo: Value 'description' must equal ''"
+  ]
+]
+*/
+const or = R.curry((fns, value) => {
+  const orRet = fns.map((fn) => fn(value))
+  return R.any(R.isEmpty, orRet) ? '' : orRet
+})
+
 const actionSpec = {
-  // _id: '5e769d5a0f17180a48b12524',
-  actions: [(value, key) => isArray(value, key), (value) => isAction(value)],
-  action: [(value, key) => isString(value, key)],
-  field: [(value, key) => isString(value, key)],
-  findValue: [(value, key) => isString(value, key)],
-  numAdditionalChars: [(value, key) => isNumber(value, key)],
-  replaceWithValue: [(value, key) => isString(value, key)],
-  category1: [(value, key) => isString(value, key)],
-  category2: [(value, key) => isString(value, key)]
+  action: [isString, isAction],
+  field: [isString, or([isEqualTo('description'), isEqualTo('')])],
+  findValue: [isString],
+  numAdditionalChars: [isNumber],
+  replaceWithValue: [isString],
+  category1: [isString],
+  category2: [isString]
 }
 
 const actionsCheck = (value, key, obj) => {
-  yellow('value', value)
-  yellow('key', key)
-  // yellow('obj', obj)
-  // yellow('actionSpec', actionSpec)
-  // good: const r = actionSpec[key][0](value, key)
-  // green('actionSpec[key]', actionSpec[key])
   const r = actionSpec[key].map((fn) => fn(value, key))
-  // green('r', r)
-  // const { pass, message } = r[0]
-  // const z = {
-  //   field: key,
-  //   value: value,
-  //   errors: []
-  // }
-  // return pass ? obj : R.mergeRight(obj, { errorMsg: message })
-  const ret = {
+  return {
     field: key,
     value: value,
-    errors: r
+    errors: r.filter((e) => {
+      return !R.isEmpty(e)
+    })
   }
-  green('ret', ret)
-  return ret
 }
 
 const pipeIt = R.pipe(
-  R.tap(_log('initial')),
+  // R.tap(_log('start')),
+
   R.mapObjIndexed(actionsCheck),
-  R.tap(_log('after map')),
+  // R.tap(_log('after map')),
 
-  // R.filter(R.has('errorMsg'))
-  R.cond([
-    [R.length(R.prop('errors')) > 0, R.identity]
+  R.filter((x) => R.length(R.prop('errors')(x)) > 0)
+  // R.tap(_type('after filter')),
 
-  ])
-
-  // R.tap(_log('after filter'))
+  // R.tap(_log('end'))
 )
 
+const ruleFormSpec = {
+  _id: [isString, isNotEmpty],
+  criteria: [isArray, isNotEmpty],
+  actions: [isArray, isNotEmpty]
+}
+
+const checkRuleForm = (rule) => {
+  const { _id, actions, criteria } = rule
+  const idRes = ruleFormSpec._id.map(fn => fn(_id))
+  red('idRes', idRes)
+  const actionsRes = ruleFormSpec.actions.map(fn => fn(actions))
+  red('actionsRes', actionsRes)
+  const criteriaRes = ruleFormSpec.criteria.map(fn => fn(criteria))
+  red('criteriaRes', criteriaRes)
+}
+
 const rulesCheckFull = wrap(async (req, res) => {
+  checkRuleForm(rule)
   const b = R.map(pipeIt, rule.actions)
+  // yellow('b', b)
   res.send({ result: b })
 })
 
 export default rulesCheckFull
-
-/*
-
-const person = {
-  name: 'joe',
-  age: 'hi'
-}
-
-const personSpec = {
-  name: (value, key) => isString(value, key),
-  age: (value, key) => isNumber(value, key)
-}
-
-const personCheck = (value, key, obj) => {
-  const r = personSpec[key](value, key)
-  // yellow('r', r)
-  const { pass, message } = r
-  return pass ? obj : R.mergeRight(obj, { errorMsg: message })
-}
-
-const res = [
-  { pass: true, message: 'good' },
-  { pass: true, message: 'good' },
-  { pass: false, message: '!good' },
-  { pass: false, message: '!good' }
-]
-
-const t = R.pipe(R.reject(R.prop('pass')), R.map(R.prop('message')))(res)
-// yellow('t', t)
-
-*/
