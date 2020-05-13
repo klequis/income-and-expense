@@ -37,26 +37,12 @@ const o = {
   }
 }
 
-const getPropValue = prop => obj => {
-  green('prop', prop)
-  green('obj', obj)
-  return R.prop(prop)(obj)
-}
-
-// const names = () => {
-//   const a = R.map(R.prop('name'), o)
-//   yellow('a', R.values(a))
-//   return a
-// }
-
 const names = R.pipe(
   R.map(R.prop('name')),
-  R.tap(_log('after map')),
-  R.values,
-  R.tap(_log('after values'))
+  // R.tap(_log('after map')),
+  R.values
+  // R.tap(_log('after values'))
 )(o)
-
-
 
 const operators = {
   beginsWith: o.beginsWith,
@@ -64,7 +50,7 @@ const operators = {
   doesNotContain: o.doesNotContain,
   equals: o.equals,
   names,
-  isOneOf: value => 'a'
+  isOneOf: (value) => R.includes(value, names)
 }
 
 export default operators

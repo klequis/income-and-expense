@@ -4,6 +4,7 @@ import * as R from 'ramda'
 import operators from 'db/operators'
 
 describe('test operators', function() {
+  const operatorNames = ['beginsWith', 'contains', 'doesNotContain', 'equals']
   it('operators.xx.name', function() {
     expect(operators.beginsWith.name).to.equal('beginsWith')
     expect(operators.contains.name).to.equal('contains')
@@ -16,8 +17,13 @@ describe('test operators', function() {
     expect(operators.doesNotContain.type).to.equal('String')
     expect(operators.equals.type).to.equal('String')
   })
+  it('operators.names', function() {
+    expect(R.equals(operators.names, operatorNames)).to.equal(true)
+  })
   it('opertors.isOneOf', function() {
-    green('names', operators.names)
-    // expect(operators.isOneOf()).to.equal('a')
+    // green('names', operators.names)
+    operatorNames.forEach((name) =>
+      expect(operators.isOneOf(name)).to.equal(true)
+    )
   })
 })

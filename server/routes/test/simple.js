@@ -1,26 +1,28 @@
 import wrap from 'routes/wrap'
-import { actionTypes, RULES_COLLECTION_NAME, dataFields, operators } from 'db/constants'
+import { actionTypes, RULES_COLLECTION_NAME, dataFields } from 'db/constants'
 import { find } from 'db/dbFunctions'
 import * as R from 'ramda'
-import { rTypes, rule, /*isString,*/ /*isOneOf,*/ isNotEmpty } from './rulesCheck'
+import { rule } from './rulesCheck'
+import operators from 'db/operators'
+import { isNotEmpty, isNumber, isString } from 'lib'
+import isDate from 'date-fns/isDate'
 
 // eslint-disable-next-line
 import { purple, red, green, yellow, logRequest, _log, _type } from 'logger'
 
-export const isOneOf = (value, listOrObj) => {
-  const compareList =
-    R.type(listOrObj) === 'Object' ? R.values(listOrObj) : listOrObj
+// export const isOneOf = (value, listOrObj) => {
+//   const compareList =
+//     R.type(listOrObj) === 'Object' ? R.values(listOrObj) : listOrObj
 
-  return R.includes(value, R.values(compareList))
-}
+//   return R.includes(value, R.values(compareList))
+// }
 
 const propValueTypeIs = R.curry((type, prop, obj) =>
   R.propSatisfies((x) => R.type(x) === type.name, prop, obj)
 )
 
 const checkRuleShape = (rule) => {
-  const r = R.allPass([R.has('_id'), R.has('criteria'), R.has('actions')])(rule)
-  return r
+  return R.allPass([R.has('_id'), R.has('criteria'), R.has('actions')])(rule)
 }
 
 const checkRulePropTypes = (rule) => {
@@ -38,22 +40,31 @@ const checkCriteriaShape = (criteria) => {
 }
 
 const checkCriteriaPropTypes = (criteria) => {
-  yellow('criteria', criteria)
-  const checkCriterion = (criterion) => {
-    yellow('criterion', criterion)
-    if (R.prop('field')(criterion) === 'description') {
-      const value = propValueTypeIs(String, 'value')(criterion)
-      const operation = R.prop('operation')(criterion)
-      yellow('prop(operator', operation)
-      yellow('operators', operators)
-      const operator = isOneOf(operation, operators)
-      yellow('value', value)
-      yellow('operator', operator)
-      return value
-    }
-  }
 
-  return R.map(checkCriterion, criteria)
+  const checkCriterion = (criterion) => {
+    const { field, operation, value } = criterion
+    if (!operators.isOneOf(operation)) {
+      return false
+    }
+    if (field === 'description') {
+      return isString(value)
+    }
+    if (R.includes(field, ['type', 'description', 'acctId'])) {
+      return isString(value) && isNotEmpty(value)
+    }
+    if (R.includes(field, ['credit', 'debit'])) {
+      return isNumber(value)
+    }
+    if (R.includes(field, ['date'])) {
+      return isDate(value)
+    }
+    // if (fiel)
+  }
+  // return R.all(R.equals(true))(R.map(fieldsPass, criteria))
+  const a = R.map(checkCriterion, criteria)
+  const r = R.all(R.equals(true))(R.map(R.identity, a))
+  red('r', r)
+  return r
 }
 
 const simple = wrap(async (req, res) => {
