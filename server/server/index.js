@@ -5,10 +5,10 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import config from '../config'
 import importData from 'routes/importData'
-import categories from 'routes/categories'
+// import categories from 'routes/categories'
 import views from 'routes/views'
 import rules from 'routes/rules'
-import criteria from 'routes/criteria'
+// import criteria from 'routes/criteria'
 import exportData from 'routes/exportData'
 import duplicates from 'routes/duplicates'
 import test from 'routes/test'
@@ -44,10 +44,10 @@ app.use((req, res, next) => {
 })
 
 app.use('/api/import', importData)
-app.use('/api/categories', categories)
+// app.use('/api/categories', categories)
 app.use('/api/views', views)
 app.use('/api/rules', rules)
-app.use('/api/criteria', criteria)
+// app.use('/api/criteria', criteria)
 app.use('/api/export', exportData)
 app.use('/api/test', test)
 app.use('/api/duplicates', duplicates)
