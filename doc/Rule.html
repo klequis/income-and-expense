@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-light">
+        <p>Functions</p>
+<ul>
+<li>getRule</li>
+</ul>
+<p>Props</p>
+<ul>
+<li>location,</li>
+<li>ruleId,</li>
+<li>removeRuleId,</li>
+<li>updateRuleAndView</li>
+</ul>
+<p>Actions</p>
+<ul>
+<li>criteriaTestClear,</li>
+<li>criteriaTestReadRequest,</li>
+<li>rowIdShowClear,</li>
+<li>ruleCreateRequest,</li>
+<li>ruleDeleteRequest,</li>
+<li>ruleTmpAdd,</li>
+<li>ruleTmpRemove,</li>
+<li>ruleTmpUpdate,</li>
+<li>ruleUpdateRequest</li>
+</ul>
+<p>State</p>
+<ul>
+<li>_rule</li>
+<li>_viewMode</li>
+<li>_dirty</li>
+</ul>
+<p>Local Vars</p>
+<ul>
+<li>_criteriaTestResults</li>
+<li>_classes</li>
+<li>_pathname</li>
+<li>_currentViewName</li>
+</ul>
+<p>Methods</p>
+<ul>
+<li>_actionChange</li>
+<li>_actionAdd</li>
+<li>_actionRemove</li>
+<li>_cancelClick</li>
+<li>_criterionChange</li>
+<li>_criterionAdd</li>
+<li>_criterionRemove</li>
+<li>_deleteClick</li>
+<li>_dirtyChange</li>
+<li>_editClick</li>
+<li>_saveClick</li>
+<li>_criteriaTestClick</li>
+</ul>
+<p>Renders</p>
+<ul>
+<li>
+<ActionButton buttonType={buttonTypes.edit} />
+</li>
+<li>
+<ActionButton buttonType={buttonTypes.save} />
+</li>
+<li>
+<ActionButton buttonType={buttonTypes.cancel}/ >
+</li>
+<li>
+<ActionButton buttonType={buttonTypes.delete}/ >
+</li>
+<li>
+<ActionButton buttonType={buttonTypes.add} />
+</li>
+<li>
+<CriterionView />
+</li>
+<li>
+<CriterionEdit />
+</li>
+<li>
+<ActionView />
+</li>
+<li>
+<ActionEdit />
+</li>
+<li>
+<CriteriaTestResults></li>
+</ul>
+
+    </body>
+    </html>
