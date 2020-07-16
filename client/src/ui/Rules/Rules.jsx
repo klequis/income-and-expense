@@ -16,7 +16,7 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
 
   // local vars
 
-  const rowIdShow = useSelector(state => state.ui.rowIdShow)
+  const _rowIdShow = useSelector(state => state.ui.rowIdShow)
 
   // state
 
@@ -24,7 +24,7 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
 
   // methods
 
-  const _addClick = async () => {
+  const _ruleTmpAddClick = async () => {
     const tmpId = `tmp_${shortid.generate()}`
     ruleTmpAdd({
       _id: tmpId,
@@ -53,7 +53,7 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
 
   // render
 
-  if (docId !== rowIdShow) {
+  if (docId !== _rowIdShow) {
     return null
   }
   if (_ruleIds.length === 0) {
@@ -61,7 +61,7 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
       <tr>
         <td colSpan="8">
           Rules{' '}
-          <ActionButton buttonType={buttonTypes.add} onClick={_addClick}>
+          <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
             Add Rule
           </ActionButton>
         </td>
@@ -72,7 +72,7 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
     <tr key={id}>
       <td colSpan="8">
         Rules{' '}
-        <ActionButton buttonType={buttonTypes.add} onClick={_addClick}>
+        <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
           Add Rule
         </ActionButton>
         <Rule
