@@ -87,7 +87,6 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   // local vars
 
-  // const _ruleTmp = useSelector(state => getRule(ruleId, state))
   const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
   const _classes = useStyles()
 

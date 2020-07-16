@@ -61,9 +61,10 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
       <tr>
         <td colSpan="8">
           Rules{' '}
-          <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
+          {/* <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
             Add Rule
-          </ActionButton>
+          </ActionButton> */}
+          <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick} />
         </td>
       </tr>
     )
@@ -72,9 +73,10 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
     <tr key={id}>
       <td colSpan="8">
         Rules{' '}
-        <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
+        {/* <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
           Add Rule
-        </ActionButton>
+        </ActionButton> */}
+        <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick} />
         <Rule
           ruleId={id}
           ruleIds={_ruleIds}
