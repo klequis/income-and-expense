@@ -1,3 +1,5 @@
+
+
 import React from 'react'
 import DevTools from 'ui/DevTools'
 import { Route, Switch, Link } from 'react-router-dom'
@@ -72,7 +74,7 @@ const App = () => {
           </Switch>
         {/* </PageProvider> */}
       </Container>
-      {/* {process.NODE_ENV !== 'production' ? <DevTools /> : null} */}
+      {process.NODE_ENV !== 'production' ? <DevTools /> : null}
     </div>
   )
 }
