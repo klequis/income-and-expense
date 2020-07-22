@@ -135,5 +135,6 @@ export const views = {
   amountByCategory: 'amount-by-category',
   allDataByDescription: 'all-data-by-description',
   rawData: 'raw-data',
-  duplicates: 'duplicates'
+  duplicates: 'duplicates',
+  infinite: 'infinite'
 }

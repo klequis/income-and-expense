@@ -12,6 +12,8 @@ import {
 } from 'global-constants'
 // import { usePageContext } from 'pageContext'
 import { useAppContext } from 'appContext'
+import * as R from 'ramda'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 // eslint-disable-next-line
 import { green, red, yellow, orange, logRender } from 'logger'
@@ -30,15 +32,14 @@ const useStyles = makeStyles({
 })
 
 const View = ({ data }) => {
-  // const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
-
+  // Actions
   const {
     rulesReadRequest,
-    viewReadRequest,
+    viewReadRequest
     // currentViewNameSet
   } = useAppContext()
 
-
+  // State
   const [_switchState, _setSwitchState] = useState({
     showOmitted: false
   })
@@ -47,13 +48,13 @@ const View = ({ data }) => {
     fieldName: dataFields.description.name,
     direction: sortDirections.ascending
   })
+  const [_hasMore, _setHasMore] = useState(true)
+  const [_visibleData, _setVisibleData] = useState(R.take(100, data))
 
   const _updateRulesAndView = useCallback(async () => {
     await rulesReadRequest()
     await viewReadRequest(views.allDataByDescription)
   }, [rulesReadRequest, viewReadRequest])
-
-  
 
   const _classes = useStyles()
 
@@ -77,6 +78,11 @@ const View = ({ data }) => {
         </div>
       </th>
     )
+  }
+
+  const getMore = () => {
+    green('getMore')
+    _setVisibleData(R.take(_visibleData.length + 100, data))
   }
 
   return (
@@ -109,21 +115,29 @@ const View = ({ data }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((doc) => {
-            const { _id, omit } = doc
-            if (_switchState.showOmitted === false && omit) {
-              return null
-            }
-            return (
-              <TR
-                key={_id}
-                doc={doc}
-                showOmitted={_switchState.showOmitted}
-                updateRulesAndView={_updateRulesAndView}
-                view={views.allDataByDescription}
-              />
-            )
-          })}
+          <InfiniteScroll
+            dataLength={data.length}
+            next={getMore}
+            hasMore={true}
+            loader={<h4>Loading...</h4>}
+            endMessage={<p>All records displayed.</p>}
+          >
+            {_visibleData.map((doc) => {
+              const { _id, omit } = doc
+              if (_switchState.showOmitted === false && omit) {
+                return null
+              }
+              return (
+                <TR
+                  key={_id}
+                  doc={doc}
+                  showOmitted={_switchState.showOmitted}
+                  updateRulesAndView={_updateRulesAndView}
+                  view={views.allDataByDescription}
+                />
+              )
+            })}
+          </InfiniteScroll>
         </tbody>
       </table>
     </>

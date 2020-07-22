@@ -13,6 +13,7 @@ import RawData from 'ui/views/RawData'
 import { views } from 'global-constants'
 import DuplicateStatus from 'ui/DuplicateStatus'
 import Duplicates from 'ui/views/Duplicates'
+import Infinite from 'ui/views/Infinite'
 // import { PageProvider } from 'pageContext'
 
 // eslint-disable-next-line
@@ -42,6 +43,9 @@ const App = () => {
       <Container maxWidth={false}>
         <div className={_classes.navDiv}>
           <Nav />
+          <Link to={`/${views.infinite}`}>
+            <Button variant="contained">Infinite</Button>
+          </Link>
           <Link to={`/${views.allDataByDescription}`}>
             <Button variant="contained">All Data</Button>
           </Link>
@@ -54,11 +58,13 @@ const App = () => {
           <Link to={`/${views.duplicates}`}>
             <Button variant="contained">Duplicates</Button>
           </Link>
+          
         </div>
-
+        
         <DuplicateStatus />
+        <Infinite />
         {/* <PageProvider> */}
-          <Switch>
+          {/* <Switch>
             <Route exact path={`/${views.allDataByDescription}`}>
               <AllDataByDescription />
             </Route>
@@ -71,7 +77,10 @@ const App = () => {
             <Route exact paht={`/${views.duplicates}`}>
               <Duplicates />
             </Route>
-          </Switch>
+            <Route exact paht={`/${views.infinite}`}>
+              <Infinite />
+            </Route>
+          </Switch> */}
         {/* </PageProvider> */}
       </Container>
       {process.NODE_ENV !== 'production' ? <DevTools /> : null}
