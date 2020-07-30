@@ -96,5 +96,6 @@ export default TR
 
 TR.propTypes = {
   doc: PropTypes.object.isRequired,
-  view: PropTypes.string.isRequired
+  updateRulesAndView: PropTypes.func.isRequired
+  // view: PropTypes.string.isRequired
 }

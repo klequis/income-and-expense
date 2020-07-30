@@ -46,7 +46,7 @@ const View = ({ data }) => {
 
   const [_switchState, _setSwitchState] = useState({
     showOmitted: false,
-    uncategorizedOnly: false,
+    uncategorizedOnly: true,
   })
   // eslint-disable-next-line
   const [_sort, _setSort] = useState({
@@ -64,8 +64,6 @@ const View = ({ data }) => {
   const _classes = useStyles()
 
   const _handleSwitchChange = (name) => (event) => {
-    // green('_handleSwitchChange: name', name)
-    // green('_handleSwitchChange: event.target.checked', event.target.checked)
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
   }
 
@@ -132,9 +130,6 @@ const View = ({ data }) => {
             if (_switchState.showOmitted === false && omit) {
               return null
             }
-            green('_switchState.uncategorizedOnly', _switchState.uncategorizedOnly
-            )
-            green('isCategorized(doc)', isCategorized(doc))
             if (_switchState.uncategorizedOnly && isCategorized(doc)) {
               return null
             }
@@ -142,9 +137,9 @@ const View = ({ data }) => {
               <TR
                 key={_id}
                 doc={doc}
-                showOmitted={_switchState.showOmitted}
+                // showOmitted={_switchState.showOmitted}
                 updateRulesAndView={_updateRulesAndView}
-                view={views.allDataByDescription}
+                // view={views.allDataByDescription}
               />
             )
           })}
