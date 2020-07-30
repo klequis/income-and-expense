@@ -46,7 +46,7 @@ const View = ({ data }) => {
 
   const [_switchState, _setSwitchState] = useState({
     showOmitted: false,
-    uncategorizedOnly: false,
+    uncategorizedOnly: true,
   })
   // eslint-disable-next-line
   const [_sort, _setSort] = useState({
