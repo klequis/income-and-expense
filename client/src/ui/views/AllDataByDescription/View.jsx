@@ -12,6 +12,7 @@ import {
 } from 'global-constants'
 // import { usePageContext } from 'pageContext'
 import { useAppContext } from 'appContext'
+import isNilOrEmpty from 'lib/isNilOrEmpty'
 
 // eslint-disable-next-line
 import { green, red, yellow, orange, logRender } from 'logger'
@@ -29,6 +30,10 @@ const useStyles = makeStyles({
   }
 })
 
+const isCategorized = doc => {
+  return (isNilOrEmpty(doc.category1) || doc.category1.toLowerCase() === 'none') ? false : true
+}
+
 const View = ({ data }) => {
   // const { init, next, previous, atStart, atEnd, rows, rowsPerPage, totalRows } = usePageContext()
 
@@ -40,7 +45,8 @@ const View = ({ data }) => {
 
 
   const [_switchState, _setSwitchState] = useState({
-    showOmitted: false
+    showOmitted: false,
+    uncategorizedOnly: false,
   })
   // eslint-disable-next-line
   const [_sort, _setSort] = useState({
@@ -58,6 +64,8 @@ const View = ({ data }) => {
   const _classes = useStyles()
 
   const _handleSwitchChange = (name) => (event) => {
+    // green('_handleSwitchChange: name', name)
+    // green('_handleSwitchChange: event.target.checked', event.target.checked)
     _setSwitchState({ ..._switchState, [name]: event.target.checked })
   }
 
@@ -93,6 +101,16 @@ const View = ({ data }) => {
           }
           label="Show Omitted"
         />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={_switchState.uncategorizedOnly}
+              onChange={_handleSwitchChange('uncategorizedOnly')}
+              value="uncategorizedOnly"
+            />
+          }
+          label="Uncategorized Only"
+        />
       </div>
       <table>
         <thead>
@@ -112,6 +130,12 @@ const View = ({ data }) => {
           {data.map((doc) => {
             const { _id, omit } = doc
             if (_switchState.showOmitted === false && omit) {
+              return null
+            }
+            green('_switchState.uncategorizedOnly', _switchState.uncategorizedOnly
+            )
+            green('isCategorized(doc)', isCategorized(doc))
+            if (_switchState.uncategorizedOnly && isCategorized(doc)) {
               return null
             }
             return (
