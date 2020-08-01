@@ -56,30 +56,18 @@ const Rules = ({ docId, ruleIds = [], updateRulesAndView }) => {
   if (docId !== _rowIdShow) {
     return null
   }
+  green('_ruleIds.length', _ruleIds.length)
   if (_ruleIds.length === 0) {
-    return (
-      <tr>
-        <td colSpan="8">
-          Rules{' '}
-          {/* <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
-            Add Rule
-          </ActionButton> */}
-          <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick} />
-        </td>
-      </tr>
-    )
+    green('addTmpRule')
+    _ruleTmpAddClick()
+
   }
   return _ruleIds.map(id => (
     <tr key={id}>
       <td colSpan="8">
-        Rules{' '}
-        {/* <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick}>
-          Add Rule
-        </ActionButton> */}
-        <ActionButton buttonType={buttonTypes.add} onClick={_ruleTmpAddClick} />
         <Rule
           ruleId={id}
-          ruleIds={_ruleIds}
+          // ruleIds={_ruleIds}
           removeRuleId={_removeRuleId}
           updateRulesAndView={updateRulesAndView}
         />

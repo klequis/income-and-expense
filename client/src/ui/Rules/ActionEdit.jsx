@@ -67,13 +67,18 @@ const ActionEdit = ({
     handleActionChange(newValues)
   }
 
+  /* TODO:
+      - Add rename, category1 & category2 as always present but can be blank
+      - Move '-' button to below last criterion and make it say "Add Criterion"
+  */
+
   return (
     <div key={_id} className={_classes.wrapper}>
       <div className={_classes.editModeWrapper}>
         <Select name="action" value={_values.action} onChange={_handleChange}>
           <MenuItem value="omit">Omit</MenuItem>
           <MenuItem value="strip">Strip</MenuItem>
-          <MenuItem value="replaceAll">Replace all</MenuItem>
+          <MenuItem value="replaceAll">Rename</MenuItem>
           <MenuItem value="categorize">Categorize</MenuItem>
         </Select>
         <ActionControls values={_values} handleChange={_handleChange} />

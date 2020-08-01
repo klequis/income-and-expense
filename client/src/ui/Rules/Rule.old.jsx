@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   wrapper: {
     display: 'flex',
     alignItems: 'flex-end',
-    width: '100%',
+    width: '100%'
     // backgroundColor: 'red'
   },
   ruleId: {
@@ -78,7 +78,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
   // state
 
   const [_rule, _setRule] = useState(
-    useSelector(state => getRule(ruleId, state))
+    useSelector((state) => getRule(ruleId, state))
   )
   const [_viewMode, _setViewMode] = useState(
     isTmpRule(ruleId) ? viewModes.modeNew : viewModes.modeView
@@ -87,7 +87,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   // local vars
 
-  const _criteriaTestResults = useSelector(state => state.criteriaTestResults)
+  const _criteriaTestResults = useSelector((state) => state.criteriaTestResults)
   const _classes = useStyles()
 
   const { pathname } = location
@@ -95,7 +95,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
 
   // methods
 
-  const _actionChange = action => {
+  const _actionChange = (action) => {
     const { actions } = _rule
     const actionId = prop('_id', action)
     const idx = findIndex(propEq('_id', actionId))(actions)
@@ -116,7 +116,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpUpdate(newRule)
   }
 
-  const _actionRemove = actionId => {
+  const _actionRemove = (actionId) => {
     const { actions } = _rule
     // const actionId = prop('_id', action)
     const idx = findIndex(propEq('_id', actionId))(actions)
@@ -136,7 +136,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     _setViewMode(viewModes.modeView)
   }
 
-  const _criterionChange = criterion => {
+  const _criterionChange = (criterion) => {
     criteriaTestClear()
     const { criteria } = _rule
 
@@ -164,7 +164,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     ruleTmpUpdate(newRule)
   }
 
-  const _criterionRemove = criterionId => {
+  const _criterionRemove = (criterionId) => {
     const { criteria } = _rule
     const idx = findIndex(propEq('_id', criterionId))(criteria)
     const newCriteria = remove(idx, 1, criteria)
@@ -181,11 +181,11 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
     removeRuleId(ruleId)
   }
 
-  const _dirtyChange = isDirty => {
+  const _dirtyChange = (isDirty) => {
     _setDirty(isDirty)
   }
 
-  const _editClick = criterionId => {
+  const _editClick = (criterionId) => {
     ruleTmpAdd(_rule)
     _setViewMode(viewModes.modeEdit)
   }
@@ -236,6 +236,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             </>
           )}
         </div>
+        
         <div>
           Criteria{' '}
           {_viewMode === viewModes.modeView ? null : (
@@ -245,7 +246,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             />
           )}
         </div>
-        {_rule.criteria.map(c => {
+        {_rule.criteria.map((c) => {
           const { _id } = c
           if (_viewMode === viewModes.modeView) {
             return (
@@ -272,7 +273,7 @@ const Rule = ({ location, ruleId, removeRuleId, updateRulesAndView }) => {
             <ActionButton buttonType={buttonTypes.add} onClick={_actionAdd} />
           )}
         </div>
-        {_rule.actions.map(a => {
+        {_rule.actions.map((a) => {
           const { _id } = a
           if (_viewMode === viewModes.modeView) {
             return <ActionView key={_id} action={a} />

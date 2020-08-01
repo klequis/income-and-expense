@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/styles'
 import TD from './TD'
-import Rules from 'ui/Rules'
 import isNilOrEmpty from 'lib/isNilOrEmpty'
 import { useAppContext } from 'appContext'
+import Rule from 'ui/Rule'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -56,6 +56,7 @@ const TR = ({ doc, updateRulesAndView }) => {
 
   // render
 
+  
   return (
     <>
       <tr className={_classes.tr} onClick={_handleRowClick}>
@@ -82,9 +83,8 @@ const TR = ({ doc, updateRulesAndView }) => {
         </TD>
       </tr>
       {_id === rowIdShow ? (
-        <Rules
-          docId={_id}
-          ruleIds={ruleIds}
+        <Rule
+          doc={doc}
           updateRulesAndView={updateRulesAndView}
         />
       ) : null}
