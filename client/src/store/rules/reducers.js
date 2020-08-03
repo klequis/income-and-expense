@@ -39,30 +39,3 @@ export const ruleNewReducer = (state = [], { type, payload }) => {
   }
 }
 
-/**
- *
- * @param {array} state ruleTmp state is an object
- * @param {string} type
- * @param {object || string} payload. Payload is an object for ADD & UPDATE
- *                                    and a string id for REMOVE
- */
-
-export const ruleTmpReducer = (state = [], { type, payload }) => {
-  try {
-    switch (type) {
-      case RULETMP_ADD_KEY:
-        const _append = append(payload, state)
-        return _append
-      case RULETMP_UPDATE_KEY:
-        const _update = replaceRule(payload, state)
-        return _update
-      case RULETMP_REMOVE_KEY:
-        return removeRule(payload.ruleId, state)
-      default:
-        return state
-    }
-  } catch (e) {
-    red('ruleTmpReducer ERROR', e.message)
-    console.log(e)
-  }
-}

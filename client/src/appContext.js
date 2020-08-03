@@ -1,13 +1,22 @@
 import React, { useCallback, useContext } from 'react'
 import {
-  ruleTmpAddAction,
-  ruleTmpUpdateAction,
-  ruleTmpRemoveAction,
   rulesReadRequestAction,
   ruleCreateRequestAction,
   ruleDeleteRequestAction,
   ruleUpdateRequestAction
 } from 'store/rules/actions'
+
+import {
+  ruleTmpAddNewAction,
+  ruleTmpUpdateAction,
+  ruleTmpRemoveAction,
+  ruleTmpCriterionAddNewAction,
+  ruleTmpCriterionDeleteAction,
+  ruleTmpCriterionUpdateAction,
+  ruleTmpActionAddNewAction,
+  ruleTmpActionDeleteAction,
+  ruleTmpActionUpdateAction
+} from 'store/ruleTmp/actions'
 
 import { viewReadRequestAction } from 'store/views/actions'
 import { useDispatch } from 'react-redux'
@@ -122,8 +131,8 @@ export const AppProvider = ({ children }) => {
     dispatch(await rulesReadRequestAction())
   }, [dispatch])
 
-  const ruleTmpAdd = data => {
-    dispatch(ruleTmpAddAction.fn(data))
+  const ruleTmpAddNew = data => {
+    dispatch(ruleTmpAddNewAction.fn(data))
   }
 
   const ruleTmpRemove = ruleId => {
@@ -133,6 +142,32 @@ export const AppProvider = ({ children }) => {
   const ruleTmpUpdate = data => {
     dispatch(ruleTmpUpdateAction.fn(data))
   }
+
+  
+  const ruleTmpCriterionAddNew = (ruleId) => {
+    dispatch(ruleTmpCriterionAddNewAction.fn(ruleId))
+  }
+
+  const ruleTmpCriterionDelete = (ruleId, criterionId) => {
+    dispatch(ruleTmpCriterionDeleteAction.fn(ruleId, criterionId))
+  }
+
+  const ruleTmpCriterionUpadate = (ruleId, criterionId, data) => {
+    dispatch(ruleTmpCriterionUpdateAction.fn(ruleId, criterionId, data))
+  }
+
+  const ruleTmpActionAddNew = (ruleId) => {
+    dispatch(ruleTmpActionAddNewAction.fn(ruleId))
+  }
+
+  const ruleTmpActionDelete = (ruleId, actionId) => {
+    dispatch(ruleTmpActionDeleteAction.fn(ruleId, actionId))
+  }
+  
+  const ruleTmpActionUpdate = (ruleId, actionId, data) => {
+    dispatch(ruleTmpActionUpdateAction.fn(ruleId, actionId, data))
+  }
+  
 
   // const ruleCreateRequestOrig = useCallback(
   //   async (rule, currentViewName) => {
@@ -226,7 +261,7 @@ export const AppProvider = ({ children }) => {
         rowIdShowSet,
         ruleCreateRequest,
         rulesReadRequest,
-        ruleTmpAdd,
+        ruleTmpAdd: ruleTmpAddNew,
         ruleDeleteRequest,
         ruleTmpRemove,
         ruleTmpUpdate,

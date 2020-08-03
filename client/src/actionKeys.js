@@ -25,8 +25,16 @@ const actionKeys = {
   ruleUpdateRequestKey: 'RULE_UPDATE_REQUEST_KEY',
   ruleUpdateKey: 'RULE_UPDATE_KEY',
   ruleTmpAddKey: 'RULETMP_ADD_KEY',
+  ruleTmpCriterionAddKey: 'RULETMP_CRITERION_ADD_KEY',
+  ruleTmpCriterionDeleteKey: 'RULETMP_CRITERION_DELETE_KEY',
+  ruleTmpCriterionUpdateAction: 'RULETMP_CRITERION_UPDATE_KEY',
+
+  ruleTmpActionAddKey: 'RULETMP_ACTION_ADD_KEY',
+  ruleTmpActionDeleteKey: 'RULETMP_ACTION_DELETE_KEY',
+  ruleTmpActionUpdateAction: 'RULETMP_ACTION_UPDATE_KEY',
+
   ruleTmpRemoveKey: 'RULETMP_REMOVE_KEY',
-  ruleTmpUpdateKep: 'RULETMP_UPDATE_KEY',
+  ruleTmpUpdateKey: 'RULETMP_UPDATE_KEY',
   toastSetKey: 'TOAST_SET_KEY',
   toastClearKey: 'TOAST_CLEAR_KEY',
   viewReadKey: 'VIEW_READ_KEY',

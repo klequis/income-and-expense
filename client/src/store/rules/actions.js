@@ -7,30 +7,6 @@ import actionKeys from 'actionKeys'
 // eslint-disable-next-line
 import { orange } from 'logger'
 
-export const ruleTmpAddAction = {
-  fn: (data) => ({
-    type: actionKeys.ruleTmpAddKey,
-    payload: data
-  }),
-  key: actionKeys.ruleTmpAddKey
-}
-
-export const ruleTmpUpdateAction = {
-  fn: (data) => ({
-    type: actionKeys.ruleTmpUpdateKep,
-    payload: data
-  }),
-  key: actionKeys.ruleTmpUpdateKep
-}
-
-export const ruleTmpRemoveAction = {
-  fn: (ruleId) => ({
-    type: actionKeys.ruleTmpRemoveKey,
-    payload: { ruleId }
-  }),
-  key: actionKeys.ruleTmpRemoveKey
-}
-
 const ruleUpdateAction = {
   fn: (data) => ({
     type: actionKeys.ruleUpdateKey,
@@ -38,8 +14,6 @@ const ruleUpdateAction = {
   }),
   key: actionKeys.ruleUpdateKey
 }
-
-
 
 export const ruleUpdateRequestAction = createRequestThunk({
   request: {
