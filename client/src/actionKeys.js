@@ -24,13 +24,13 @@ const actionKeys = {
   rulesReadRequestKey: 'RULES_READ_REQUEST_KEY',
   ruleUpdateRequestKey: 'RULE_UPDATE_REQUEST_KEY',
   ruleUpdateKey: 'RULE_UPDATE_KEY',
-  ruleTmpAddKey: 'RULETMP_ADD_KEY',
-  ruleTmpCriterionAddKey: 'RULETMP_CRITERION_ADD_KEY',
+  ruleTmpCreateKey: 'RULETMP_ADD_KEY',
+  ruleTmpCriterionCreateKey: 'RULETMP_CRITERION_ADD_KEY',
   ruleTmpCriterionDeleteKey: 'RULETMP_CRITERION_DELETE_KEY',
   ruleTmpCriterionUpdateAction: 'RULETMP_CRITERION_UPDATE_KEY',
 
-  ruleTmpActionAddKey: 'RULETMP_ACTION_ADD_KEY',
-  ruleTmpActionDeleteKey: 'RULETMP_ACTION_DELETE_KEY',
+  ruleTmpActionCreateKey: 'RULETMP_ACTION_ADD_KEY',
+  ruleTmpDeleteKey: 'RULETMP_ACTION_DELETE_KEY',
   ruleTmpActionUpdateAction: 'RULETMP_ACTION_UPDATE_KEY',
 
   ruleTmpRemoveKey: 'RULETMP_REMOVE_KEY',

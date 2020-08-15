@@ -14,7 +14,7 @@ const ruleTmpActionAddNew = (ruleId, data) => {
 export const ruleTmpReducer = (state = [], { type, payload }) => {
   try {
     switch (type) {
-      case actionKeys.ruleTmpAddKey:
+      case actionKeys.ruleTmpCreateKey:
         const _append = R.append(payload, state)
         return _append
       case actionKeys.ruleTmpUpdateKey:
@@ -25,14 +25,14 @@ export const ruleTmpReducer = (state = [], { type, payload }) => {
         // return removeRule(payload.ruleId, state)
         return state // TODO: implement function
 
-      case actionKeys.ruleTmpActionAddKey:
+      case actionKeys.ruleTmpActionCreateKey:
         return state
-      case actionKeys.ruleTmpActionDeleteKey:
+      case actionKeys.ruleTmpDeleteKey:
         return state // TODO: implement function
       case actionKeys.ruleTmpActionUpdateAction:
         return state // TODO: implement function
 
-      case actionKeys.ruleTmpCriterionAddKey:
+      case actionKeys.ruleTmpCriterionCreateKey:
         return state // TODO: implement function
       case actionKeys.ruleTmpCriterionDeleteKey:
         return state // TODO: implement function

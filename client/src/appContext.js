@@ -7,13 +7,13 @@ import {
 } from 'store/rules/actions'
 
 import {
-  ruleTmpAddNewAction,
+  ruleTmpCreateAction,
   ruleTmpUpdateAction,
-  ruleTmpRemoveAction,
-  ruleTmpCriterionAddNewAction,
+  ruleTmpDeleteAction,
+  ruleTmpCriterionCreateAction,
   ruleTmpCriterionDeleteAction,
   ruleTmpCriterionUpdateAction,
-  ruleTmpActionAddNewAction,
+  ruleTmpActionCreateAction,
   ruleTmpActionDeleteAction,
   ruleTmpActionUpdateAction
 } from 'store/ruleTmp/actions'
@@ -132,11 +132,11 @@ export const AppProvider = ({ children }) => {
   }, [dispatch])
 
   const ruleTmpAddNew = data => {
-    dispatch(ruleTmpAddNewAction.fn(data))
+    dispatch(ruleTmpCreateAction.fn(data))
   }
 
   const ruleTmpRemove = ruleId => {
-    dispatch(ruleTmpRemoveAction.fn(ruleId))
+    dispatch(ruleTmpDeleteAction.fn(ruleId))
   }
 
   const ruleTmpUpdate = data => {
@@ -145,7 +145,7 @@ export const AppProvider = ({ children }) => {
 
   
   const ruleTmpCriterionAddNew = (ruleId) => {
-    dispatch(ruleTmpCriterionAddNewAction.fn(ruleId))
+    dispatch(ruleTmpCriterionCreateAction.fn(ruleId))
   }
 
   const ruleTmpCriterionDelete = (ruleId, criterionId) => {
@@ -157,7 +157,7 @@ export const AppProvider = ({ children }) => {
   }
 
   const ruleTmpActionAddNew = (ruleId) => {
-    dispatch(ruleTmpActionAddNewAction.fn(ruleId))
+    dispatch(ruleTmpActionCreateAction.fn(ruleId))
   }
 
   const ruleTmpActionDelete = (ruleId, actionId) => {
@@ -167,7 +167,7 @@ export const AppProvider = ({ children }) => {
   const ruleTmpActionUpdate = (ruleId, actionId, data) => {
     dispatch(ruleTmpActionUpdateAction.fn(ruleId, actionId, data))
   }
-  
+
 
   // const ruleCreateRequestOrig = useCallback(
   //   async (rule, currentViewName) => {

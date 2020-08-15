@@ -1,14 +1,20 @@
 import actionKeys from 'actionKeys'
 
-export const ruleTmpAddNewAction = {
+export const ruleTmpCreateAction = {
   fn: (ruleId, data) => ({
-    type: actionKeys.ruleTmpAddKey,
+    type: actionKeys.ruleTmpCreateKey,
     payload: data
   }),
-  key: actionKeys.ruleTmpAddKey
+  key: actionKeys.ruleTmpCreateKey
 }
 
-// not sure I'll need this one
+export const ruleTmpDeleteAction = {
+  fn: (ruleId, actionId) => ({
+    type: actionKeys.ruleTmpDeleteKey,
+    payload: { ruleId, actionId }
+  }),
+  key: actionKeys.ruleTmpDeleteKey
+}
 
 export const ruleTmpUpdateAction = {
   fn: (data) => ({
@@ -18,22 +24,14 @@ export const ruleTmpUpdateAction = {
   key: actionKeys.ruleTmpUpdateKey
 }
 
-export const ruleTmpRemoveAction = {
-  fn: (ruleId) => ({
-    type: actionKeys.ruleTmpRemoveKey,
-    payload: { ruleId }
-  }),
-  key: actionKeys.ruleTmpRemoveKey
-}
-
 // Criterion
 
-export const ruleTmpCriterionAddNewAction = {
+export const ruleTmpCriterionCreateAction = {
   fn: (ruleId) => ({
-    type: actionKeys.ruleTmpCriterionAddKey,
+    type: actionKeys.ruleTmpCriterionCreateKey,
     payload: { ruleId}
   }),
-  key: actionKeys.ruleTmpCriterionAddKey
+  key: actionKeys.ruleTmpCriterionCreateKey
 }
 
 export const ruleTmpCriterionDeleteAction = {
@@ -54,20 +52,20 @@ export const ruleTmpCriterionUpdateAction = {
 
 // Action
 
-export const ruleTmpActionAddNewAction = {
+export const ruleTmpActionCreateAction = {
   fn: (ruleId) => ({
-    type: actionKeys.ruleTmpActionAddKey,
+    type: actionKeys.ruleTmpActionCreateKey,
     payload: { ruleId }
   }),
-  key: actionKeys.ruleTmpActionAddKey
+  key: actionKeys.ruleTmpActionCreateKey
 }
 
 export const ruleTmpActionDeleteAction = {
   fn: (ruleId, actionId) => ({
-    type: actionKeys.ruleTmpActionDeleteKey,
+    type: actionKeys.ruleTmpDeleteKey,
     payload: { ruleId, actionId }
   }),
-  key: actionKeys.ruleTmpActionDeleteKey
+  key: actionKeys.ruleTmpDeleteKey
 }
 
 export const ruleTmpActionUpdateAction = {

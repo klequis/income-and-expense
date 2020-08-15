@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -11,6 +11,7 @@ import { useAppContext } from 'appContext'
 import { operators, dataFieldNames } from 'global-constants'
 import CriterionEdit from './CriterionEdit'
 import ActionButton, { buttonTypes } from 'ui/elements/ActionButton'
+import Omit from './Omit'
 
 // eslint-disable-next-line
 import { green, red } from 'logger'
@@ -21,7 +22,7 @@ const getRule = (ruleId, state) => {
   return rules[idx]
 }
 
-const _addTmpRule = () => {
+const _addTmpRule = (tmpRuleId) => {
   const r = {
     _id: `tmp_${shortid.generate()}`,
     criteria: [
@@ -38,7 +39,7 @@ const _addTmpRule = () => {
       }
     ]
   }
-  green('_addTmpRule: r', r)
+  // green('_addTmpRule: r', r)
   return r
 }
 
@@ -53,72 +54,70 @@ const hasRule = (doc) => R.has('ruleIds')(doc)
 //   return true
 // }
 
-const _hasOmitRule = (rule) => {
-  // green('doc', doc)
-  const { actions } = rule
-  return R.find(R.propEq('action', 'omit'))(actions) !== undefined
-}
+
 
 const Rule = ({ doc, updateRulesAndView }) => {
   const { date } = doc
   // state
-  const [_rule, _setRule] = useState({})
-  const [_hasOmit, _setHasOmit] = useState(false)
+  const [_rule, _setRule] = useState(null)
   const [_docDate, _setDocDate] = useState(date)
   const [_dirty, _setDirty] = useState(false)
+  
 
   // actions
   const { ruleTmpAdd, criteriaTestClear } = useAppContext()
 
   // hooks
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!hasRule(doc)) {
-      const r = _addTmpRule()
-      _setRule(r)
-      _setHasOmit(_hasOmitRule(r))
+      const rule = _addTmpRule()
+      _setRule(rule)
+      
     }
   }, [])
 
   // TODO: _hasOmitRule has not been check for true case yet
 
+
+
   if (isNilOrEmpty(_rule)) {
+    
     return null
   }
 
+  green("Rule: _rule", _rule)
+
   const _criterionRemove = (criterionId) => {
-    const { criteria } = _rule
-    const idx = R.findIndex(R.propEq('_id', criterionId))(criteria)
-    const newCriteria = R.remove(idx, 1, criteria)
-    const newRule = R.mergeRight(_rule, { criteria: newCriteria })
-    _setRule(newRule)
-    _setDirty(true)
+    // const { criteria } = _rule
+    // const idx = R.findIndex(R.propEq('_id', criterionId))(criteria)
+    // const newCriteria = R.remove(idx, 1, criteria)
+    // const newRule = R.mergeRight(_rule, { criteria: newCriteria })
+    // _setRule(newRule)
+    // _setDirty(true)
   }
 
   const _criterionChange = (criterion) => {
     criteriaTestClear()
-    const { criteria } = _rule
+    // const { criteria } = _rule
 
-    const criterionId = R.prop('_id', criterion)
-    const idx = R.findIndex(R.propEq('_id', criterionId))(criteria)
+    // const criterionId = R.prop('_id', criterion)
+    // const idx = R.findIndex(R.propEq('_id', criterionId))(criteria)
 
-    const newCriteria =
-      criteria.length === 0 || idx === -1
-        ? [criterion]
-        : R.insert(idx, criterion, R.remove(idx, 1, criteria))
+    // const newCriteria =
+    //   criteria.length === 0 || idx === -1
+    //     ? [criterion]
+    //     : R.insert(idx, criterion, R.remove(idx, 1, criteria))
 
-    const newRule = R.mergeRight(_rule, { criteria: newCriteria })
-    _setRule(newRule)
+    // const newRule = R.mergeRight(_rule, { criteria: newCriteria })
+    // _setRule(newRule)
   }
 
-  green('_rule', _rule)
+  // green('_rule', _rule)
 
   return (
     <tr>
       <td colSpan="8">
-        <FormControlLabel
-          control={<Switch checked={_hasOmit} value="omit" />}
-          label="Omit"
-        />
+        
         <FormControlLabel
           control={
             <Switch
@@ -129,6 +128,7 @@ const Rule = ({ doc, updateRulesAndView }) => {
           }
           label={`Date = ${date}`}
         />
+        <Omit rule={_rule} />
         <div>
           {_rule.criteria.map((c) => {
             const { _id } = c
