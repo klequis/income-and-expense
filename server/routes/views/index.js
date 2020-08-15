@@ -1,15 +1,15 @@
 import express from 'express'
 import amountByCategory from './amountByCategory'
-import dataChanges from './dataChanges'
+import transactionsChanges from './transactionsChanges'
 import originalValues from './originalValues'
-import allDataByDescription from './allDataByDescription'
+import allTransactionsByDescription from './allTransactionsByDescription'
 
 const router = express.Router()
 
 router.get('/amount-by-category', amountByCategory)
-router.get('/data-changes', dataChanges)
+router.get('/data-changes', transactionsChanges)
 router.get('/original-values', originalValues)
-router.get('/all-data-by-description', allDataByDescription)
-router.get('/raw-data', allDataByDescription)
+router.get('/all-data-by-description', allTransactionsByDescription)
+router.get('/raw-data', allTransactionsByDescription)
 
 export default router

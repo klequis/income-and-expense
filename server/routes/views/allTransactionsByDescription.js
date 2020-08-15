@@ -1,12 +1,12 @@
 import wrap from 'routes/wrap'
 import { find } from 'db'
-import { DATA_COLLECTION_NAME, convertFieldValuesToUi } from 'db/constants'
+import { TRANSACTIONS_COLLECTION_NAME, convertFieldValuesToUi } from 'db/constants'
 // eslint-disable-next-line
 import { yellow, redf } from 'logger'
 
 const allDataByDescription = wrap(async (req, res) => {
   try {
-    const data = await find(DATA_COLLECTION_NAME, {})
+    const data = await find(TRANSACTIONS_COLLECTION_NAME, {})
     res.send(convertFieldValuesToUi(data))
   } catch (e) {
     redf('views/allDataByDescription', e.message)

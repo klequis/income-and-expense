@@ -18,9 +18,9 @@ const _log = (label) => (message) => {
   return yellow(label, message)
 }
 
-export const DATA_COLLECTION_NAME = 'data'
+export const TRANSACTIONS_COLLECTION_NAME = 'transactions'
 export const CATEGORIES_COLLECTION_NAME = 'categories'
-export const DATA_RULE_MAP_COLLECTION_NAME = 'data-rule-map'
+export const TRANSACTIONS_RULE_MAP_COLLECTION_NAME = 'transactions-rule-map'
 export const ACCOUNTS_COLLECTION_NAME = 'accounts'
 export const RULES_COLLECTION_NAME = 'rules'
 
@@ -32,7 +32,7 @@ export const duplicateStatus = {
   duplicateNot: 'duplicateNot'
 }
 
-export const dataFields = {
+export const transactionsFields = {
   _id: {
     name: '_id',
     type: dataTypes.String // TODO: should this be ObjectID?
