@@ -1,14 +1,14 @@
 import actionKeys from 'actionKeys'
 import * as R from 'ramda'
-import shortid from 'shortid'
+// import shortid from 'shortid'
 
 // eslint-disable-next-line
 import { green, yellow, red } from 'logger'
 
-const ruleTmpActionAddNew = (ruleId, data) => {
-  // const newActions = R.append({ _id: shortid.generate() }, actions)
-  // const newRule = R.mergeRight(_rule, { actions: newActions })
-}
+// const ruleTmpActionAddNew = (ruleId, data) => {
+//   // const newActions = R.append({ _id: shortid.generate() }, actions)
+//   // const newRule = R.mergeRight(_rule, { actions: newActions })
+// }
 
 
 export const ruleTmpReducer = (state = [], { type, payload }) => {

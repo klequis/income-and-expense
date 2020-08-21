@@ -32,7 +32,7 @@ export const duplicateStatus = {
   duplicateNot: 'duplicateNot'
 }
 
-export const transactionsFields = {
+export const transactionFields = {
   _id: {
     name: '_id',
     type: dataTypes.String // TODO: should this be ObjectID?
@@ -179,7 +179,7 @@ const criteriaFields = {
 
 const allFields = () => {
   const merged = R.mergeAll([
-    dataFields,
+    transactionFields,
     actionFields,
     operators,
     criteriaFields
@@ -205,7 +205,7 @@ const convertValueToDb = (fieldValuePair) => {
   const [field, value] = fieldValuePair
   // yellow('field', field)
   // yellow('value', value)
-  const type = R.path([field, dataFields.type.name], allFields())
+  const type = R.path([field, transactionFields.type.name], allFields())
   // yellow('type', type)
   switch (type) {
     case dataTypes.String:
@@ -261,7 +261,7 @@ const convertValueToUi = (fieldValuePair) => {
   const [field, value] = fieldValuePair
   // yellow('field', field)
   // yellow('value', value)
-  const type = R.path([field, dataFields.type.name], allFields())
+  const type = R.path([field, transactionFields.type.name], allFields())
   // yellow('type', type)
   switch (type) {
     case dataTypes.String:

@@ -10,12 +10,12 @@ import {
   ruleTmpCreateAction,
   ruleTmpUpdateAction,
   ruleTmpDeleteAction,
-  ruleTmpCriterionCreateAction,
-  ruleTmpCriterionDeleteAction,
-  ruleTmpCriterionUpdateAction,
-  ruleTmpActionCreateAction,
-  ruleTmpActionDeleteAction,
-  ruleTmpActionUpdateAction
+  // ruleTmpCriterionCreateAction,
+  // ruleTmpCriterionDeleteAction,
+  // ruleTmpCriterionUpdateAction,
+  // ruleTmpActionCreateAction,
+  // ruleTmpActionDeleteAction,
+  // ruleTmpActionUpdateAction
 } from 'store/ruleTmp/actions'
 
 import { viewReadRequestAction } from 'store/views/actions'
@@ -144,29 +144,29 @@ export const AppProvider = ({ children }) => {
   }
 
   
-  const ruleTmpCriterionAddNew = (ruleId) => {
-    dispatch(ruleTmpCriterionCreateAction.fn(ruleId))
-  }
+  // const ruleTmpCriterionAddNew = (ruleId) => {
+  //   dispatch(ruleTmpCriterionCreateAction.fn(ruleId))
+  // }
 
-  const ruleTmpCriterionDelete = (ruleId, criterionId) => {
-    dispatch(ruleTmpCriterionDeleteAction.fn(ruleId, criterionId))
-  }
+  // const ruleTmpCriterionDelete = (ruleId, criterionId) => {
+  //   dispatch(ruleTmpCriterionDeleteAction.fn(ruleId, criterionId))
+  // }
 
-  const ruleTmpCriterionUpadate = (ruleId, criterionId, data) => {
-    dispatch(ruleTmpCriterionUpdateAction.fn(ruleId, criterionId, data))
-  }
+  // const ruleTmpCriterionUpadate = (ruleId, criterionId, data) => {
+  //   dispatch(ruleTmpCriterionUpdateAction.fn(ruleId, criterionId, data))
+  // }
 
-  const ruleTmpActionAddNew = (ruleId) => {
-    dispatch(ruleTmpActionCreateAction.fn(ruleId))
-  }
+  // const ruleTmpActionAddNew = (ruleId) => {
+  //   dispatch(ruleTmpActionCreateAction.fn(ruleId))
+  // }
 
-  const ruleTmpActionDelete = (ruleId, actionId) => {
-    dispatch(ruleTmpActionDeleteAction.fn(ruleId, actionId))
-  }
+  // const ruleTmpActionDelete = (ruleId, actionId) => {
+  //   dispatch(ruleTmpActionDeleteAction.fn(ruleId, actionId))
+  // }
   
-  const ruleTmpActionUpdate = (ruleId, actionId, data) => {
-    dispatch(ruleTmpActionUpdateAction.fn(ruleId, actionId, data))
-  }
+  // const ruleTmpActionUpdate = (ruleId, actionId, data) => {
+  //   dispatch(ruleTmpActionUpdateAction.fn(ruleId, actionId, data))
+  // }
 
 
   // const ruleCreateRequestOrig = useCallback(
